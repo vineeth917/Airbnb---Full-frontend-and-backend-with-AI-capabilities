@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Airbnb Lab - Full Stack Application
 
 A complete Airbnb-like application built with Node.js + Express.js backend, React frontend, and Python FastAPI AI service.
@@ -179,3 +180,7 @@ For support, email support@airbnblab.com or create an issue on GitHub.
 ---
 
 **Built with ❤️ for the Airbnb Lab Assignment**
+=======
+# Airbnb---Full-frontend-and-backend-with-AI-capabilities
+This project is a replica of fully functional Airbnb website with added functionalites of chatbot to help users
+>>>>>>> bea8ae0b74a025da553a8c31888fe210f29352ef
