@@ -3,7 +3,7 @@
 
 A complete Airbnb-like application built with Node.js + Express.js backend, React frontend, and Python FastAPI AI service.
 
-## 🏗️ Architecture
+##  Architecture
 
 ```
 airbnb-lab/
@@ -13,7 +13,7 @@ airbnb-lab/
 └── README.md
 ```
 
-## 🚀 Quick Start
+##  Quick Start
 
 ### Prerequisites
 
@@ -48,7 +48,7 @@ pip install -r requirements.txt
 python -m uvicorn app.main:app --host 0.0.0.0 --port 8000
 ```
 
-## 📚 API Documentation
+## API Documentation
 
 - **Backend API**: http://localhost:5000/api-docs
 - **AI Service**: http://localhost:8000/docs
@@ -62,8 +62,8 @@ NODE_ENV=development
 DB_HOST=localhost
 DB_PORT=3306
 DB_NAME=airbnb_lab
-DB_USER=root
-DB_PASSWORD=pass1234
+DB_USER=***
+DB_PASSWORD=****
 JWT_SECRET=your-jwt-secret
 SESSION_SECRET=your-session-secret
 FRONTEND_URL=http://localhost:3000
@@ -81,9 +81,9 @@ OPENAI_API_KEY=your-openai-key
 TAVILY_API_KEY=your-tavily-key
 ```
 
-## 🎯 Features
+## Features
 
-### ✅ Implemented
+### Implemented
 - User Authentication (JWT + Sessions)
 - Property Management (CRUD)
 - Booking System
@@ -94,13 +94,6 @@ TAVILY_API_KEY=your-tavily-key
 - AI Travel Assistant
 - Responsive Design
 - API Documentation
-
-### 🔄 In Progress
-- Advanced Search & Filtering
-- Payment Integration
-- Real-time Notifications
-- Image Upload
-- Advanced Analytics
 
 ## 🛠️ Tech Stack
 
@@ -126,14 +119,14 @@ TAVILY_API_KEY=your-tavily-key
 - **Web Search**: Tavily API
 - **Validation**: Pydantic
 
-## 📱 Screenshots
+##  Screenshots
 
 ![Login Page](screenshots/login.png)
 ![Property Listings](screenshots/listings.png)
 ![Booking Flow](screenshots/booking.png)
 ![AI Assistant](screenshots/ai-assistant.png)
 
-## 🧪 Testing
+##  Testing
 
 ```bash
 # Backend tests
@@ -149,7 +142,7 @@ cd ai-service
 pytest
 ```
 
-## 📦 Deployment
+## Deployment
 
 ### Docker
 ```bash
@@ -161,7 +154,7 @@ docker-compose up -d
 2. Start backend: `npm start`
 3. Start AI service: `python -m uvicorn app.main:app`
 
-## 🤝 Contributing
+## Contributing
 
 1. Fork the repository
 2. Create a feature branch
@@ -169,17 +162,17 @@ docker-compose up -d
 4. Add tests
 5. Submit a pull request
 
-## 📄 License
+## License
 
 MIT License - see LICENSE file for details
 
-## 🆘 Support
+## Support
 
 For support, email support@airbnblab.com or create an issue on GitHub.
 
 ---
 
-**Built with ❤️ for the Airbnb Lab Assignment**
+**Built with for the Airbnb Lab Assignment**
 =======
 # Airbnb---Full-frontend-and-backend-with-AI-capabilities
 This project is a replica of fully functional Airbnb website with added functionalites of chatbot to help users
