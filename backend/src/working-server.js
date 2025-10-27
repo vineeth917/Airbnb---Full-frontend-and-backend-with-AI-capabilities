@@ -13,7 +13,7 @@ const PORT = process.env.PORT || 5000;
 
 // Middleware
 app.use(cors({
-  origin: 'http://localhost:3000',
+  origin: ['http://localhost:3000', 'http://localhost:3001'],
   credentials: true
 }));
 app.use(express.json());
@@ -23,23 +23,34 @@ const users = [
   {
     id: '1',
     username: 'traveler',
-    email: 'traveler@example.com',
-    password: 'traveler123', // Simple password for demo
+    email: 'traveler@airbnb.com',
+    password: 'traveler1234', // Password from LOGIN_CREDENTIALS.md
     user_type: 'traveler',
     first_name: 'John',
-    last_name: 'Traveler',
+    last_name: 'Doe',
     city: 'New York',
     country: 'USA'
   },
   {
     id: '2',
     username: 'host',
-    email: 'host@example.com',
-    password: 'host123', // Simple password for demo
+    email: 'host@airbnb.com',
+    password: 'host1234', // Password from LOGIN_CREDENTIALS.md
     user_type: 'owner',
     first_name: 'Jane',
-    last_name: 'Host',
+    last_name: 'Smith',
     city: 'Miami',
+    country: 'USA'
+  },
+  {
+    id: '3',
+    username: 'newhost',
+    email: 'newhost@example.com',
+    password: 'password123', // Password from LOGIN_CREDENTIALS.md
+    user_type: 'owner',
+    first_name: 'New',
+    last_name: 'Host',
+    city: 'San Jose',
     country: 'USA'
   }
 ];
@@ -266,8 +277,9 @@ app.listen(PORT, () => {
   console.log(`🔍 Health Check: http://localhost:${PORT}/health`);
   console.log(`🌍 Environment: development`);
   console.log(`\n📋 Login Credentials:`);
-  console.log(`Traveler: username=traveler, password=traveler123`);
-  console.log(`Host: username=host, password=host123`);
+  console.log(`Traveler: username=traveler, password=traveler1234`);
+  console.log(`Host: username=host, password=host1234`);
+  console.log(`New Host: username=newhost, password=password123`);
 });
 
 module.exports = app;
