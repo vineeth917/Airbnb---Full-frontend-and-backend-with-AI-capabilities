@@ -2409,7 +2409,7 @@ function HomesView({ listings = [], filters = {}, setFilters = () => {}, onUpdat
     <div className="homes-view">
       {/* Popular homes section */}
       <div className="section-header">
-        <h2>Popular homes in Los Angeles</h2>
+        <h2>Popular homes only</h2>
         <span className="section-arrow">&gt;</span>
       </div>
       
