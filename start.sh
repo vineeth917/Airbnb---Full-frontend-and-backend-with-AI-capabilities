@@ -2,11 +2,14 @@
 
 echo "🚀 Starting Airbnb Lab Application..."
 
-# Kill any existing processes on ports 3000, 5000, 8000
+# Kill any existing processes on ports 3000, 5001, 8000
 echo "🔄 Cleaning up existing processes..."
 lsof -ti:3000 | xargs kill -9 2>/dev/null || true
-lsof -ti:5000 | xargs kill -9 2>/dev/null || true
+lsof -ti:5001 | xargs kill -9 2>/dev/null || true
 lsof -ti:8000 | xargs kill -9 2>/dev/null || true
+
+# Get the absolute path of the project directory
+PROJECT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 # Create .env files if they don't exist
 echo "📝 Setting up environment files..."
@@ -14,7 +17,7 @@ echo "📝 Setting up environment files..."
 # Backend .env
 if [ ! -f "backend/.env" ]; then
     cat > backend/.env << EOF
-PORT=5000
+PORT=5001
 NODE_ENV=development
 DB_HOST=localhost
 DB_PORT=3306
@@ -37,7 +40,7 @@ fi
 # Frontend .env
 if [ ! -f "frontend/.env" ]; then
     cat > frontend/.env << EOF
-VITE_API_URL=http://localhost:5000/api
+VITE_API_URL=http://localhost:5001/api
 VITE_AI_SERVICE_URL=http://localhost:8000
 EOF
     echo "✅ Created frontend/.env"
@@ -46,8 +49,7 @@ fi
 # AI Service .env
 if [ ! -f "ai-service/.env" ]; then
     cat > ai-service/.env << EOF
-OPENAI_API_KEY=your-openai-key
-TAVILY_API_KEY=your-tavily-key
+PYTHONPATH=${PROJECT_DIR}/ai-service
 EOF
     echo "✅ Created ai-service/.env"
 fi
@@ -85,12 +87,16 @@ echo "2. Start Frontend (Terminal 2):"
 echo "   cd frontend && npm run dev"
 echo ""
 echo "3. Start AI Service (Terminal 3):"
-echo "   cd ai-service && python -m uvicorn app.main:app --host 0.0.0.0 --port 8000"
+echo "   cd ai-service && PYTHONPATH=${PROJECT_DIR}/ai-service python -m uvicorn app.main:app --host 0.0.0.0 --port 8000"
 echo ""
 echo "🌐 Access Points:"
 echo "   Frontend: http://localhost:3000"
-echo "   Backend API: http://localhost:5000"
-echo "   API Docs: http://localhost:5000/api-docs"
+echo "   Backend API: http://localhost:5001"
+echo "   API Docs: http://localhost:5001/api-docs"
 echo "   AI Service: http://localhost:8000"
 echo "   AI Docs: http://localhost:8000/docs"
+echo ""
+echo "🔑 Login Credentials:"
+echo "   Traveler: traveler@airbnb.com / traveler123"
+echo "   Host: host@airbnb.com / host123"
 echo ""

@@ -84,3 +84,6 @@ venv.bak/
 
 # Cookies and temporary files
 cookies.txt
+node_modules/
+venv/
+.env

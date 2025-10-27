@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # Airbnb Lab - Full Stack Application
 
 A complete Airbnb-like application built with Node.js + Express.js backend, React frontend, and Python FastAPI AI service.
@@ -21,18 +20,36 @@ airbnb-lab/
 - Python 3.8+
 - MySQL 8.0+
 
-### 1. Backend Setup
+### Option 1: Use Individual Startup Scripts (Recommended)
+
+Open **3 separate terminals** and run:
+
+**Terminal 1 - Backend:**
+```bash
+./start-backend.sh
+```
+
+**Terminal 2 - Frontend:**
+```bash
+./start-frontend.sh
+```
+
+**Terminal 3 - AI Service:**
+```bash
+./start-ai.sh
+```
+
+### Option 2: Manual Setup
+
+#### 1. Backend Setup
 
 ```bash
 cd backend
 npm install
-cp env.example .env
-# Edit .env with your database credentials
-npm run migrate
 npm run dev
 ```
 
-### 2. Frontend Setup
+#### 2. Frontend Setup
 
 ```bash
 cd frontend
@@ -40,24 +57,24 @@ npm install
 npm run dev
 ```
 
-### 3. AI Service Setup
+#### 3. AI Service Setup
 
 ```bash
 cd ai-service
 pip install -r requirements.txt
-python -m uvicorn app.main:app --host 0.0.0.0 --port 8000
+PYTHONPATH=$(pwd) python -m uvicorn app.main:app --host 0.0.0.0 --port 8000
 ```
 
 ## 📚 API Documentation
 
-- **Backend API**: http://localhost:5000/api-docs
+- **Backend API**: http://localhost:5001/api-docs
 - **AI Service**: http://localhost:8000/docs
 
 ## 🔧 Environment Variables
 
 ### Backend (.env)
 ```
-PORT=5000
+PORT=5001
 NODE_ENV=development
 DB_HOST=localhost
 DB_PORT=3306
@@ -71,14 +88,13 @@ FRONTEND_URL=http://localhost:3000
 
 ### Frontend (.env)
 ```
-VITE_API_URL=http://localhost:5000/api
+VITE_API_URL=http://localhost:5001/api
 VITE_AI_SERVICE_URL=http://localhost:8000
 ```
 
 ### AI Service (.env)
 ```
-OPENAI_API_KEY=your-openai-key
-TAVILY_API_KEY=your-tavily-key
+PYTHONPATH=/path/to/your/project/ai-service
 ```
 
 ## 🎯 Features
@@ -122,32 +138,86 @@ TAVILY_API_KEY=your-tavily-key
 
 ### AI Service
 - **Framework**: FastAPI
-- **AI/ML**: Langchain
-- **Web Search**: Tavily API
+- **AI/ML**: Langchain (ready for Ollama integration)
 - **Validation**: Pydantic
 
-## 📱 Screenshots
+## 🌐 Access Points
 
-![Login Page](screenshots/login.png)
-![Property Listings](screenshots/listings.png)
-![Booking Flow](screenshots/booking.png)
-![AI Assistant](screenshots/ai-assistant.png)
+- **Frontend**: http://localhost:3000
+- **Backend API**: http://localhost:5001
+- **AI Service**: http://localhost:8000
+- **API Docs**: http://localhost:5001/api-docs
+- **AI Docs**: http://localhost:8000/docs
 
-## 🧪 Testing
+## 🔑 Login Credentials
+
+- **Traveler**: `traveler@airbnb.com` / `traveler123`
+- **Host**: `host@airbnb.com` / `host123`
+
+## 🐛 Troubleshooting
+
+### Port Already in Use
+
+If you get port conflicts:
 
 ```bash
-# Backend tests
-cd backend
-npm test
+# Kill process on port 5001
+lsof -ti:5001 | xargs kill -9
 
-# Frontend tests
-cd frontend
-npm test
+# Kill process on port 3000
+lsof -ti:3000 | xargs kill -9
 
-# AI service tests
-cd ai-service
-pytest
+# Kill process on port 8000
+lsof -ti:8000 | xargs kill -9
 ```
+
+### AI Service Loading Wrong App
+
+If you see errors about "Aparavi" or other projects:
+
+```bash
+# Make sure to set PYTHONPATH
+cd ai-service
+PYTHONPATH=$(pwd) python -m uvicorn app.main:app --host 0.0.0.0 --port 8000
+```
+
+Or use the provided startup script:
+```bash
+./start-ai.sh
+```
+
+### MySQL Connection Issues
+
+1. Check if MySQL is running:
+```bash
+brew services list | grep mysql
+```
+
+2. Start MySQL if needed:
+```bash
+brew services start mysql
+```
+
+3. Initialize the database:
+```bash
+mysql -u root -ppass1234 < backend/init.sql
+```
+
+## 🤖 AI Integration (Llama 3.1 8B)
+
+To integrate Ollama with Llama 3.1 8B:
+
+1. Install Ollama:
+```bash
+curl -fsSL https://ollama.ai/install.sh | sh
+```
+
+2. Pull Llama 3.1 8B model:
+```bash
+ollama pull llama3.1:8b
+```
+
+3. Update the AI service to use Ollama (coming soon)
 
 ## 📦 Deployment
 
@@ -175,12 +245,14 @@ MIT License - see LICENSE file for details
 
 ## 🆘 Support
 
-For support, email support@airbnblab.com or create an issue on GitHub.
+For support, create an issue on GitHub.
 
 ---
 
 **Built with ❤️ for the Airbnb Lab Assignment**
-=======
-# Airbnb---Full-frontend-and-backend-with-AI-capabilities
-This project is a replica of fully functional Airbnb website with added functionalites of chatbot to help users
->>>>>>> bea8ae0b74a025da553a8c31888fe210f29352ef
+
+## 📝 Important Notes
+
+- **Port 5001** is used instead of 5000 to avoid conflicts with macOS AirPlay Receiver
+- **PYTHONPATH** is set explicitly to avoid conflicts with other Python projects
+- All environment files are pre-configured for local development

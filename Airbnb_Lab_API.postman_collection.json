@@ -1,0 +1,655 @@
+{
+  "info": {
+    "name": "Airbnb Lab API",
+    "description": "Complete API testing collection for Airbnb Lab - Traveler and Owner endpoints",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Authentication",
+      "item": [
+        {
+          "name": "Register Traveler",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"testtraveler\",\n  \"email\": \"test@example.com\",\n  \"password\": \"traveler123\",\n  \"userType\": \"traveler\",\n  \"first_name\": \"Test\",\n  \"last_name\": \"Traveler\",\n  \"phone\": \"123-456-7890\",\n  \"city\": \"San Francisco\",\n  \"country\": \"USA\",\n  \"gender\": \"male\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:5001/api/auth/register",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "5001",
+              "path": ["api", "auth", "register"]
+            }
+          }
+        },
+        {
+          "name": "Register Host/Owner",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"testhost\",\n  \"email\": \"host@example.com\",\n  \"password\": \"host12345\",\n  \"userType\": \"owner\",\n  \"first_name\": \"Test\",\n  \"last_name\": \"Host\",\n  \"phone\": \"123-456-7891\",\n  \"city\": \"Los Angeles\",\n  \"country\": \"USA\",\n  \"gender\": \"female\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:5001/api/auth/register",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "5001",
+              "path": ["api", "auth", "register"]
+            }
+          }
+        },
+        {
+          "name": "Login Traveler",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"testtraveler\",\n  \"password\": \"traveler123\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:5001/api/auth/login",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "5001",
+              "path": ["api", "auth", "login"]
+            }
+          }
+        },
+        {
+          "name": "Login Host",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"testhost\",\n  \"password\": \"host12345\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:5001/api/auth/login",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "5001",
+              "path": ["api", "auth", "login"]
+            }
+          }
+        },
+        {
+          "name": "Get Current User",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "http://localhost:5001/api/auth/me",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "5001",
+              "path": ["api", "auth", "me"]
+            }
+          }
+        },
+        {
+          "name": "Logout",
+          "request": {
+            "method": "POST",
+            "url": {
+              "raw": "http://localhost:5001/api/auth/logout",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "5001",
+              "path": ["api", "auth", "logout"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Profile",
+      "item": [
+        {
+          "name": "Get Profile (Traveler)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:5001/api/auth/me",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "5001",
+              "path": ["api", "auth", "me"]
+            },
+            "description": "Get current logged-in user profile (ID, username, user_type, etc.)\n\n**Note:** First login as a traveler to get session cookie, then this will return traveler profile data."
+          }
+        },
+        {
+          "name": "Get Profile (Host)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:5001/api/auth/me",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "5001",
+              "path": ["api", "auth", "me"]
+            },
+            "description": "Get current logged-in user profile (ID, username, user_type, etc.)\n\n**Note:** First login as a host/owner to get session cookie, then this will return host profile data."
+          }
+        },
+        {
+          "name": "Update Profile",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"firstName\": \"Updated\",\n  \"lastName\": \"Name\",\n  \"phone\": \"987-654-3210\",\n  \"aboutMe\": \"Updated bio\",\n  \"city\": \"New York\",\n  \"country\": \"USA\",\n  \"languages\": [\"English\", \"Spanish\"],\n  \"gender\": \"male\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:5001/api/auth/profile",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "5001",
+              "path": ["api", "auth", "profile"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Properties (Listings)",
+      "item": [
+        {
+          "name": "List All Properties",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "http://localhost:5001/api/listings",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "5001",
+              "path": ["api", "listings"]
+            }
+          }
+        },
+        {
+          "name": "List Properties with Filters",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "http://localhost:5001/api/listings?location=San Francisco&max_guests=4",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "5001",
+              "path": ["api", "listings"],
+              "query": [
+                {
+                  "key": "location",
+                  "value": "San Francisco"
+                },
+                {
+                  "key": "max_guests",
+                  "value": "4"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Property Details",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "http://localhost:5001/api/listings/listing-1",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "5001",
+              "path": ["api", "listings", "listing-1"]
+            }
+          }
+        },
+        {
+          "name": "Create Property (Host Only)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Luxury Beach Villa\",\n  \"description\": \"Stunning ocean-view villa with private pool\",\n  \"price_per_night\": 350,\n  \"location\": \"Malibu, CA\",\n  \"latitude\": 34.0259,\n  \"longitude\": -118.7798,\n  \"property_type\": \"villa\",\n  \"amenities\": [\"WiFi\", \"Pool\", \"Ocean View\"],\n  \"max_guests\": 8,\n  \"bedrooms\": 4,\n  \"bathrooms\": 3\n}"
+            },
+            "url": {
+              "raw": "http://localhost:5001/api/listings",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "5001",
+              "path": ["api", "listings"]
+            }
+          }
+        },
+        {
+          "name": "Update Property (Host Only)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"price_per_night\": 400\n}"
+            },
+            "url": {
+              "raw": "http://localhost:5001/api/listings/:listing_id",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "5001",
+              "path": ["api", "listings", ":listing_id"],
+              "variable": [
+                {
+                  "key": "listing_id",
+                  "value": "listing-1"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Delete Property (Host Only)",
+          "request": {
+            "method": "DELETE",
+            "url": {
+              "raw": "http://localhost:5001/api/listings/:listing_id",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "5001",
+              "path": ["api", "listings", ":listing_id"],
+              "variable": [
+                {
+                  "key": "listing_id",
+                  "value": "listing-1"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Bookings",
+      "item": [
+        {
+          "name": "Create Booking",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"listing_id\": \"listing-1\",\n  \"check_in\": \"2025-11-01\",\n  \"check_out\": \"2025-11-05\",\n  \"guests\": 2\n}"
+            },
+            "url": {
+              "raw": "http://localhost:5001/api/bookings",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "5001",
+              "path": ["api", "bookings"]
+            }
+          }
+        },
+        {
+          "name": "Get User Bookings (Traveler)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "http://localhost:5001/api/bookings",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "5001",
+              "path": ["api", "bookings"]
+            }
+          }
+        },
+        {
+          "name": "Get User Bookings (Host)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "http://localhost:5001/api/bookings?as_host=true",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "5001",
+              "path": ["api", "bookings"],
+              "query": [
+                {
+                  "key": "as_host",
+                  "value": "true"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Bookings by Status",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "http://localhost:5001/api/bookings?status=confirmed",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "5001",
+              "path": ["api", "bookings"],
+              "query": [
+                {
+                  "key": "status",
+                  "value": "confirmed"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Accept Booking (Host Only)",
+          "request": {
+            "method": "POST",
+            "url": {
+              "raw": "http://localhost:5001/api/bookings/:booking_id/accept",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "5001",
+              "path": ["api", "bookings", ":booking_id", "accept"],
+              "variable": [
+                {
+                  "key": "booking_id",
+                  "value": "booking-uuid"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Cancel Booking",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"cancellation_reason\": \"Date conflict\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:5001/api/bookings/:booking_id/cancel",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "5001",
+              "path": ["api", "bookings", ":booking_id", "cancel"],
+              "variable": [
+                {
+                  "key": "booking_id",
+                  "value": "booking-uuid"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Delete Pending Booking",
+          "request": {
+            "method": "DELETE",
+            "url": {
+              "raw": "http://localhost:5001/api/bookings/:booking_id",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "5001",
+              "path": ["api", "bookings", ":booking_id"],
+              "variable": [
+                {
+                  "key": "booking_id",
+                  "value": "booking-uuid"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Favorites",
+      "item": [
+        {
+          "name": "Get Favorites",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "http://localhost:5001/api/favorites",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "5001",
+              "path": ["api", "favorites"]
+            }
+          }
+        },
+        {
+          "name": "Add to Favorites",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"listing_id\": \"listing-1\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:5001/api/favorites",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "5001",
+              "path": ["api", "favorites"]
+            }
+          }
+        },
+        {
+          "name": "Remove from Favorites",
+          "request": {
+            "method": "DELETE",
+            "url": {
+              "raw": "http://localhost:5001/api/favorites/:listing_id",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "5001",
+              "path": ["api", "favorites", ":listing_id"],
+              "variable": [
+                {
+                  "key": "listing_id",
+                  "value": "listing-1"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Messages",
+      "item": [
+        {
+          "name": "Get Messages",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "http://localhost:5001/api/messages",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "5001",
+              "path": ["api", "messages"]
+            }
+          }
+        },
+        {
+          "name": "Send Message",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"booking_id\": \"booking-uuid\",\n  \"receiver_id\": \"receiver-uuid\",\n  \"message\": \"Hello, I have a question about the property.\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:5001/api/messages",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "5001",
+              "path": ["api", "messages"]
+            }
+          }
+        },
+        {
+          "name": "Mark Message as Read",
+          "request": {
+            "method": "PUT",
+            "url": {
+              "raw": "http://localhost:5001/api/messages/:message_id/read",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "5001",
+              "path": ["api", "messages", ":message_id", "read"],
+              "variable": [
+                {
+                  "key": "message_id",
+                  "value": "message-uuid"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "AI Agent",
+      "item": [
+        {
+          "name": "AI Chat - Restaurants",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"message\": \"What are some good restaurants in San Francisco?\",\n  \"user_id\": \"user-id-here\",\n  \"location\": \"San Francisco\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:8000/api/ai/chat",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8000",
+              "path": ["api", "ai", "chat"]
+            }
+          }
+        },
+        {
+          "name": "AI Chat - Activities",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"message\": \"What activities can I do in Burbank?\",\n  \"user_id\": \"user-id-here\",\n  \"location\": \"Burbank\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:8000/api/ai/chat",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8000",
+              "path": ["api", "ai", "chat"]
+            }
+          }
+        },
+        {
+          "name": "AI Chat - Weather",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"message\": \"What's the weather forecast for Los Angeles?\",\n  \"user_id\": \"user-id-here\",\n  \"location\": \"Los Angeles\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:8000/api/ai/chat",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8000",
+              "path": ["api", "ai", "chat"]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

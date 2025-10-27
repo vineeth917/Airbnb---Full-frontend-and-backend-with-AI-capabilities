@@ -4,6 +4,9 @@
  * Distributed Systems for Data Engineering (DATA 236)
  */
 
+// Load environment variables FIRST
+require('dotenv').config();
+
 const express = require('express');
 const cors = require('cors');
 const bcrypt = require('bcryptjs');
@@ -42,22 +45,28 @@ app.use(cors({
   origin: 'http://localhost:3000',
   credentials: true
 }));
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(express.json({ limit: '50mb' }));
+app.use(express.urlencoded({ extended: true, limit: '50mb' }));
 
 // Session middleware (using memory store for now)
+app.set('trust proxy', 1);
 app.use(session({
   key: 'airbnb_session',
   secret: process.env.SESSION_SECRET || 'dev-session-secret',
   resave: false,
   saveUninitialized: false,
   cookie: {
-    maxAge: 86400000, // 24 hours
+    maxAge: 86400000,
     httpOnly: true,
-    secure: false, // Set to true in production with HTTPS
+    secure: false,
     sameSite: 'lax'
   }
 }));
+
+// Diagnostic: check session
+app.get('/api/auth/session-check', (req, res) => {
+  res.json({ hasSession: !!req.session.userId, userId: req.session.userId || null, userType: req.session.userType || null });
+});
 
 // Security headers middleware
 app.use((req, res, next) => {
@@ -334,13 +343,23 @@ app.put('/api/auth/profile', requireAuth, async (req, res) => {
       profilePicture
     } = req.body;
 
+    console.log('Profile update request for user:', req.session.userId);
+    console.log('Profile picture length:', profilePicture ? profilePicture.length : 'null');
+
+    // Truncate profile picture if it's too large (limit to 50MB = ~41.9 million chars)
+    let profilePictureToSave = profilePicture;
+    if (profilePicture && profilePicture.length > 40000000) {
+      console.warn('Profile picture too large, not saving');
+      profilePictureToSave = null;
+    }
+
     await pool.query(
       `UPDATE users 
        SET first_name = ?, last_name = ?, phone = ?, about_me = ?, 
            city = ?, country = ?, languages = ?, gender = ?, profile_picture = ?
        WHERE id = ?`,
       [firstName, lastName, phone, aboutMe, city, country, 
-       languages ? JSON.stringify(languages) : null, gender, profilePicture, req.session.userId]
+       languages ? JSON.stringify(languages) : null, gender, profilePictureToSave, req.session.userId]
     );
 
     res.json({
@@ -352,7 +371,7 @@ app.put('/api/auth/profile', requireAuth, async (req, res) => {
     console.error('Update profile error:', error);
     res.status(500).json({
       success: false,
-      error: 'Failed to update profile'
+      error: 'Failed to update profile: ' + error.message
     });
   }
 });
@@ -452,6 +471,20 @@ app.get('/api/listings/:id', async (req, res) => {
     const listing = listings[0];
     listing.amenities = typeof listing.amenities === 'string' ? JSON.parse(listing.amenities) : listing.amenities;
 
+    // Get availability for this listing
+    const [availability] = await pool.query(
+      `SELECT date, is_available FROM availability WHERE listing_id = ?`,
+      [listing.id]
+    );
+
+    // Format availability for frontend (key-value pairs)
+    const availabilityMap = {};
+    availability.forEach(item => {
+      availabilityMap[item.date] = item.is_available;
+    });
+
+    listing.availability = availabilityMap;
+
     res.json({
       success: true,
       listing
@@ -469,6 +502,7 @@ app.get('/api/listings/:id', async (req, res) => {
 // Create listing
 app.post('/api/listings', requireOwner, async (req, res) => {
   try {
+    console.log('Create listing request body:', req.body);
     const {
       title,
       description,
@@ -485,6 +519,7 @@ app.post('/api/listings', requireOwner, async (req, res) => {
 
     // Validation
     if (!title || !price_per_night || !location || !property_type) {
+      console.log('Missing required fields:', { title, price_per_night, location, property_type });
       return res.status(400).json({
         success: false,
         error: 'Missing required fields'
@@ -492,14 +527,41 @@ app.post('/api/listings', requireOwner, async (req, res) => {
     }
 
     const listingId = uuidv4();
+    
+    // Convert numeric fields to numbers and handle nulls
+    const price = parseFloat(price_per_night);
+    const guests = parseInt(max_guests) || 1;
+    const bed = parseInt(bedrooms) || 1;
+    const bath = parseInt(bathrooms) || 1;
+    const lat = latitude ? parseFloat(latitude) : null;
+    const lng = longitude ? parseFloat(longitude) : null;
+    
+    console.log('Creating listing with:', {
+      listingId,
+      title,
+      description: description || '',
+      price,
+      location,
+      lat,
+      lng,
+      property_type,
+      amenities: amenities || [],
+      guests,
+      bed,
+      bath,
+      hostId: req.session.userId
+    });
+
     await pool.query(
       `INSERT INTO listings (id, title, description, price_per_night, location, latitude, longitude, 
-       property_type, amenities, max_guests, bedrooms, bathrooms, host_id)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-      [listingId, title, description, price_per_night, location, latitude, longitude,
-       property_type, JSON.stringify(amenities || []), max_guests || 1, bedrooms || 1, bathrooms || 1, req.session.userId]
+       property_type, amenities, max_guests, bedrooms, bathrooms, host_id, is_active)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      [listingId, title, description || '', price, location, lat, lng,
+       property_type, JSON.stringify(amenities || []), guests, bed, bath, req.session.userId, true]
     );
 
+    console.log('Listing created successfully:', listingId);
+    
     res.json({
       success: true,
       message: 'Listing created successfully',
@@ -508,9 +570,10 @@ app.post('/api/listings', requireOwner, async (req, res) => {
 
   } catch (error) {
     console.error('Create listing error:', error);
+    console.error('Error stack:', error.stack);
     res.status(500).json({
       success: false,
-      error: 'Failed to create listing'
+      error: 'Failed to create listing: ' + error.message
     });
   }
 });
@@ -643,6 +706,26 @@ app.route('/api/bookings')
         });
       }
 
+      // Check for overlapping bookings (confirmed or pending)
+      const [existingBookings] = await pool.query(
+        `SELECT * FROM bookings 
+         WHERE listing_id = ? 
+         AND status IN ('confirmed', 'pending')
+         AND (
+           (check_in <= ? AND check_out > ?) OR
+           (check_in < ? AND check_out >= ?) OR
+           (check_in >= ? AND check_out <= ?)
+         )`,
+        [listing_id, check_in, check_in, check_out, check_out, check_in, check_out]
+      );
+
+      if (existingBookings.length > 0) {
+        return res.status(409).json({
+          success: false,
+          error: 'These dates are already booked. Please choose different dates.'
+        });
+      }
+
       const bookingId = uuidv4();
       await pool.query(
         `INSERT INTO bookings (id, listing_id, guest_id, check_in, check_out, total_price, status)
@@ -650,10 +733,19 @@ app.route('/api/bookings')
         [bookingId, listing_id, req.session.userId, check_in, check_out, total_price]
       );
 
+      // Get listing details to include in response
+      const [listingDetails] = await pool.query(
+        'SELECT title, location FROM listings WHERE id = ?',
+        [listing_id]
+      );
+
       res.json({
         success: true,
         message: 'Booking created successfully',
-        booking_id: bookingId
+        id: bookingId,
+        status: 'pending',
+        listing_title: listingDetails[0]?.title || 'Property',
+        listing_location: listingDetails[0]?.location || 'Location not specified'
       });
 
     } catch (error) {
@@ -667,6 +759,13 @@ app.route('/api/bookings')
   .get(requireAuth, async (req, res) => {
     try {
       const { status, as_host } = req.query;
+      
+      console.log('Get bookings request:', {
+        userId: req.session.userId,
+        userType: req.session.userType,
+        as_host: as_host,
+        status: status
+      });
 
       let query = `
         SELECT b.*, l.title as listing_title, l.location as listing_location, l.property_type,
@@ -684,9 +783,11 @@ app.route('/api/bookings')
       if (as_host === 'true') {
         query += ' l.host_id = ?';
         params.push(req.session.userId);
+        console.log('Host query - looking for host_id:', req.session.userId);
       } else {
         query += ' b.guest_id = ?';
         params.push(req.session.userId);
+        console.log('Guest query - looking for guest_id:', req.session.userId);
       }
 
       if (status) {
@@ -695,8 +796,13 @@ app.route('/api/bookings')
       }
 
       query += ' ORDER BY b.created_at DESC';
+      
+      console.log('Final query:', query);
+      console.log('Query params:', params);
 
       const [bookings] = await pool.query(query, params);
+      
+      console.log('Query result - found bookings:', bookings.length);
 
       res.json({
         success: true,
@@ -790,6 +896,22 @@ app.post('/api/bookings/:id/accept', requireOwner, async (req, res) => {
       [req.params.id]
     );
 
+    // Block availability for [check_in, check_out)
+    const start = new Date(booking.check_in);
+    const end = new Date(booking.check_out);
+    for (let d = new Date(start); d < end; d.setDate(d.getDate() + 1)) {
+      const yyyy = d.getFullYear();
+      const mm = String(d.getMonth() + 1).padStart(2, '0');
+      const dd = String(d.getDate()).padStart(2, '0');
+      const dateStr = `${yyyy}-${mm}-${dd}`;
+      await pool.query(
+        `INSERT INTO availability (id, listing_id, date, is_available)
+         VALUES (?, ?, ?, false)
+         ON DUPLICATE KEY UPDATE is_available = VALUES(is_available)`,
+        [uuidv4(), booking.listing_id, dateStr]
+      );
+    }
+
     res.json({
       success: true,
       message: 'Booking accepted successfully'
@@ -838,6 +960,23 @@ app.post('/api/bookings/:id/cancel', requireAuth, async (req, res) => {
       [req.params.id]
     );
 
+    // If this was a confirmed booking, release the blocked dates in availability table
+    if (booking.status === 'confirmed') {
+      const start = new Date(booking.check_in);
+      const end = new Date(booking.check_out);
+      for (let d = new Date(start); d < end; d.setDate(d.getDate() + 1)) {
+        const yyyy = d.getFullYear();
+        const mm = String(d.getMonth() + 1).padStart(2, '0');
+        const dd = String(d.getDate()).padStart(2, '0');
+        const dateStr = `${yyyy}-${mm}-${dd}`;
+        await pool.query(
+          `UPDATE availability SET is_available = true 
+           WHERE listing_id = ? AND date = ?`,
+          [booking.listing_id, dateStr]
+        );
+      }
+    }
+
     res.json({
       success: true,
       message: 'Booking cancelled successfully'
@@ -848,6 +987,59 @@ app.post('/api/bookings/:id/cancel', requireAuth, async (req, res) => {
     res.status(500).json({
       success: false,
       error: 'Failed to cancel booking'
+    });
+  }
+});
+
+// Delete booking (only for pending bookings by guest)
+app.delete('/api/bookings/:id', requireAuth, async (req, res) => {
+  try {
+    // Get booking details
+    const [bookings] = await pool.query(
+      `SELECT b.*, l.host_id
+       FROM bookings b
+       JOIN listings l ON b.listing_id = l.id
+       WHERE b.id = ?`,
+      [req.params.id]
+    );
+
+    if (bookings.length === 0) {
+      return res.status(404).json({
+        success: false,
+        error: 'Booking not found'
+      });
+    }
+
+    const booking = bookings[0];
+
+    // Only allow guests to delete their own pending bookings
+    if (booking.guest_id !== req.session.userId) {
+      return res.status(403).json({
+        success: false,
+        error: 'Not authorized to delete this booking'
+      });
+    }
+
+    if (booking.status !== 'pending') {
+      return res.status(400).json({
+        success: false,
+        error: 'Only pending bookings can be deleted'
+      });
+    }
+
+    // Delete the booking
+    await pool.query('DELETE FROM bookings WHERE id = ?', [req.params.id]);
+
+    res.json({
+      success: true,
+      message: 'Booking deleted successfully'
+    });
+
+  } catch (error) {
+    console.error('Delete booking error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Failed to delete booking'
     });
   }
 });
@@ -1378,6 +1570,120 @@ app.get('/api/test', (req, res) => {
       userType: req.session.userType
     }
   });
+});
+
+// ==================== MESSAGES ROUTES ====================
+
+// Get messages for current user (based on confirmed bookings)
+app.get('/api/messages', requireAuth, async (req, res) => {
+  try {
+    const userId = req.session.userId;
+    const userType = req.session.userType;
+
+    if (userType === 'traveler') {
+      // For travelers: Get messages from confirmed bookings only
+      const [messages] = await pool.query(
+        `SELECT m.*, 
+                s.username as sender_username, s.first_name as sender_first_name, s.last_name as sender_last_name,
+                r.username as receiver_username, r.first_name as receiver_first_name, r.last_name as receiver_last_name,
+                b.listing_id,
+                l.title as listing_title, l.location as listing_location,
+                b.check_in, b.check_out, b.status as booking_status
+         FROM messages m
+         JOIN users s ON m.sender_id = s.id
+         JOIN users r ON m.receiver_id = r.id
+         JOIN bookings b ON m.booking_id = b.id
+         JOIN listings l ON b.listing_id = l.id
+         WHERE b.guest_id = ? AND b.status = 'confirmed'
+         ORDER BY m.created_at DESC`,
+        [userId]
+      );
+      res.json({ success: true, messages });
+    } else {
+      // For hosts: Get messages from confirmed bookings only
+      const [messages] = await pool.query(
+        `SELECT m.*, 
+                s.username as sender_username, s.first_name as sender_first_name, s.last_name as sender_last_name,
+                r.username as receiver_username, r.first_name as receiver_first_name, r.last_name as receiver_last_name,
+                b.listing_id,
+                l.title as listing_title, l.location as listing_location,
+                b.check_in, b.check_out, b.status as booking_status
+         FROM messages m
+         JOIN users s ON m.sender_id = s.id
+         JOIN users r ON m.receiver_id = r.id
+         JOIN bookings b ON m.booking_id = b.id
+         JOIN listings l ON b.listing_id = l.id
+         WHERE l.host_id = ? AND b.status = 'confirmed'
+         ORDER BY m.created_at DESC`,
+        [userId]
+      );
+      res.json({ success: true, messages });
+    }
+  } catch (error) {
+    console.error('Get messages error:', error);
+    res.status(500).json({ success: false, error: 'Failed to get messages' });
+  }
+});
+
+// Send a message
+app.post('/api/messages', requireAuth, async (req, res) => {
+  try {
+    const { booking_id, receiver_id, message } = req.body;
+    const sender_id = req.session.userId;
+
+    if (!booking_id || !receiver_id || !message) {
+      return res.status(400).json({ success: false, error: 'Missing required fields' });
+    }
+
+    // Verify the booking exists and is confirmed
+    const [bookings] = await pool.query(
+      `SELECT b.*, l.host_id 
+       FROM bookings b
+       JOIN listings l ON b.listing_id = l.id
+       WHERE b.id = ? AND b.status = 'confirmed'`,
+      [booking_id]
+    );
+
+    if (bookings.length === 0) {
+      return res.status(404).json({ success: false, error: 'Confirmed booking not found' });
+    }
+
+    const booking = bookings[0];
+    
+    // Verify sender is either guest or host of this booking
+    if (sender_id !== booking.guest_id && sender_id !== booking.host_id) {
+      return res.status(403).json({ success: false, error: 'Not authorized to send message for this booking' });
+    }
+
+    const messageId = uuidv4();
+    await pool.query(
+      `INSERT INTO messages (id, booking_id, sender_id, receiver_id, message)
+       VALUES (?, ?, ?, ?, ?)`,
+      [messageId, booking_id, sender_id, receiver_id, message]
+    );
+
+    res.json({ 
+      success: true, 
+      message: { id: messageId, booking_id, sender_id, receiver_id, message, created_at: new Date() }
+    });
+  } catch (error) {
+    console.error('Send message error:', error);
+    res.status(500).json({ success: false, error: 'Failed to send message' });
+  }
+});
+
+// Mark message as read
+app.put('/api/messages/:id/read', requireAuth, async (req, res) => {
+  try {
+    await pool.query(
+      `UPDATE messages SET is_read = true WHERE id = ? AND receiver_id = ?`,
+      [req.params.id, req.session.userId]
+    );
+    res.json({ success: true });
+  } catch (error) {
+    console.error('Mark message read error:', error);
+    res.status(500).json({ success: false, error: 'Failed to mark message as read' });
+  }
 });
 
 // ==================== 404 HANDLER ====================

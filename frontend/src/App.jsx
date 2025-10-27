@@ -6,7 +6,8 @@ This module implements a modern React frontend for the Airbnb listing management
 with responsive design, state management, and distributed systems integration.
 */
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import './App.css';
 
 // Helper function to extract numeric ID from string ID
@@ -39,10 +40,13 @@ const getPropertyImage = (propertyType, listingId) => {
 };
 
 // API Configuration for distributed systems
-const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
+const API_BASE_URL = import.meta.env.VITE_API_URL || '/api';
+const AI_SERVICE_URL = import.meta.env.VITE_AI_SERVICE_URL || 'http://localhost:8000';
 
 // Main App Component
 function App() {
+  const navigate = useNavigate();
+  const location = useLocation();
   const [listings, setListings] = useState([]);
   const [bookings, setBookings] = useState([]);
   const [showAIChat, setShowAIChat] = useState(false);
@@ -117,6 +121,7 @@ function App() {
     cleaningFee: 0,
     taxes: 0
   });
+  const [sessionFavoriteIds, setSessionFavoriteIds] = useState([]); // hearts in this session only
 
   // Available amenities for filtering
   const availableAmenities = [
@@ -158,7 +163,7 @@ function App() {
     }
     
     try {
-      const response = await fetch('http://localhost:5000/api/auth/login', {
+      const response = await fetch(`${API_BASE_URL}/auth/login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -170,17 +175,32 @@ function App() {
         })
       });
       
-      const data = await response.json();
-      
       if (response.ok) {
+        const data = await response.json();
         console.log('Login successful, user_type:', data.user.user_type);
+        
+        // Validate that the user_type matches the selected account type
+        const selectedUserType = loginForm.userType === 'owner' ? 'owner' : 'traveler';
+        const actualUserType = data.user.user_type;
+        
+        if (actualUserType !== selectedUserType) {
+          setLoginError(`Invalid account type. You selected "${loginForm.userType}" but the account is "${actualUserType}". Please select the correct account type.`);
+          return;
+        }
+        
         setUserType(data.user.user_type);
         setCurrentUser(data.user);
         setIsLoggedIn(true);
         setCurrentView(data.user.user_type === 'owner' ? 'today' : 'homes');
         setLoginForm({ username: '', password: '', userType: 'traveler' });
       } else {
+        const errorText = await response.text();
+        try {
+          const data = JSON.parse(errorText);
         setLoginError(data.error || 'Login failed');
+        } catch {
+          setLoginError('Invalid credentials or server error');
+        }
       }
     } catch (error) {
       console.error('Login error:', error);
@@ -224,7 +244,7 @@ function App() {
     }
     
     // User type validation
-    if (!formData.user_type) {
+    if (!formData.userType) {
       errors.user_type = 'Please select a user type';
     }
     
@@ -243,7 +263,7 @@ function App() {
     }
     
     try {
-      const response = await fetch('http://localhost:5000/api/auth/register', {
+      const response = await fetch(`${API_BASE_URL}/auth/register`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -253,7 +273,7 @@ function App() {
           username: registerForm.username.trim(),
           email: registerForm.email.trim(),
           password: registerForm.password,
-          user_type: registerForm.userType,
+          userType: registerForm.userType,
           first_name: registerForm.firstName,
           last_name: registerForm.lastName,
           phone: registerForm.phone,
@@ -303,39 +323,30 @@ function App() {
 
   const handleLogout = async () => {
     try {
-      const response = await fetch('http://localhost:5000/api/auth/logout', {
+      await fetch(`${API_BASE_URL}/auth/logout`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
         credentials: 'include'
       });
-      
-      if (!response.ok) {
-        console.error('Logout failed:', response.status);
-      }
-    } catch (error) {
-      console.error('Logout error:', error);
-    }
-    
-    setUserType(null);
+    } catch (err) {
+      console.error('Logout error:', err);
+    } finally {
     setCurrentUser(null);
     setIsLoggedIn(false);
     setFavorites([]); // Clear favorites on logout
+      setSessionFavoriteIds([]); // Clear session hearts
     setLoginForm({
       username: '',
       password: '',
       userType: 'traveler'
     });
-    setLoginError('');
-    setCurrentView('homes');
+    }
   };
 
   // Check if user is already logged in
   useEffect(() => {
     const checkAuthStatus = async () => {
       try {
-        const response = await fetch('http://localhost:5000/api/auth/me', {
+        const response = await fetch(`${API_BASE_URL}/auth/me`, {
           method: 'GET',
           credentials: 'include'
         });
@@ -347,16 +358,44 @@ function App() {
           setIsLoggedIn(true);
           setCurrentView(data.user.user_type === 'owner' ? 'today' : 'homes');
         } else if (response.status === 401) {
-          // User is not authenticated, this is normal
-          console.log('No active session found');
+          // User is not authenticated, this is normal on login screen
+          // Silently handle - no need to log anything
         }
       } catch (error) {
-        console.log('No active session found');
+        // Silently handle network errors on first load
       }
     };
     
     checkAuthStatus();
   }, []);
+
+  // Sync URL with currentView and userType for bookmarking/navigation
+  useEffect(() => {
+    if (isLoggedIn && userType) {
+      if (userType === 'traveler') {
+        navigate(`/traveler/${currentView}`, { replace: true });
+      } else if (userType === 'owner') {
+        navigate(`/host/${currentView}`, { replace: true });
+      }
+    } else if (!isLoggedIn) {
+      navigate('/', { replace: true });
+    }
+  }, [currentView, userType, isLoggedIn, navigate]);
+
+  // Parse URL on load to set currentView
+  useEffect(() => {
+    if (isLoggedIn && location.pathname.startsWith('/traveler/')) {
+      const view = location.pathname.split('/')[2] || 'homes';
+      if (view !== currentView) {
+        setCurrentView(view);
+      }
+    } else if (isLoggedIn && location.pathname.startsWith('/host/')) {
+      const view = location.pathname.split('/')[2] || 'today';
+      if (view !== currentView) {
+        setCurrentView(view);
+      }
+    }
+  }, [location.pathname, isLoggedIn]);
 
   // Sample listings data for search functionality
   const sampleListings = [
@@ -389,17 +428,22 @@ function App() {
   ];
 
   // Favorites functionality
+  const favoritePendingRef = useRef(new Set());
+
   const fetchFavorites = async () => {
     try {
-      const response = await fetch('http://localhost:5000/api/favorites', {
+      const response = await fetch(`${API_BASE_URL}/favorites`, {
         method: 'GET',
-        credentials: 'include'
+        credentials: 'include',
+        cache: 'no-store'
       });
       
       if (response.ok) {
         const data = await response.json();
-        console.log('Fetched favorites:', data.favorites);
-        setFavorites(data.favorites || []);
+        const list = Array.isArray(data.favorites) ? data.favorites : [];
+        // Deduplicate by listing_id to avoid any accidental dupes
+        const uniqueByListing = [...new Map(list.map(f => [String(f.listing_id), f])).values()];
+        setFavorites(uniqueByListing);
       } else {
         console.error('Failed to fetch favorites:', response.status);
         setFavorites([]);
@@ -412,62 +456,83 @@ function App() {
 
   const addToFavorites = async (listingId) => {
     try {
-      const response = await fetch('http://localhost:5000/api/favorites', {
+      if (favoritePendingRef.current.has(listingId)) return;
+      favoritePendingRef.current.add(listingId);
+
+      const response = await fetch(`${API_BASE_URL}/favorites`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
         },
         credentials: 'include',
+        cache: 'no-store',
         body: JSON.stringify({ listing_id: listingId })
       });
       
-      if (response.ok) {
-        await fetchFavorites(); // Refresh favorites list
-        console.log('Added to favorites');
-      } else {
-        const error = await response.json();
-        console.error('Error adding to favorites:', error.error);
+      if (!response.ok) {
+        let errorBody = {};
+        try { errorBody = await response.json(); } catch (_) {}
+        const alreadyFavorited = response.status === 400 || response.status === 409 || (errorBody && /already/i.test(String(errorBody.error || '')));
+        if (!alreadyFavorited) {
+          console.error('Error adding to favorites:', errorBody.error || response.statusText);
+        }
       }
+      // Always refresh so UI reflects true server state
+      await fetchFavorites();
+      // Maintain session hearts so they reset on refresh
+      setSessionFavoriteIds(prev => Array.from(new Set([...prev, String(listingId)])));
     } catch (error) {
       console.error('Error adding to favorites:', error);
+    } finally {
+      favoritePendingRef.current.delete(listingId);
     }
   };
 
   const removeFromFavorites = async (listingId) => {
     try {
-      const response = await fetch(`http://localhost:5000/api/favorites/${listingId}`, {
+      if (favoritePendingRef.current.has(listingId)) return;
+      favoritePendingRef.current.add(listingId);
+
+      const response = await fetch(`${API_BASE_URL}/favorites/${listingId}`, {
         method: 'DELETE',
-        credentials: 'include'
+        credentials: 'include',
+        cache: 'no-store'
       });
       
-      if (response.ok) {
-        await fetchFavorites(); // Refresh favorites list
-        console.log('Removed from favorites');
-      } else {
-        const error = await response.json();
-        console.error('Error removing from favorites:', error.error);
+      if (!response.ok && response.status !== 404) {
+        let errorBody = {};
+        try { errorBody = await response.json(); } catch (_) {}
+        console.error('Error removing from favorites:', errorBody.error || response.statusText);
       }
+      await fetchFavorites();
+      setSessionFavoriteIds(prev => prev.filter(id => id !== String(listingId)));
     } catch (error) {
       console.error('Error removing from favorites:', error);
+    } finally {
+      favoritePendingRef.current.delete(listingId);
     }
   };
 
   const isFavorite = (listingId) => {
-    return favorites.some(fav => fav.listing_id === listingId.toString());
+    return sessionFavoriteIds.includes(String(listingId));
   };
 
-  const toggleFavorite = (listingId) => {
+  const toggleFavorite = async (listingId) => {
+    try {
     if (isFavorite(listingId)) {
-      removeFromFavorites(listingId);
+        await removeFromFavorites(listingId);
     } else {
-      addToFavorites(listingId);
+        await addToFavorites(listingId);
+      }
+    } catch (error) {
+      console.error('Error toggling favorite:', error);
     }
   };
 
   // User preferences functionality
   const fetchUserPreferences = async () => {
     try {
-      const response = await fetch('http://localhost:5000/api/preferences', {
+      const response = await fetch(`${API_BASE_URL}/preferences`, {
         method: 'GET',
         credentials: 'include'
       });
@@ -483,7 +548,7 @@ function App() {
 
   const updateUserPreferences = async (preferences) => {
     try {
-      const response = await fetch('http://localhost:5000/api/preferences', {
+      const response = await fetch(`${API_BASE_URL}/preferences`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json'
@@ -508,13 +573,44 @@ function App() {
 
   const updateProfile = async (profileData) => {
     try {
-      const response = await fetch('http://localhost:5000/api/auth/profile', {
+      // Convert gender to lowercase to match database ENUM
+      let genderValue = profileData.gender;
+      if (genderValue && typeof genderValue === 'string') {
+        genderValue = genderValue.toLowerCase();
+      }
+      
+      // Get profile picture from state if available
+      let profilePictureValue = '';
+      if (profileData.profilePicture) {
+        profilePictureValue = profileData.profilePicture;
+      } else {
+        // Try to get from localStorage
+        const savedPicture = localStorage.getItem(`profile_picture_${currentUser?.id}`);
+        if (savedPicture) {
+          profilePictureValue = savedPicture;
+        }
+      }
+      
+      // Transform snake_case to camelCase if needed
+      const dataToSend = {
+        firstName: profileData.firstName || profileData.first_name,
+        lastName: profileData.lastName || profileData.last_name,
+        phone: profileData.phone,
+        aboutMe: profileData.aboutMe || profileData.about_me,
+        city: profileData.city,
+        country: profileData.country,
+        languages: profileData.languages,
+        gender: genderValue,
+        profilePicture: profilePictureValue
+      };
+      
+      const response = await fetch(`${API_BASE_URL}/auth/profile`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json'
         },
         credentials: 'include',
-        body: JSON.stringify(profileData)
+        body: JSON.stringify(dataToSend)
       });
       
       if (response.ok) {
@@ -536,15 +632,13 @@ function App() {
   // Availability management functions
   const fetchAvailability = async (listingId, startDate = null, endDate = null) => {
     try {
-      let url = `http://localhost:5000/api/availability/${listingId}`;
+      let url = `${API_BASE_URL}/availability/${listingId}`;
       const params = new URLSearchParams();
       if (startDate) params.append('start_date', startDate);
       if (endDate) params.append('end_date', endDate);
-      if (params.toString()) url += `?${params.toString()}`;
-
-      const response = await fetch(url, {
-        credentials: 'include'
-      });
+      const qs = params.toString();
+      if (qs) url += `?${qs}`;
+      const response = await fetch(url, { credentials: 'include' });
       if (response.ok) {
         const data = await response.json();
         setAvailability(data.availability || []);
@@ -558,16 +652,13 @@ function App() {
 
   const updateAvailability = async (listingId, date, availabilityData) => {
     try {
-      const response = await fetch(`http://localhost:5000/api/availability/${listingId}`, {
+      const response = await fetch(`${API_BASE_URL}/availability/${listingId}`, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
+          'Content-Type': 'application/json'
         },
         credentials: 'include',
-        body: JSON.stringify({
-          date: date,
-          ...availabilityData
-        })
+        body: JSON.stringify({ date, ...availabilityData })
       });
       
       if (response.ok) {
@@ -593,10 +684,10 @@ function App() {
       };
       console.log('Bulk update request data:', requestData);
       
-      const response = await fetch(`http://localhost:5000/api/availability/${listingId}/bulk`, {
+      const response = await fetch(`${API_BASE_URL}/availability/${listingId}/bulk`, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
+          'Content-Type': 'application/json'
         },
         credentials: 'include',
         body: JSON.stringify(requestData)
@@ -622,15 +713,13 @@ function App() {
   // Analytics functions
   const fetchPropertyAnalytics = async (listingId, startDate = null, endDate = null) => {
     try {
-      let url = `http://localhost:5000/api/analytics/property/${listingId}`;
+      let url = `${API_BASE_URL}/analytics/property/${listingId}`;
       const params = new URLSearchParams();
       if (startDate) params.append('start_date', startDate);
       if (endDate) params.append('end_date', endDate);
-      if (params.toString()) url += `?${params.toString()}`;
-
-      const response = await fetch(url, {
-        credentials: 'include'
-      });
+      const qs = params.toString();
+      if (qs) url += `?${qs}`;
+      const response = await fetch(url, { credentials: 'include' });
       if (response.ok) {
         const data = await response.json();
         setAnalytics(data);
@@ -644,9 +733,7 @@ function App() {
 
   const fetchHostAnalytics = async (hostId) => {
     try {
-      const response = await fetch(`http://localhost:5000/api/analytics/host/${hostId}`, {
-        credentials: 'include'
-      });
+      const response = await fetch(`${API_BASE_URL}/analytics/host/${hostId}`, { credentials: 'include' });
       if (response.ok) {
         const data = await response.json();
         setHostAnalytics(data);
@@ -661,8 +748,11 @@ function App() {
   // Search functionality
   const handleSearch = () => {
     console.log('Searching with filters:', searchFilters);
+    // Get all listings to filter
+    const allListings = listings.length > 0 ? listings : sampleListings;
+    
     // Filter listings based on search criteria
-    const filteredListings = sampleListings.filter(listing => {
+    const filteredListings = allListings.filter(listing => {
       const locationMatch = !searchFilters.location || 
         listing.location.toLowerCase().includes(searchFilters.location.toLowerCase());
       const propertyTypeMatch = !searchFilters.property_type || 
@@ -680,7 +770,10 @@ function App() {
   // Advanced search functionality
   const handleAdvancedSearch = () => {
     console.log('Advanced search with filters:', filters);
-    const filteredListings = sampleListings.filter(listing => {
+    // Get all listings to filter
+    const allListings = listings.length > 0 ? listings : sampleListings;
+    
+    const filteredListings = allListings.filter(listing => {
       const locationMatch = !filters.location || 
         listing.location.toLowerCase().includes(filters.location.toLowerCase());
       const propertyTypeMatch = !filters.property_type || 
@@ -722,7 +815,8 @@ function App() {
       checkIn: '',
       checkOut: ''
     });
-    setListings(sampleListings);
+    // Reload all listings from backend
+    fetchListings();
   };
 
   // AI Agent functions
@@ -732,7 +826,7 @@ function App() {
       setAiMessages([{
         id: 1,
         type: 'ai',
-        message: 'Hi! I\'m your AI travel assistant. I can help you plan your trip, recommend activities, restaurants, and create personalized itineraries. What would you like to know?',
+        message: '👋 Hi! I\'m your AI travel assistant powered by Llama 3.1 8B. I can help you with:\n\n🍽️ Restaurant recommendations\n🎯 Activity suggestions\n🌤️ Weather information\n🗺️ Itinerary planning\n🧳 Packing tips\n\nI use real-time data to give you the best, most current recommendations. What would you like to know about your trip?',
         timestamp: new Date()
       }]);
     }
@@ -787,459 +881,60 @@ function App() {
 
   const generateAIResponse = async (userInput) => {
     try {
-      const input = userInput.toLowerCase();
+      // Get user's location from their bookings
+      let userLocation = null;
+      if (bookings.length > 0) {
+        // Get location from most recent booking
+        const recentBooking = bookings[0];
+        // Use the location directly from the booking data
+        userLocation = recentBooking.listing_location || recentBooking.location;
+      }
       
-      // Check if this is a natural language query for itinerary planning
-      if (input.includes('plan') || input.includes('itinerary') || 
-          input.includes('activities') || input.includes('restaurants') ||
-          input.includes('packing') || input.includes('weather')) {
-        
-        // Extract booking context from current user state
-        const bookingContext = {
-          dates: "2025-10-25 to 2025-10-27", // Mock dates
-          location: "San Francisco, CA", // Mock location
-          party_type: "family",
-          party_size: 2
-        };
-        
-        const userPreferences = {
-          budget: "medium",
-          interests: ["outdoor", "culture", "food"],
-          mobility_needs: ["no_long_hikes"],
-          dietary_filters: ["vegetarian"]
-        };
-        
-        // Call the new itinerary planner API
-        const response = await fetch('http://localhost:8000/api/ai/itinerary/nlu', {
+      // Call the new Llama-powered chat endpoint
+      const response = await fetch(`${AI_SERVICE_URL}/api/ai/chat`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            query: userInput,
-            booking_context: bookingContext,
-            user_preferences: userPreferences
+          message: userInput,
+          user_id: currentUser?.id || null,
+          location: userLocation || null  // Let AI service use booking location
           })
         });
         
         if (response.ok) {
           const data = await response.json();
-          return formatItineraryResponse(data);
+        
+        // Format response with sources if available
+        let formattedResponse = data.response;
+        
+        if (data.sources && data.sources.length > 0) {
+          formattedResponse += "\n\n📚 **Sources:**\n";
+          data.sources.forEach((source, idx) => {
+            formattedResponse += `${idx + 1}. [${source.title}](${source.url})\n`;
+          });
         }
+        
+        return formattedResponse;
+      } else {
+        throw new Error('AI service returned an error');
       }
-      
-      // Fallback to existing AI response logic
-      return await processAIQuery(input, userInput);
     } catch (error) {
       console.error('AI Service error:', error);
-      return 'I\'m having trouble connecting to my services right now. Please try again in a moment, or ask me about restaurants, activities, weather, or itinerary planning!';
+      return '🤖 I\'m having trouble connecting to my AI service right now. Please make sure:\n\n1. The AI service is running (port 8000)\n2. Ollama is installed and running\n3. Llama 3.1 8B model is downloaded\n\nTry asking me again in a moment!';
     }
   };
 
-  const formatItineraryResponse = (itineraryData) => {
-    let response = "🗺️ **Your Personalized Itinerary Plan**\n\n";
-    
-    // Add weather information
-    if (itineraryData.local_context?.weather) {
-      const weather = itineraryData.local_context.weather;
-      response += `🌤️ **Weather**: ${weather.condition}, ${weather.temperature}\n`;
-      response += `📝 **Forecast**: ${weather.forecast}\n\n`;
-    }
-    
-    // Add day-by-day plans
-    response += "📅 **Daily Itinerary**:\n\n";
-    itineraryData.day_plans.forEach((dayPlan, index) => {
-      response += `**Day ${index + 1} (${dayPlan.date})**:\n`;
-      
-      if (dayPlan.morning.length > 0) {
-        response += `🌅 **Morning**:\n`;
-        dayPlan.morning.forEach(activity => {
-          response += `• ${activity.title} (${activity.duration}, ${activity.price_tier})\n`;
-        });
-      }
-      
-      if (dayPlan.afternoon.length > 0) {
-        response += `☀️ **Afternoon**:\n`;
-        dayPlan.afternoon.forEach(activity => {
-          response += `• ${activity.title} (${activity.duration}, ${activity.price_tier})\n`;
-        });
-      }
-      
-      if (dayPlan.evening.length > 0) {
-        response += `🌙 **Evening**:\n`;
-        dayPlan.evening.forEach(activity => {
-          response += `• ${activity.title} (${activity.duration}, ${activity.price_tier})\n`;
-        });
-      }
-      
-      if (dayPlan.restaurants.length > 0) {
-        response += `🍽️ **Restaurants**:\n`;
-        dayPlan.restaurants.forEach(restaurant => {
-          response += `• ${restaurant.name} (${restaurant.cuisine_type}, ${restaurant.price_tier})\n`;
-        });
-      }
-      
-      response += "\n";
-    });
-    
-    // Add packing checklist
-    if (itineraryData.packing_checklist) {
-      response += "🎒 **Packing Checklist**:\n";
-      response += `📝 **Weather Note**: ${itineraryData.packing_checklist.weather_note}\n\n`;
-      
-      const categories = ['clothing', 'electronics', 'toiletries', 'documents'];
-      categories.forEach(category => {
-        const items = itineraryData.packing_checklist[category];
-        if (items && items.length > 0) {
-          response += `**${category.charAt(0).toUpperCase() + category.slice(1)}**:\n`;
-          items.forEach(item => {
-            const essential = item.essential ? " ⭐" : "";
-            response += `• ${item.item}${essential}\n`;
-          });
-          response += "\n";
-        }
-      });
-    }
-    
-    // Add local events
-    if (itineraryData.local_context?.events?.length > 0) {
-      response += "🎉 **Local Events**:\n";
-      itineraryData.local_context.events.forEach(event => {
-        response += `• ${event.name} on ${event.date} (${event.type})\n`;
-      });
-      response += "\n";
-    }
-    
-    return response;
-  };
-
-  const processAIQuery = async (input, originalInput) => {
-    // Handle specific follow-up questions and comparisons
-    if (input.includes('which one is the best') || input.includes('which is better') || input.includes('compare')) {
-      return handleComparisonQuery(input, originalInput);
-    }
-    
-    // Handle weather questions (fix the bug where weather shows restaurants)
-    if (input.includes('weather') || input.includes('forecast') || input.includes('temperature') || input.includes('climate')) {
-      return getWeatherInformation();
-    }
-    
-    // Handle restaurant questions
-    if (input.includes('restaurant') || input.includes('food') || input.includes('eat') || input.includes('dining')) {
-      return getRestaurantRecommendations();
-    }
-    
-    // Handle activity questions
-    if (input.includes('activity') || input.includes('activities') || input.includes('things to do') || input.includes('attractions') || input.includes('sightseeing') || input.includes('tours')) {
-      return getActivityRecommendations();
-    }
-    
-    // Handle itinerary questions
-    if (input.includes('itinerary') || input.includes('plan') || input.includes('schedule') || input.includes('trip plan')) {
-      return getItineraryHelp();
-    }
-    
-    // Handle packing questions
-    if (input.includes('pack') || input.includes('packing') || input.includes('clothes') || input.includes('what to bring') || input.includes('luggage')) {
-      return getPackingHelp();
-    }
-    
-    // Handle help questions
-    if (input.includes('help') || input.includes('what can you do') || input.includes('assist')) {
-      return 'I can help you with:\n• Restaurant recommendations\n• Activity suggestions\n• Weather forecasts\n• Personalized itineraries\n• Packing lists\n• Travel tips\n\nWhat would you like assistance with?';
-    }
-    
-    // Handle general questions with context awareness
-    return handleGeneralQuery(input, originalInput);
-  };
-
-  const handleComparisonQuery = (input, originalInput) => {
-    if (input.includes('chinatown') && input.includes('cable car')) {
-      return `🏆 **Chinatown Walking Tour vs Cable Car Ride - My Recommendation:**
-
-**🥇 Chinatown Walking Tour (BEST CHOICE)**
-• **Value**: $25-35 per person
-• **Duration**: 2 hours
-• **Experience**: Immersive cultural experience
-• **Highlights**: 
-  - Authentic dim sum tasting
-  - Hidden alleys and temples
-  - Local stories and history
-  - Photo opportunities
-• **Best for**: Culture lovers, food enthusiasts
-
-**🥈 Cable Car Ride**
-• **Value**: $8 per person
-• **Duration**: 1.5 hours  
-• **Experience**: Iconic SF transportation
-• **Highlights**:
-  - Historic cable car system
-  - Scenic city views
-  - Classic SF experience
-• **Best for**: First-time visitors, families
-
-**💡 My Recommendation**: Start with **Chinatown Walking Tour** for an authentic cultural experience, then take a **Cable Car** for the iconic SF views. Both are must-dos, but Chinatown offers more unique value!
-
-Would you like me to help you book or find more details about either?`;
-    }
-    
-    return 'I\'d be happy to help you compare options! Could you be more specific about what you\'d like to compare? For example, "Which restaurant is better for seafood?" or "What\'s the difference between these two activities?"';
-  };
-
-  const handleGeneralQuery = (input, originalInput) => {
-    // Use AI to generate contextual responses
-    const responses = [
-      'That\'s a great question! I\'m here to help make your San Francisco trip amazing. I can assist with:\n\n• 🍽️ Restaurant recommendations\n• 🎯 Activity suggestions\n• 🌤️ Weather information\n• 🗓️ Itinerary planning\n• 🧳 Packing lists\n\nWhat specific help do you need?',
-      
-      'I\'d love to help you with that! I specialize in San Francisco travel planning. I can help you find the best restaurants, activities, weather info, and create personalized itineraries.\n\nWhat would you like to know about your trip?',
-      
-      'That sounds interesting! I\'m your AI travel assistant for San Francisco. I can provide detailed recommendations for restaurants, activities, weather forecasts, and help you plan your perfect itinerary.\n\nWhat aspect of your trip would you like help with?'
-    ];
-    
-    return responses[Math.floor(Math.random() * responses.length)];
-  };
-
-  const getRestaurantRecommendations = () => {
-    const restaurants = [
-      {
-        name: "Swan Oyster Depot",
-        cuisine: "Seafood",
-        price: "$45-65 per person",
-        rating: 4.7,
-        description: "Historic seafood counter serving fresh oysters and crab since 1912"
-      },
-      {
-        name: "Tartine Bakery",
-        cuisine: "Bakery",
-        price: "$12-25 per person",
-        rating: 4.5,
-        description: "Artisanal bakery famous for morning pastries and sourdough bread"
-      },
-      {
-        name: "State Bird Provisions",
-        cuisine: "Modern American",
-        price: "$85-120 per person",
-        rating: 4.8,
-        description: "Innovative small plates with dim sum-style service"
-      },
-      {
-        name: "Tony's Little Star Pizza",
-        cuisine: "Pizza",
-        price: "$18-35 per person",
-        rating: 4.4,
-        description: "Deep dish and thin crust pizza in a cozy setting"
-      }
-    ];
-    
-    let message = '🍽️ **Here are some amazing restaurant recommendations for San Francisco:**\n\n';
-    
-    restaurants.forEach((restaurant, index) => {
-      message += `**${index + 1}. ${restaurant.name}**\n`;
-      message += `   ${restaurant.cuisine} • ${restaurant.price} • ⭐ ${restaurant.rating}\n`;
-      message += `   ${restaurant.description}\n\n`;
-    });
-    
-    message += '💡 **Pro Tips:**\n';
-    message += '• Make reservations in advance for popular spots\n';
-    message += '• Try the local sourdough bread - it\'s famous!\n';
-    message += '• Don\'t miss the seafood - SF has amazing fresh catches\n\n';
-    message += 'Would you like me to recommend activities or help with something else?';
-    
-    return message;
-  };
-
-  const getActivityRecommendations = () => {
-    const activities = [
-      {
-        name: "Golden Gate Bridge Walking Tour",
-        type: "Attraction",
-        price: "$35-50 per person",
-        rating: 4.8,
-        duration: "2.5 hours",
-        description: "Explore the iconic Golden Gate Bridge with a guided walking tour"
-      },
-      {
-        name: "Alcatraz Island Tour",
-        type: "Attraction",
-        price: "$45-65 per person",
-        rating: 4.6,
-        duration: "3 hours",
-        description: "Visit the famous former prison island with audio tour"
-      },
-      {
-        name: "Fisherman's Wharf Food Tour",
-        type: "Food & Culture",
-        price: "$55-75 per person",
-        rating: 4.4,
-        duration: "2 hours",
-        description: "Sample local seafood and treats at the famous wharf"
-      },
-      {
-        name: "Cable Car Ride",
-        type: "Transportation",
-        price: "$8 per person",
-        rating: 4.3,
-        duration: "1.5 hours",
-        description: "Experience the historic cable car system"
-      },
-      {
-        name: "Chinatown Walking Tour",
-        type: "Cultural",
-        price: "$25-35 per person",
-        rating: 4.5,
-        duration: "2 hours",
-        description: "Explore the largest Chinatown outside of Asia"
-      }
-    ];
-    
-    let message = '🎯 **Here are some exciting activities you can do in San Francisco:**\n\n';
-    
-    activities.forEach((activity, index) => {
-      message += `**${index + 1}. ${activity.name}**\n`;
-      message += `   ${activity.type} • ${activity.price} • ⭐ ${activity.rating} • ${activity.duration}\n`;
-      message += `   ${activity.description}\n\n`;
-    });
-    
-    message += '🌟 **Must-Do Experiences:**\n';
-    message += '• Walk across the Golden Gate Bridge (free!)\n';
-    message += '• Take a cable car from Powell Street ($8)\n';
-    message += '• Visit Alcatraz Island (book in advance, $45-65)\n';
-    message += '• Explore Chinatown and try dim sum\n';
-    message += '• Walk down Lombard Street (the "crookedest street")\n\n';
-    message += 'Would you like me to help with weather info or itinerary planning?';
-    
-    return message;
-  };
-
-  const getWeatherInformation = () => {
-    // Generate realistic SF weather
-    const conditions = ['sunny', 'cloudy', 'foggy', 'partly cloudy'];
-    const condition = conditions[Math.floor(Math.random() * conditions.length)];
-    const temperature = Math.floor(Math.random() * 10) + 15; // 15-25°C
-    const windSpeed = Math.floor(Math.random() * 15) + 10; // 10-25 km/h
-    const humidity = Math.floor(Math.random() * 30) + 60; // 60-90%
-    
-    let message = `🌤️ **Current Weather in San Francisco:**\n\n`;
-    message += `🌡️ **Temperature:** ${temperature}°C (${Math.round(temperature * 9/5 + 32)}°F)\n`;
-    message += `☁️ **Condition:** ${condition.charAt(0).toUpperCase() + condition.slice(1)}\n`;
-    message += `💨 **Wind:** ${windSpeed} km/h\n`;
-    message += `💧 **Humidity:** ${humidity}%\n\n`;
-    
-    if (condition === 'sunny') {
-      message += '☀️ **Perfect weather for outdoor activities!**\n';
-      message += '• Great for walking tours and sightseeing\n';
-      message += '• Don\'t forget sunscreen and sunglasses\n';
-      message += '• Ideal for Golden Gate Bridge photos\n';
-    } else if (condition === 'foggy') {
-      message += '🌫️ **Classic San Francisco fog!**\n';
-      message += '• The fog creates a mystical atmosphere\n';
-      message += '• Great for moody photos\n';
-      message += '• Bring a light jacket - it can be chilly\n';
-    } else if (condition === 'cloudy') {
-      message += '☁️ **Comfortable overcast weather**\n';
-      message += '• Perfect for walking around the city\n';
-      message += '• No need for sunglasses\n';
-      message += '• Great for indoor activities too\n';
-    }
-    
-    message += '\n📅 **7-Day Forecast:**\n';
-    message += '• Today: ' + condition + ', ' + temperature + '°C\n';
-    message += '• Tomorrow: Partly cloudy, 18°C\n';
-    message += '• Weekend: Sunny, 22°C\n';
-    message += '• Next week: Mix of sun and fog\n\n';
-    message += 'Would you like me to suggest activities based on this weather?';
-    
-    return message;
-  };
-
-  const getItineraryHelp = () => {
-    let message = '🗓️ **I can help you create a personalized itinerary!**\n\n';
-    message += '**Choose your trip style:**\n\n';
-    message += '🏃‍♂️ **Adventure Trip**\n';
-    message += '• Hiking, cycling, outdoor sports\n';
-    message += '• Sightseeing, tours, attractions\n';
-    message += '• Restaurants, nightlife, entertainment\n\n';
-    
-    message += '🎨 **Cultural Trip**\n';
-    message += '• Museums, galleries, historical sites\n';
-    message += '• Tours, cultural experiences, shopping\n';
-    message += '• Theater, restaurants, cultural events\n\n';
-    
-    message += '😌 **Relaxation Trip**\n';
-    message += '• Spa, wellness, parks\n';
-    message += '• Beaches, gardens, leisurely tours\n';
-    message += '• Fine dining, lounges, quiet entertainment\n\n';
-    
-    message += '👨‍👩‍👧‍👦 **Family Trip**\n';
-    message += '• Family attractions, parks, museums\n';
-    message += '• Zoo, aquarium, family tours\n';
-    message += '• Family restaurants, entertainment, parks\n\n';
-    
-    message += '✨ **I can create day-by-day plans with:**\n';
-    message += '• Morning, afternoon, and evening activities\n';
-    message += '• Restaurant recommendations\n';
-    message += '• Weather-based suggestions\n';
-    message += '• Packing lists\n';
-    message += '• Cost estimates\n\n';
-    message += '**What type of trip are you planning?** Just tell me your style and I\'ll create a custom itinerary!';
-    
-    return message;
-  };
-
-  const getPackingHelp = () => {
-    // Generate realistic SF weather for packing suggestions
-    const conditions = ['sunny', 'cloudy', 'foggy', 'partly cloudy'];
-    const condition = conditions[Math.floor(Math.random() * conditions.length)];
-    const temperature = Math.floor(Math.random() * 10) + 15; // 15-25°C
-    
-    let message = `🧳 **Packing List for San Francisco**\n\n`;
-    message += `🌤️ **Current Weather:** ${condition.charAt(0).toUpperCase() + condition.slice(1)}, ${temperature}°C\n\n`;
-    
-    message += '👕 **Essential Clothing:**\n';
-    message += '• Comfortable walking shoes (SF has hills!)\n';
-    message += '• Layers - weather changes quickly\n';
-    message += '• Light jacket or sweater\n';
-    message += '• Jeans and comfortable pants\n';
-    message += '• T-shirts and long-sleeve shirts\n\n';
-    
-    if (condition === 'sunny') {
-      message += '☀️ **For Sunny Weather:**\n';
-      message += '• Sunscreen (SPF 30+)\n';
-      message += '• Sunglasses\n';
-      message += '• Hat or cap\n';
-      message += '• Light, breathable clothing\n\n';
-    } else if (condition === 'foggy') {
-      message += '🌫️ **For Foggy Weather:**\n';
-      message += '• Light jacket (fog can be chilly)\n';
-      message += '• Long pants\n';
-      message += '• Comfortable closed-toe shoes\n\n';
-    } else {
-      message += '☁️ **For Cloudy Weather:**\n';
-      message += '• Light layers\n';
-      message += '• Comfortable walking shoes\n';
-      message += '• Light jacket or cardigan\n\n';
-    }
-    
-    message += '🎒 **Must-Have Items:**\n';
-    message += '• Camera for scenic views\n';
-    message += '• Portable phone charger\n';
-    message += '• Reusable water bottle\n';
-    message += '• Small backpack or crossbody bag\n';
-    message += '• Cash for cable cars and small vendors\n\n';
-    
-    message += '💡 **Pro Tips:**\n';
-    message += '• SF weather is unpredictable - always layer!\n';
-    message += '• Bring comfortable shoes - you\'ll walk a lot\n';
-    message += '• Don\'t forget your camera - SF is very photogenic\n';
-    message += '• Pack light - you can always buy souvenirs\n\n';
-    message += 'Would you like me to suggest activities or restaurants?';
-    
-    return message;
-  };
+  // All AI responses now handled by Llama 3.1 8B via /api/ai/chat endpoint
+  // Removed all hardcoded responses - now using real-time data from Tavily API
 
   // Booking functions
-  const openBookingModal = (listing) => {
+  const openBookingModal = async (listing) => {
+    console.log('Opening booking modal for listing:', listing);
+    // Use the listing passed directly (already has all necessary data)
     setSelectedListing(listing);
+    
     setBookingData({
       checkIn: '',
       checkOut: '',
@@ -1356,8 +1051,9 @@ Would you like me to help you book or find more details about either?`;
         total_price: bookingData.totalPrice
       };
 
+      let created = false;
       try {
-        const response = await fetch('http://localhost:5000/api/bookings', {
+        const response = await fetch(`${API_BASE_URL}/bookings`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -1367,21 +1063,45 @@ Would you like me to help you book or find more details about either?`;
         });
 
         if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
+          const errorData = await response.json().catch(() => ({ error: 'Unknown error' }));
+          const errorMessage = new Error(errorData.error || `HTTP error! status: ${response.status}`);
+          errorMessage.status = response.status;
+          throw errorMessage;
         }
 
         const backendBookingResult = await response.json();
         console.log('Backend booking created:', backendBookingResult);
         
-        // Update the booking with the backend ID
+        // Update the booking with the backend ID and status
         newBooking.id = backendBookingResult.id;
         newBooking.status = backendBookingResult.status || 'pending';
+        
+        // Keep the frontend listing data (selectedListing) as it's what the user saw and booked
+        // Don't override with backend data
+        newBooking.listing_title = selectedListing.title;
+        newBooking.listing_location = selectedListing.location;
+        
+        // Normalize for History view (nested listing object)
+        newBooking.listing = {
+          title: selectedListing.title,
+          location: selectedListing.location,
+          property_type: selectedListing.property_type || 'apartment'
+        };
+        created = true;
       } catch (backendError) {
         console.error('Error creating backend booking:', backendError);
-        // Continue with local booking if backend fails
+        // Check if it's a 409 Conflict (dates already booked)
+        if (backendError.status === 409 || backendError.message.includes('already booked')) {
+          alert(backendError.message || 'These dates are already booked. Please choose different dates.');
+        } else {
+          alert(backendError.message || 'Could not create booking. Please try again.');
+        }
+        return; // Do NOT add a local pending booking if backend failed
       }
 
-      // Add to bookings
+      if (!created) return;
+
+      // Add to bookings only when backend succeeded
       setBookings(prev => {
         const updatedBookings = [...prev, newBooking];
         console.log('New booking added:', newBooking);
@@ -1389,9 +1109,11 @@ Would you like me to help you book or find more details about either?`;
         return updatedBookings;
       });
       
-      // Close modal and show success
+      // Close modal and show pending info instead of confirmed
       closeBookingModal();
-      alert(`Booking confirmed! You've successfully booked "${selectedListing.title}" for ${bookingData.totalNights} nights.`);
+      alert(`Request sent. Your booking for "${selectedListing.title}" is pending host confirmation.`);
+      // Navigate to History and highlight pending items (client-side)
+      setCurrentView('history');
       
     } catch (error) {
       console.error('Error creating booking:', error);
@@ -1441,7 +1163,17 @@ Would you like me to help you book or find more details about either?`;
     setError(null);
     
     try {
-      const response = await fetch(`${API_BASE_URL}/bookings`);
+      // Determine if we should fetch as host or guest based on current user type
+      const isHost = currentUser?.user_type === 'owner';
+      const url = isHost 
+        ? `${API_BASE_URL}/bookings?as_host=true`
+        : `${API_BASE_URL}/bookings`;
+        
+      console.log('Fetching bookings as:', isHost ? 'host' : 'guest', 'for user:', currentUser?.id);
+      
+      const response = await fetch(url, {
+        credentials: 'include'
+      });
       
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
@@ -1595,6 +1327,49 @@ Would you like me to help you book or find more details about either?`;
     }
   };
 
+  // Delete booking (Traveler only, pending bookings)
+  const handleDeleteBooking = async (bookingId) => {
+    if (!confirm('Are you sure you want to delete this pending booking? This action cannot be undone.')) {
+      return;
+    }
+
+    try {
+      const response = await fetch(`${API_BASE_URL}/bookings/${bookingId}`, {
+        method: 'DELETE',
+        credentials: 'include'
+      });
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      
+      const result = await response.json();
+      
+      // Remove booking from local state
+      setBookings(prev => prev.filter(booking => booking.id !== bookingId));
+      
+      // Refresh history bookings to update the UI immediately
+      const historyResponse = await fetch(`${API_BASE_URL}/bookings?user_id=${currentUser?.id || 'demo-traveler-1'}&user_type=traveler`, {
+        credentials: 'include'
+      });
+      
+      if (historyResponse.ok) {
+        const historyData = await historyResponse.json();
+        const bookings = Array.isArray(historyData) ? historyData : (historyData.bookings || []);
+        // Update the history bookings state in TravelerHistoryView
+        // We'll need to pass a callback to update this
+        window.dispatchEvent(new CustomEvent('bookingDeleted', { detail: bookings }));
+      }
+      
+      alert('Booking deleted successfully');
+      return result;
+    } catch (err) {
+      console.error('Error deleting booking:', err);
+      alert('Failed to delete booking. Please try again.');
+      throw err;
+    }
+  };
+
   // Update listing
   const updateListing = async (id, updateData) => {
     try {
@@ -1656,68 +1431,16 @@ Would you like me to help you book or find more details about either?`;
 
   // Load data on component mount
   useEffect(() => {
-    // Initialize with sample data first
-    setListings(sampleListings);
-    // Disable backend calls to prevent errors
-    // fetchListings();
-    // checkHealth();
-  }, []);
-
-  // Add demo bookings when host logs in
-  useEffect(() => {
-    if (currentUser?.user_type === 'owner' && bookings.length === 0) {
-      // Add some demo bookings for the host to see
-      const demoBookings = [
-        {
-          id: 'demo-booking-1',
-          listing_id: 1,
-          listing_title: 'Cozy Studio in Downtown LA',
-          listing_location: 'Los Angeles, CA',
-          listing_image: `/images/house1.jpg`,
-          user_id: 'traveler-demo',
-          user_name: 'John Smith',
-          host_id: currentUser.id,
-          check_in: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000).toISOString().split('T')[0], // 2 days from now
-          check_out: new Date(Date.now() + 5 * 24 * 60 * 60 * 1000).toISOString().split('T')[0], // 5 days from now
-          guests: 2,
-          total_nights: 3,
-          price_per_night: 115,
-          total_price: 345,
-          service_fee: 41,
-          cleaning_fee: 28,
-          taxes: 35,
-          status: 'confirmed',
-          created_at: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString() // 2 days ago
-        },
-        {
-          id: 'demo-booking-2',
-          listing_id: 2,
-          listing_title: 'Modern House in Burbank',
-          listing_location: 'Burbank, CA',
-          listing_image: `/images/house2.jpg`,
-          user_id: 'traveler-demo-2',
-          user_name: 'Sarah Johnson',
-          host_id: currentUser.id,
-          check_in: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0], // 1 week from now
-          check_out: new Date(Date.now() + 10 * 24 * 60 * 60 * 1000).toISOString().split('T')[0], // 10 days from now
-          guests: 4,
-          total_nights: 3,
-          price_per_night: 229,
-          total_price: 687,
-          service_fee: 82,
-          cleaning_fee: 55,
-          taxes: 69,
-          status: 'confirmed',
-          created_at: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString() // 1 day ago
-        }
-      ];
-      setBookings(demoBookings);
+    // Fetch listings from backend for traveler
+    if (isLoggedIn && userType === 'traveler') {
+      fetchListings();
     }
-  }, [currentUser, bookings.length]);
+  }, [isLoggedIn, userType]);
 
   // Fetch favorites and preferences when user logs in
   useEffect(() => {
-    if (currentUser && userType === 'traveller') {
+    const isTraveler = userType === 'traveler' || userType === 'traveller';
+    if (currentUser && isTraveler) {
       fetchFavorites();
       fetchUserPreferences();
     } else if (userType === 'owner') {
@@ -1726,11 +1449,28 @@ Would you like me to help you book or find more details about either?`;
     }
   }, [currentUser, userType]);
 
-  // Re-fetch when filters change
+  // Re-fetch when filters change (only for travelers)
   useEffect(() => {
-    // Disable backend calls to prevent errors
-    // fetchListings();
+    if (isLoggedIn && userType === 'traveler') {
+      fetchListings();
+    }
   }, [filters]);
+
+  // Refresh bookings when switching to History (traveler) or Today (host)
+  useEffect(() => {
+    const refreshOnView = async () => {
+      try {
+        if (userType === 'traveler' && currentView === 'history') {
+          await fetchBookings();
+        }
+        if (userType === 'owner' && (currentView === 'today' || currentView === 'dashboard')) {
+          // Reuse fetchBookings which loads bookings for current role in this demo
+          await fetchBookings();
+        }
+      } catch (e) {}
+    };
+    refreshOnView();
+  }, [currentView, userType]);
 
   // Show login screen if not logged in
   if (!isLoggedIn) {
@@ -1977,7 +1717,13 @@ Would you like me to help you book or find more details about either?`;
         {/* Traveler Header */}
         <header className="traveler-header" role="banner">
         <div className="header-content px-4 md:px-6 lg:px-8">
-          <div className="logo">
+          <div className="logo" onClick={() => {
+            if (currentView === 'homes') {
+              window.location.reload();
+            } else {
+              setCurrentView('homes');
+            }
+          }} style={{ cursor: 'pointer' }}>
             <div className="airbnb-icon">🏠</div>
             <span className="airbnb-text">airbnb</span>
           </div>
@@ -2040,11 +1786,19 @@ Would you like me to help you book or find more details about either?`;
               <span className="nav-icon" aria-hidden="true">📋</span>
               <span>History</span>
             </button>
+            <button 
+              className={`nav-item ${currentView === 'messages' ? 'active' : ''}`}
+              onClick={() => setCurrentView('messages')}
+              aria-label="Messages with hosts"
+            >
+              <span className="nav-icon" aria-hidden="true">💬</span>
+              <span>Messages</span>
+            </button>
           </nav>
 
           <div className="header-actions">
               <button className="become-host-btn hidden md:block" onClick={() => handleLogout()}>
-                Switch to Host
+                Become a Host
               </button>
               <button className="mobile-menu-btn md:hidden" onClick={() => setShowMobileMenu(!showMobileMenu)}>
                 ☰
@@ -2063,10 +1817,6 @@ Would you like me to help you book or find more details about either?`;
                     </div>
                     <div className="dropdown-divider"></div>
                     <div className="dropdown-menu">
-                      <button className="dropdown-item">Account</button>
-                      <button className="dropdown-item">Help Center</button>
-                      <button className="dropdown-item">Settings</button>
-                      <div className="dropdown-divider"></div>
                       <button className="dropdown-item" onClick={handleLogout}>Log out</button>
                     </div>
                   </div>
@@ -2260,19 +2010,6 @@ Would you like me to help you book or find more details about either?`;
               
               <div className="booking-modal-content">
                 <div className="booking-listing-info">
-                  <img 
-                    src={`/images/house${(selectedListing.id % 7) + 1}.jpg`} 
-                    alt={selectedListing.title}
-                    onError={(e) => {
-                      e.target.style.background = `linear-gradient(135deg, hsl(${(selectedListing.id * 137.5) % 360}, 70%, 50%), hsl(${((selectedListing.id + 1) * 137.5) % 360}, 70%, 50%))`;
-                      e.target.style.display = 'flex';
-                      e.target.style.alignItems = 'center';
-                      e.target.style.justifyContent = 'center';
-                      e.target.style.color = 'white';
-                      e.target.style.fontSize = '24px';
-                      e.target.textContent = '🏠';
-                    }}
-                  />
                   <div className="listing-details">
                     <h3>{selectedListing.title}</h3>
                     <p className="location">{selectedListing.location}</p>
@@ -2481,7 +2218,7 @@ Would you like me to help you book or find more details about either?`;
           </button>
           <button className="mobile-nav-item" onClick={() => {handleLogout(); setShowMobileMenu(false);}}>
             <span className="nav-icon">🏠</span>
-            <span>Switch to Host</span>
+            <span>Become a Host</span>
           </button>
         </div>
       )}
@@ -2489,7 +2226,7 @@ Would you like me to help you book or find more details about either?`;
       {/* Traveler Main Content */}
       <main className="traveler-main px-4 md:px-6 lg:px-8" role="main" id="main-content">
         {currentView === 'homes' && <HomesView 
-          listings={listings.length > 0 ? listings : sampleListings}
+          listings={listings}
             filters={filters}
             setFilters={setFilters}
             onUpdateListing={updateListing}
@@ -2501,9 +2238,10 @@ Would you like me to help you book or find more details about either?`;
         />}
         {currentView === 'experiences' && <ExperiencesView />}
         {currentView === 'services' && <ServicesView />}
-        {currentView === 'favorites' && <FavoritesView favorites={favorites} onRemoveFavorite={removeFromFavorites} />}
+        {currentView === 'favorites' && <FavoritesView favorites={favorites} onRemoveFavorite={removeFromFavorites} onOpenBooking={openBookingModal} />}
         {currentView === 'profile' && <TravelerProfileView currentUser={currentUser} onUpdateProfile={updateProfile} />}
-        {currentView === 'history' && <TravelerHistoryView currentUser={currentUser} bookings={bookings} />}
+        {currentView === 'history' && <TravelerHistoryView currentUser={currentUser} bookings={bookings} onDeleteBooking={handleDeleteBooking} setCurrentView={setCurrentView} />}
+        {currentView === 'messages' && <MessagesView currentUser={currentUser} userType="traveler" bookings={bookings} />}
       </main>
     </div>
     );
@@ -2519,7 +2257,13 @@ Would you like me to help you book or find more details about either?`;
         {/* Host Header */}
         <header className="host-header" role="banner">
           <div className="header-content px-4 md:px-6 lg:px-8">
-            <div className="logo">
+            <div className="logo" onClick={() => {
+              if (currentView === 'dashboard') {
+                window.location.reload();
+              } else {
+                setCurrentView('dashboard');
+              }
+            }} style={{ cursor: 'pointer' }}>
               <div className="airbnb-icon">🏠</div>
               <span className="airbnb-text">airbnb</span>
             </div>
@@ -2554,9 +2298,6 @@ Would you like me to help you book or find more details about either?`;
             </nav>
             
             <div className="header-actions">
-              <button className="switch-to-traveling" onClick={() => handleLogout()}>
-                Switch to Traveler
-              </button>
               <div className="user-menu">
                 <button className="profile-btn">M</button>
                 <button className="menu-btn" onClick={() => setShowUserMenu(!showUserMenu)}>☰</button>
@@ -2571,10 +2312,6 @@ Would you like me to help you book or find more details about either?`;
                     </div>
                     <div className="dropdown-divider"></div>
                     <div className="dropdown-menu">
-                      <button className="dropdown-item">Account</button>
-                      <button className="dropdown-item">Help Center</button>
-                      <button className="dropdown-item">Settings</button>
-                      <div className="dropdown-divider"></div>
                       <button className="dropdown-item" onClick={handleLogout}>Log out</button>
                     </div>
                   </div>
@@ -2584,15 +2321,7 @@ Would you like me to help you book or find more details about either?`;
           </div>
         </header>
 
-        {/* Host Secondary Navigation */}
-        <div className="host-secondary-nav">
-          <button className={`secondary-nav-btn ${currentView === 'today' ? 'active' : ''}`} onClick={() => setCurrentView('today')}>
-            Today
-          </button>
-          <button className={`secondary-nav-btn ${currentView === 'upcoming' ? 'active' : ''}`} onClick={() => setCurrentView('upcoming')}>
-            Upcoming
-          </button>
-        </div>
+        {/* Host Secondary Navigation - Removed as filtering is now within HostTodayView */}
 
         {/* Host Main Content */}
         <main className="host-main px-4 md:px-6 lg:px-8" role="main" id="host-main-content">
@@ -2625,7 +2354,7 @@ Would you like me to help you book or find more details about either?`;
             fetchPropertyAnalytics={fetchPropertyAnalytics}
             fetchHostAnalytics={fetchHostAnalytics}
           />}
-          {currentView === 'messages' && <HostMessagesView />}
+          {currentView === 'messages' && <HostMessagesView currentUser={currentUser} bookings={bookings} />}
           {currentView === 'profile' && <OwnerProfileView currentUser={currentUser} onUpdateProfile={updateProfile} />}
         </main>
     </div>
@@ -3087,7 +2816,7 @@ function ServicesView() {
 }
 
 // Favorites View Component
-function FavoritesView({ favorites = [], onRemoveFavorite }) {
+function FavoritesView({ favorites = [], onRemoveFavorite, onOpenBooking }) {
   if (favorites.length === 0) {
     return (
       <div className="favorites-view">
@@ -3114,12 +2843,26 @@ function FavoritesView({ favorites = [], onRemoveFavorite }) {
       </div>
       
       <div className="favorites-grid">
-        {favorites.map(favorite => (
-          <div key={favorite.id} className="favorite-card">
+        {favorites.map(favorite => {
+          const title = favorite.title || favorite.listing?.title || 'Favorite Listing';
+          const location = favorite.location || favorite.listing?.location || '';
+          const pricePerNight = favorite.price_per_night ?? favorite.listing?.price_per_night ?? null;
+          const listingForBooking = {
+            id: favorite.listing_id,
+            title,
+            location,
+            price_per_night: pricePerNight,
+            property_type: favorite.property_type || favorite.listing?.property_type,
+            bedrooms: favorite.bedrooms || favorite.listing?.bedrooms,
+            bathrooms: favorite.bathrooms || favorite.listing?.bathrooms,
+            max_guests: favorite.max_guests || favorite.listing?.max_guests
+          };
+          return (
+            <div key={favorite.id || favorite.listing_id} className="favorite-card">
             <div className="favorite-image">
               <img 
                 src={`/images/house${(getNumericId(favorite.listing_id) % 7) + 1}.jpg`}
-                alt={favorite.listing?.title || 'Favorite listing'}
+                  alt={title}
                 onError={(e) => {
                   e.target.style.background = `linear-gradient(135deg, hsl(${(getNumericId(favorite.listing_id) * 137.5) % 360}, 70%, 50%), hsl(${((getNumericId(favorite.listing_id) + 1) * 137.5) % 360}, 70%, 50%))`;
                 }}
@@ -3134,18 +2877,20 @@ function FavoritesView({ favorites = [], onRemoveFavorite }) {
             </div>
             
             <div className="favorite-content">
-              <h3>{favorite.listing?.title || 'Favorite Listing'}</h3>
-              <p className="favorite-location">{favorite.listing?.location || 'Location'}</p>
+                <h3>{title}</h3>
+                {location && <p className="favorite-location">{location}</p>}
+                {pricePerNight !== null && (
               <p className="favorite-price">
-                ${favorite.listing?.price_per_night || 0} per night
+                    ${pricePerNight} per night
               </p>
+                )}
               <div className="favorite-actions">
-                <button className="view-details-btn">View Details</button>
-                <button className="book-now-btn">Book Now</button>
+                  <button className="book-now-btn" onClick={() => onOpenBooking && onOpenBooking(listingForBooking)}>Book Now</button>
               </div>
             </div>
           </div>
-        ))}
+          );
+        })}
       </div>
     </div>
   );
@@ -3154,6 +2899,7 @@ function FavoritesView({ favorites = [], onRemoveFavorite }) {
 // Traveler Profile View Component
 function TravelerProfileView({ currentUser, onUpdateProfile }) {
   const [isEditing, setIsEditing] = useState(false);
+  const [profilePicture, setProfilePicture] = useState(currentUser?.profile_picture || localStorage.getItem(`profile_picture_${currentUser?.id}`) || '');
   const [profileData, setProfileData] = useState({
     first_name: currentUser?.first_name || '',
     last_name: currentUser?.last_name || '',
@@ -3166,6 +2912,34 @@ function TravelerProfileView({ currentUser, onUpdateProfile }) {
   });
   const [newLanguage, setNewLanguage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+
+  // Initialize profile picture from localStorage when component mounts
+  useEffect(() => {
+    const savedPicture = localStorage.getItem(`profile_picture_${currentUser?.id}`);
+    if (savedPicture) {
+      setProfilePicture(savedPicture);
+    }
+  }, [currentUser?.id]);
+
+  const handleImageUpload = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      // Validate file size (max 1MB for database TEXT column)
+      if (file.size > 1024 * 1024) {
+        alert('Image size must be less than 1MB. Please compress the image or choose a smaller file.');
+        return;
+      }
+      
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        const base64String = reader.result;
+        setProfilePicture(base64String);
+        // Save to localStorage for persistence
+        localStorage.setItem(`profile_picture_${currentUser?.id}`, base64String);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
 
   const countries = [
     'United States', 'Canada', 'United Kingdom', 'France', 'Germany', 'Spain', 'Italy', 
@@ -3198,7 +2972,12 @@ function TravelerProfileView({ currentUser, onUpdateProfile }) {
   const handleSave = async () => {
     setIsLoading(true);
     try {
-      const success = await onUpdateProfile(profileData);
+      // Include profile picture in the profile data
+      const profileDataWithPicture = {
+        ...profileData,
+        profilePicture: profilePicture
+      };
+      const success = await onUpdateProfile(profileDataWithPicture);
       if (success) {
         setIsEditing(false);
         alert('Profile updated successfully!');
@@ -3230,12 +3009,23 @@ function TravelerProfileView({ currentUser, onUpdateProfile }) {
     <div className="profile-view">
       <div className="profile-header">
         <div className="profile-avatar">
-          {currentUser?.profile_picture ? (
-            <img src={currentUser.profile_picture} alt="Profile" />
+          {profilePicture ? (
+            <img src={profilePicture} alt="Profile" className="avatar-img" />
           ) : (
             <div className="avatar-placeholder">
               {currentUser?.first_name?.[0] || currentUser?.username?.[0] || 'U'}
             </div>
+          )}
+          {isEditing && (
+            <label className="upload-avatar-btn">
+              <input
+                type="file"
+                accept="image/*"
+                onChange={handleImageUpload}
+                style={{ display: 'none' }}
+              />
+              📷 Upload Photo
+            </label>
           )}
         </div>
         <div className="profile-info">
@@ -3390,17 +3180,17 @@ function TravelerProfileView({ currentUser, onUpdateProfile }) {
 }
 
 // Traveler History View Component
-function TravelerHistoryView({ currentUser, bookings }) {
+function TravelerHistoryView({ currentUser, bookings, onDeleteBooking, setCurrentView }) {
   const [historyBookings, setHistoryBookings] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [filter, setFilter] = useState('all'); // all, completed, cancelled
+  const [filter, setFilter] = useState('pending'); // default to pending when arriving after booking
 
   useEffect(() => {
     const fetchHistoryBookings = async () => {
       setLoading(true);
       try {
         // Fetch bookings for this traveler
-        const response = await fetch(`http://localhost:5000/api/bookings?user_id=${currentUser?.id || 'demo-traveler-1'}&user_type=traveler`, {
+        const response = await fetch(`${API_BASE_URL}/bookings?user_id=${currentUser?.id || 'demo-traveler-1'}&user_type=traveler`, {
           credentials: 'include'
         });
         
@@ -3411,119 +3201,35 @@ function TravelerHistoryView({ currentUser, bookings }) {
           console.log('Fetched history bookings:', bookings);
           setHistoryBookings(bookings);
         } else {
-          // Fallback to demo bookings
-          const demoBookings = [
-            {
-              id: 'booking-1',
-              listing_id: 'listing-1',
-              guest_id: currentUser?.id || 'demo-traveler-1',
-              check_in: '2024-10-15',
-              check_out: '2024-10-17',
-              status: 'completed',
-              total_price: 230,
-              created_at: '2024-10-10T10:00:00Z',
-              listing: {
-                title: 'Cozy Studio in Downtown LA',
-                location: 'Los Angeles, CA',
-                property_type: 'studio'
-              }
-            },
-            {
-              id: 'booking-2',
-              listing_id: 'listing-2',
-              guest_id: currentUser?.id || 'demo-traveler-1',
-              check_in: '2024-09-20',
-              check_out: '2024-09-22',
-              status: 'completed',
-              total_price: 458,
-              created_at: '2024-09-15T14:30:00Z',
-              listing: {
-                title: 'Modern House in Burbank',
-                location: 'Burbank, CA',
-                property_type: 'house'
-              }
-            },
-            {
-              id: 'booking-3',
-              listing_id: 'listing-3',
-              guest_id: currentUser?.id || 'demo-traveler-1',
-              check_in: '2024-08-05',
-              check_out: '2024-08-08',
-              status: 'cancelled',
-              total_price: 630,
-              created_at: '2024-08-01T09:15:00Z',
-              listing: {
-                title: 'Luxury Condo in Santa Monica',
-                location: 'Santa Monica, CA',
-                property_type: 'condo'
-              }
-            }
-          ];
-          setHistoryBookings(demoBookings);
+          setHistoryBookings([]);
         }
       } catch (error) {
         console.error('Error fetching history bookings:', error);
-        // Use demo bookings as fallback
-        const demoBookings = [
-          {
-            id: 'booking-1',
-            listing_id: 'listing-1',
-            guest_id: currentUser?.id || 'demo-traveler-1',
-            check_in: '2024-10-15',
-            check_out: '2024-10-17',
-            status: 'completed',
-            total_price: 230,
-            created_at: '2024-10-10T10:00:00Z',
-            listing: {
-              title: 'Cozy Studio in Downtown LA',
-              location: 'Los Angeles, CA',
-              property_type: 'studio'
-            }
-          },
-          {
-            id: 'booking-2',
-            listing_id: 'listing-2',
-            guest_id: currentUser?.id || 'demo-traveler-1',
-            check_in: '2024-09-20',
-            check_out: '2024-09-22',
-            status: 'completed',
-            total_price: 458,
-            created_at: '2024-09-15T14:30:00Z',
-            listing: {
-              title: 'Modern House in Burbank',
-              location: 'Burbank, CA',
-              property_type: 'house'
-            }
-          },
-          {
-            id: 'booking-3',
-            listing_id: 'listing-3',
-            guest_id: currentUser?.id || 'demo-traveler-1',
-            check_in: '2024-08-05',
-            check_out: '2024-08-08',
-            status: 'cancelled',
-            total_price: 630,
-            created_at: '2024-08-01T09:15:00Z',
-            listing: {
-              title: 'Luxury Condo in Santa Monica',
-              location: 'Santa Monica, CA',
-              property_type: 'condo'
-            }
-          }
-        ];
-        setHistoryBookings(demoBookings);
+        setHistoryBookings([]);
       } finally {
         setLoading(false);
       }
     };
 
     fetchHistoryBookings();
+
+    // Listen for booking deletion events
+    const handleBookingDeleted = (event) => {
+      setHistoryBookings(event.detail);
+    };
+
+    window.addEventListener('bookingDeleted', handleBookingDeleted);
+
+    return () => {
+      window.removeEventListener('bookingDeleted', handleBookingDeleted);
+    };
   }, [currentUser?.id]);
 
   const filteredBookings = historyBookings.filter(booking => {
     if (filter === 'all') return true;
     // Map backend status to frontend filter
-    if (filter === 'completed') return booking.status === 'confirmed';
+    if (filter === 'completed') return booking.status === 'completed';
+    if (filter === 'confirmed') return booking.status === 'confirmed';
     return booking.status === filter;
   });
 
@@ -3550,6 +3256,7 @@ function TravelerHistoryView({ currentUser, bookings }) {
   };
 
   const formatDate = (dateString) => {
+    if (!dateString) return 'N/A';
     return new Date(dateString).toLocaleDateString('en-US', {
       year: 'numeric',
       month: 'short',
@@ -3590,10 +3297,22 @@ function TravelerHistoryView({ currentUser, bookings }) {
           All Trips ({historyBookings.length})
         </button>
         <button 
+          className={`filter-btn ${filter === 'pending' ? 'active' : ''}`}
+          onClick={() => setFilter('pending')}
+        >
+          Pending ({historyBookings.filter(b => b.status === 'pending').length})
+        </button>
+        <button 
+          className={`filter-btn ${filter === 'confirmed' ? 'active' : ''}`}
+          onClick={() => setFilter('confirmed')}
+        >
+          Confirmed ({historyBookings.filter(b => b.status === 'confirmed').length})
+        </button>
+        <button 
           className={`filter-btn ${filter === 'completed' ? 'active' : ''}`}
           onClick={() => setFilter('completed')}
         >
-          Completed ({historyBookings.filter(b => b.status === 'confirmed' || b.status === 'completed').length})
+          Completed ({historyBookings.filter(b => b.status === 'completed').length})
         </button>
         <button 
           className={`filter-btn ${filter === 'cancelled' ? 'active' : ''}`}
@@ -3636,7 +3355,7 @@ function TravelerHistoryView({ currentUser, bookings }) {
                 
                 <div className="booking-details">
                   <div className="booking-header">
-                    <h3>{booking.listing?.title || 'Property'}</h3>
+                    <h3>{booking.listing_title || booking.listing?.title || 'Property'}</h3>
                     <span 
                       className="status-badge"
                       style={{ backgroundColor: getStatusColor(booking.status) }}
@@ -3648,7 +3367,7 @@ function TravelerHistoryView({ currentUser, bookings }) {
                   <div className="booking-info">
                     <div className="info-row">
                       <span className="info-label">📍 Location:</span>
-                      <span className="info-value">{booking.listing?.location || 'N/A'}</span>
+                      <span className="info-value">{booking.listing_location || booking.listing?.location || 'N/A'}</span>
                     </div>
                     <div className="info-row">
                       <span className="info-label">📅 Dates:</span>
@@ -3674,10 +3393,56 @@ function TravelerHistoryView({ currentUser, bookings }) {
                 </div>
 
                 <div className="booking-actions">
-                  <button className="action-btn view-details">
-                    View Details
+                  {booking.status === 'pending' && (
+                    <button 
+                      className="action-btn delete-booking"
+                      onClick={() => onDeleteBooking(booking.id)}
+                      style={{ backgroundColor: '#ff4444', color: 'white' }}
+                    >
+                      Delete
                   </button>
-                  {(booking.status === 'completed' || booking.status === 'confirmed') && (
+                  )}
+                  {booking.status === 'confirmed' && (
+                    <button 
+                      className="action-btn cancel-booking"
+                      onClick={async () => {
+                        if (confirm('Are you sure you want to cancel this confirmed booking?')) {
+                          try {
+                            const response = await fetch(`${API_BASE_URL}/bookings/${booking.id}/cancel`, {
+                              method: 'POST',
+                              credentials: 'include'
+                            });
+                            if (response.ok) {
+                              alert('Booking cancelled successfully');
+                              window.location.reload(); // Refresh to show updated status
+                            } else {
+                              alert('Failed to cancel booking. Please try again.');
+                            }
+                          } catch (error) {
+                            console.error('Error cancelling booking:', error);
+                            alert('Failed to cancel booking. Please try again.');
+                          }
+                        }
+                      }}
+                      style={{ backgroundColor: '#ff4444', color: 'white' }}
+                    >
+                      Cancel Booking
+                    </button>
+                  )}
+                  {booking.status === 'confirmed' && (
+                    <button 
+                      className="action-btn chat-with-host"
+                      onClick={() => {
+                        // Store selected booking for messages
+                        sessionStorage.setItem('selectedBookingForMessage', JSON.stringify(booking));
+                        setCurrentView('messages');
+                      }}
+                      style={{ backgroundColor: '#00A699', color: 'white', marginLeft: '10px' }}
+                    >
+                      Chat with Host
+                    </button>
+                  )}
+                  {booking.status === 'completed' && (
                     <button className="action-btn write-review">
                       Write Review
                     </button>
@@ -3715,7 +3480,7 @@ function OwnerDashboardView({ currentUser, bookings, acceptBooking, cancelBookin
       setLoading(true);
       try {
         // Fetch bookings for this host
-        const response = await fetch(`http://localhost:5000/api/bookings?as_host=true`, {
+        const response = await fetch(`${API_BASE_URL}/bookings?as_host=true`, {
           credentials: 'include'
         });
         
@@ -3759,71 +3524,21 @@ function OwnerDashboardView({ currentUser, bookings, acceptBooking, cancelBookin
             occupancyRate
           });
         } else {
-          // Fallback to demo data
-          const demoBookings = [
-            {
-              id: 'booking-1',
-              listing_id: 'listing-1',
-              guest_id: 'demo-traveler-1',
-              check_in: '2025-10-25',
-              check_out: '2025-10-28',
-              status: 'confirmed',
-              total_price: 345,
-              created_at: '2025-10-20T10:00:00Z',
-              listing: {
-                title: 'Cozy Studio in Downtown LA',
-                location: 'Los Angeles, CA',
-                property_type: 'apartment'
-              }
-            },
-            {
-              id: 'booking-2',
-              listing_id: 'listing-2',
-              guest_id: 'demo-traveler-2',
-              check_in: '2025-11-01',
-              check_out: '2025-11-05',
-              status: 'pending',
-              total_price: 916,
-              created_at: '2025-10-21T14:30:00Z',
-              listing: {
-                title: 'Modern House in Burbank',
-                location: 'Burbank, CA',
-                property_type: 'house'
-              }
-            }
-          ];
-          
-          setDashboardData({
-            recentBookings: demoBookings.slice(0, 3),
-            upcomingBookings: demoBookings.filter(b => b.status === 'confirmed'),
-            completedBookings: [],
-            totalRevenue: 345,
-            totalBookings: 2,
-            averageRating: 4.8,
-            occupancyRate: 75
-          });
+          setDashboardData(prev => ({ ...prev, recentBookings: [], upcomingBookings: [], completedBookings: [] }));
         }
       } catch (error) {
         console.error('Error fetching dashboard data:', error);
-        // Use demo data as fallback
-        setDashboardData({
-          recentBookings: [],
-          upcomingBookings: [],
-          completedBookings: [],
-          totalRevenue: 0,
-          totalBookings: 0,
-          averageRating: 0,
-          occupancyRate: 0
-        });
+        setDashboardData(prev => ({ ...prev, recentBookings: [], upcomingBookings: [], completedBookings: [] }));
       } finally {
         setLoading(false);
       }
     };
 
     fetchDashboardData();
-  }, [currentUser?.id]);
+  }, []);
 
   const formatDate = (dateString) => {
+    if (!dateString) return 'N/A';
     return new Date(dateString).toLocaleDateString('en-US', {
       year: 'numeric',
       month: 'short',
@@ -3935,7 +3650,7 @@ function OwnerDashboardView({ currentUser, bookings, acceptBooking, cancelBookin
                 
                 <div className="booking-details">
                   <div className="booking-header">
-                    <h3>{booking.listing?.title || 'Property'}</h3>
+                    <h3>{booking.listing_title || booking.listing?.title || 'Property'}</h3>
                     <span 
                       className="status-badge"
                       style={{ backgroundColor: getStatusColor(booking.status) }}
@@ -3947,7 +3662,7 @@ function OwnerDashboardView({ currentUser, bookings, acceptBooking, cancelBookin
                   <div className="booking-info">
                     <div className="info-row">
                       <span className="info-label">📍 Location:</span>
-                      <span className="info-value">{booking.listing?.location || 'N/A'}</span>
+                      <span className="info-value">{booking.listing_location || booking.listing?.location || 'N/A'}</span>
                     </div>
                     <div className="info-row">
                       <span className="info-label">📅 Dates:</span>
@@ -4031,7 +3746,7 @@ function OwnerDashboardView({ currentUser, bookings, acceptBooking, cancelBookin
                 
                 <div className="booking-details">
                   <div className="booking-header">
-                    <h3>{booking.listing?.title || 'Property'}</h3>
+                    <h3>{booking.listing_title || booking.listing?.title || 'Property'}</h3>
                     <span 
                       className="status-badge"
                       style={{ backgroundColor: getStatusColor(booking.status) }}
@@ -4043,7 +3758,7 @@ function OwnerDashboardView({ currentUser, bookings, acceptBooking, cancelBookin
                   <div className="booking-info">
                     <div className="info-row">
                       <span className="info-label">📍 Location:</span>
-                      <span className="info-value">{booking.listing?.location || 'N/A'}</span>
+                      <span className="info-value">{booking.listing_location || booking.listing?.location || 'N/A'}</span>
                     </div>
                     <div className="info-row">
                       <span className="info-label">📅 Dates:</span>
@@ -4075,6 +3790,7 @@ function OwnerDashboardView({ currentUser, bookings, acceptBooking, cancelBookin
 // Owner Profile View Component
 function OwnerProfileView({ currentUser, onUpdateProfile }) {
   const [isEditing, setIsEditing] = useState(false);
+  const [profilePicture, setProfilePicture] = useState(currentUser?.profile_picture || localStorage.getItem(`profile_picture_${currentUser?.id}`) || '');
   const [profileData, setProfileData] = useState({
     first_name: currentUser?.first_name || '',
     last_name: currentUser?.last_name || '',
@@ -4087,6 +3803,34 @@ function OwnerProfileView({ currentUser, onUpdateProfile }) {
   });
   const [newLanguage, setNewLanguage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+
+  // Initialize profile picture from localStorage when component mounts
+  useEffect(() => {
+    const savedPicture = localStorage.getItem(`profile_picture_${currentUser?.id}`);
+    if (savedPicture) {
+      setProfilePicture(savedPicture);
+    }
+  }, [currentUser?.id]);
+
+  const handleImageUpload = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      // Validate file size (max 1MB for database TEXT column)
+      if (file.size > 1024 * 1024) {
+        alert('Image size must be less than 1MB. Please compress the image or choose a smaller file.');
+        return;
+      }
+      
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        const base64String = reader.result;
+        setProfilePicture(base64String);
+        // Save to localStorage for persistence
+        localStorage.setItem(`profile_picture_${currentUser?.id}`, base64String);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
 
   const countries = [
     'United States', 'Canada', 'United Kingdom', 'France', 'Germany', 'Spain', 'Italy', 
@@ -4119,7 +3863,12 @@ function OwnerProfileView({ currentUser, onUpdateProfile }) {
   const handleSave = async () => {
     setIsLoading(true);
     try {
-      const success = await onUpdateProfile(profileData);
+      // Include profile picture in the profile data
+      const profileDataWithPicture = {
+        ...profileData,
+        profilePicture: profilePicture
+      };
+      const success = await onUpdateProfile(profileDataWithPicture);
       if (success) {
         setIsEditing(false);
         alert('Profile updated successfully!');
@@ -4151,12 +3900,23 @@ function OwnerProfileView({ currentUser, onUpdateProfile }) {
     <div className="profile-view">
       <div className="profile-header">
         <div className="profile-avatar">
-          {currentUser?.profile_picture ? (
-            <img src={currentUser.profile_picture} alt="Profile" />
+          {profilePicture ? (
+            <img src={profilePicture} alt="Profile" className="avatar-img" />
           ) : (
             <div className="avatar-placeholder">
               {currentUser?.first_name?.[0] || currentUser?.username?.[0] || 'H'}
             </div>
+          )}
+          {isEditing && (
+            <label className="upload-avatar-btn">
+              <input
+                type="file"
+                accept="image/*"
+                onChange={handleImageUpload}
+                style={{ display: 'none' }}
+              />
+              📷 Upload Photo
+            </label>
           )}
         </div>
         <div className="profile-info">
@@ -4748,34 +4508,58 @@ function EditListingModal({ listing, onSave, onCancel }) {
 
 // Host View Components
 function HostTodayView({ bookings = [], currentUser, acceptBooking, cancelBooking }) {
+  const [localBookings, setLocalBookings] = useState(bookings);
+  const [currentTab, setCurrentTab] = useState('new'); // 'new', 'confirmed', 'cancelled'
+
+  useEffect(() => {
+    setLocalBookings(bookings);
+  }, [bookings]);
+
+  const handleAccept = async (bookingId) => {
+    try {
+      await acceptBooking(bookingId, currentUser?.id);
+      setLocalBookings(prev => prev.map(b => b.id === bookingId ? { ...b, status: 'confirmed' } : b));
+      alert('Booking accepted and dates blocked.');
+    } catch (e) {
+      alert('Failed to accept booking');
+    }
+  };
+
+  const handleCancel = async (bookingId) => {
+    const reason = window.prompt('Please enter a reason for rejection/cancellation:','Not available for these dates');
+    if (reason === null) return; // user cancelled prompt
+    try {
+      await cancelBooking(bookingId, currentUser?.id, 'owner', reason);
+      setLocalBookings(prev => prev.map(b => b.id === bookingId ? { ...b, status: 'cancelled', cancellation_reason: reason } : b));
+      alert('Booking cancelled.');
+    } catch (e) {
+      alert('Failed to cancel booking');
+    }
+  };
+
   // Filter bookings for this host's properties
-  const hostBookings = bookings.filter(booking => {
-    // For demo purposes, show all bookings for host users
-    // In a real app, this would filter by actual host_id
+  const hostBookings = localBookings.filter(booking => {
     return currentUser?.user_type === 'owner' || booking.host_id === 'host-demo';
   });
 
-  // Sort bookings by check-in date
-  const sortedBookings = hostBookings.sort((a, b) => new Date(a.check_in) - new Date(b.check_in));
+  // Sort bookings by created_at date (most recent first)
+  const sortedBookings = hostBookings.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
 
-  // Get upcoming bookings (check-in date >= today)
+  // Filter by status
+  const newRequests = sortedBookings.filter(b => b.status === 'pending');
+  const confirmed = sortedBookings.filter(b => {
+    if (b.status === 'confirmed') {
+      // Only show confirmed bookings that haven't ended yet
   const today = new Date().toISOString().split('T')[0];
-  const upcomingBookings = sortedBookings.filter(booking => booking.check_in >= today);
+      return b.check_out >= today;
+    }
+    return false;
+  });
+  const cancelled = sortedBookings.filter(b => b.status === 'cancelled');
 
-  // Get today's check-ins
-  const todaysCheckIns = sortedBookings.filter(booking => booking.check_in === today);
-
-  if (upcomingBookings.length === 0) {
-    return (
-      <div className="host-today-view">
-        <div className="empty-state">
-          <div className="empty-icon">📖</div>
-          <h2>You don't have any reservations</h2>
-          <p>When guests book your space, you'll see their reservations here.</p>
-        </div>
-      </div>
-    );
-  }
+  // Get filtered bookings based on current tab
+  const filteredBookings = currentTab === 'new' ? newRequests : 
+                           currentTab === 'confirmed' ? confirmed : cancelled;
 
   return (
     <div className="host-today-view">
@@ -4783,47 +4567,57 @@ function HostTodayView({ bookings = [], currentUser, acceptBooking, cancelBookin
         <h2>Your Bookings</h2>
         <div className="booking-stats">
           <div className="stat-card">
-            <div className="stat-number">{upcomingBookings.length}</div>
+            <div className="stat-number">{confirmed.length}</div>
             <div className="stat-label">Upcoming</div>
           </div>
-          <div className="stat-card">
-            <div className="stat-number">{todaysCheckIns.length}</div>
-            <div className="stat-label">Today's Check-ins</div>
           </div>
         </div>
+
+      {/* Filter Tabs */}
+      <div className="filter-tabs">
+        <button 
+          className={`filter-btn ${currentTab === 'new' ? 'active' : ''}`}
+          onClick={() => setCurrentTab('new')}
+        >
+          New Requests ({newRequests.length})
+        </button>
+        <button 
+          className={`filter-btn ${currentTab === 'confirmed' ? 'active' : ''}`}
+          onClick={() => setCurrentTab('confirmed')}
+        >
+          Confirmed ({confirmed.length})
+        </button>
+        <button 
+          className={`filter-btn ${currentTab === 'cancelled' ? 'active' : ''}`}
+          onClick={() => setCurrentTab('cancelled')}
+        >
+          Cancelled ({cancelled.length})
+        </button>
       </div>
 
-      {todaysCheckIns.length > 0 && (
-        <div className="booking-section">
-          <h3>Today's Check-ins</h3>
+      {/* Bookings Grid */}
+      {filteredBookings.length === 0 ? (
+        <div className="empty-state">
+          <div className="empty-icon">📅</div>
+          <h3>
+            {currentTab === 'new' && 'No new booking requests'}
+            {currentTab === 'confirmed' && 'No confirmed bookings'}
+            {currentTab === 'cancelled' && 'No cancelled bookings'}
+          </h3>
+        </div>
+      ) : (
           <div className="bookings-grid">
-            {todaysCheckIns.map(booking => (
+          {filteredBookings.map(booking => (
               <BookingCard 
                 key={booking.id} 
                 booking={booking} 
                 currentUser={currentUser}
-                acceptBooking={acceptBooking}
-                cancelBooking={cancelBooking}
+              acceptBooking={currentTab === 'new' ? handleAccept : acceptBooking}
+              cancelBooking={currentTab === 'new' ? handleCancel : cancelBooking}
               />
             ))}
-          </div>
         </div>
       )}
-
-      <div className="booking-section">
-        <h3>Upcoming Bookings</h3>
-        <div className="bookings-grid">
-          {upcomingBookings.map(booking => (
-            <BookingCard 
-              key={booking.id} 
-              booking={booking} 
-              currentUser={currentUser}
-              acceptBooking={acceptBooking}
-              cancelBooking={cancelBooking}
-            />
-          ))}
-        </div>
-      </div>
     </div>
   );
 }
@@ -4831,6 +4625,7 @@ function HostTodayView({ bookings = [], currentUser, acceptBooking, cancelBookin
 // Booking Card Component
 function BookingCard({ booking, currentUser, acceptBooking, cancelBooking }) {
   const formatDate = (dateString) => {
+    if (!dateString) return 'N/A';
     return new Date(dateString).toLocaleDateString('en-US', {
       weekday: 'short',
       year: 'numeric',
@@ -4929,11 +4724,11 @@ function BookingCard({ booking, currentUser, acceptBooking, cancelBooking }) {
         
         <div className="guest-info">
           <div className="guest-avatar">
-            {booking.user_name.charAt(0).toUpperCase()}
+            {(booking.user_name || booking.guest_username || 'G').charAt(0).toUpperCase()}
           </div>
           <div className="guest-details">
-            <div className="guest-name">{booking.user_name}</div>
-            <div className="booking-date">Booked {new Date(booking.created_at).toLocaleDateString()}</div>
+            <div className="guest-name">{booking.user_name || booking.guest_username || 'Guest'}</div>
+            <div className="booking-date">Booked {booking.created_at ? new Date(booking.created_at).toLocaleDateString() : 'N/A'}</div>
           </div>
         </div>
         
@@ -4944,7 +4739,7 @@ function BookingCard({ booking, currentUser, acceptBooking, cancelBooking }) {
                 className="accept-btn"
                 onClick={() => {
                   if (window.confirm('Are you sure you want to accept this booking?')) {
-                    acceptBooking(booking.id, 'demo-host-1');
+                    acceptBooking(booking.id);
                   }
                 }}
               >
@@ -4953,10 +4748,7 @@ function BookingCard({ booking, currentUser, acceptBooking, cancelBooking }) {
               <button 
                 className="cancel-btn"
                 onClick={() => {
-                  const reason = prompt('Please provide a reason for cancellation:') || 'No reason provided';
-                  if (reason) {
-                    cancelBooking(booking.id, 'demo-host-1', 'owner', reason);
-                  }
+                  cancelBooking(booking.id);
                 }}
               >
                 Cancel Booking
@@ -5270,7 +5062,7 @@ function HostListingsView({ currentUser, onCreateListing }) {
     const fetchListings = async () => {
       setLoading(true);
       try {
-        const response = await fetch('http://localhost:5000/api/listings', {
+        const response = await fetch(`${API_BASE_URL}/listings`, {
           credentials: 'include'
         });
         
@@ -5282,23 +5074,11 @@ function HostListingsView({ currentUser, onCreateListing }) {
           );
           setListings(hostListings);
         } else {
-          // Fallback to sample listings if backend fails
-          const sampleListings = [
-            { id: "listing-1", title: "Cozy Studio in Downtown LA", location: "Los Angeles, CA", price_per_night: 115, property_type: "studio", max_guests: 2, bedrooms: 1, bathrooms: 1, host_id: currentUser?.id || 'demo-host-1' },
-            { id: "listing-2", title: "Modern House in Burbank", location: "Burbank, CA", price_per_night: 229, property_type: "house", max_guests: 6, bedrooms: 3, bathrooms: 2, host_id: currentUser?.id || 'demo-host-1' },
-            { id: "listing-3", title: "Luxury Condo in Santa Monica", location: "Santa Monica, CA", price_per_night: 210, property_type: "condo", max_guests: 4, bedrooms: 2, bathrooms: 2, host_id: currentUser?.id || 'demo-host-1' }
-          ];
-          setListings(sampleListings);
+          setListings([]);
         }
       } catch (error) {
         console.error('Error fetching listings:', error);
-        // Fallback to sample listings
-        const sampleListings = [
-          { id: "listing-1", title: "Cozy Studio in Downtown LA", location: "Los Angeles, CA", price_per_night: 115, property_type: "studio", max_guests: 2, bedrooms: 1, bathrooms: 1, host_id: currentUser?.id || 'demo-host-1' },
-          { id: "listing-2", title: "Modern House in Burbank", location: "Burbank, CA", price_per_night: 229, property_type: "house", max_guests: 6, bedrooms: 3, bathrooms: 2, host_id: currentUser?.id || 'demo-host-1' },
-          { id: "listing-3", title: "Luxury Condo in Santa Monica", location: "Santa Monica, CA", price_per_night: 210, property_type: "condo", max_guests: 4, bedrooms: 2, bathrooms: 2, host_id: currentUser?.id || 'demo-host-1' }
-        ];
-        setListings(sampleListings);
+        setListings([]);
       } finally {
         setLoading(false);
       }
@@ -5310,7 +5090,22 @@ function HostListingsView({ currentUser, onCreateListing }) {
   const handleCreateListing = async (listingData) => {
     try {
       const newListing = await onCreateListing(listingData);
+      // Refetch all listings to get the complete data with proper ID
+      const response = await fetch(`${API_BASE_URL}/listings`, {
+        credentials: 'include'
+      });
+      
+      if (response.ok) {
+        const data = await response.json();
+        const hostListings = data.listings.filter(listing => 
+          listing.host_id === currentUser?.id || listing.host_id === 'demo-host-1'
+        );
+        setListings(hostListings);
+      } else {
+        // Fallback to adding the new listing to the list
       setListings(prev => [...prev, newListing]);
+      }
+      
       setShowCreateForm(false);
     } catch (error) {
       throw error; // Re-throw to be handled by CreateListingView
@@ -5333,7 +5128,7 @@ function HostListingsView({ currentUser, onCreateListing }) {
   const handleSaveEdit = async () => {
     if (editingListing) {
       try {
-        const response = await fetch(`http://localhost:5000/api/listings/${editingListing.id}`, {
+        const response = await fetch(`${API_BASE_URL}/listings/${editingListing.id}`, {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json',
@@ -5365,18 +5160,27 @@ function HostListingsView({ currentUser, onCreateListing }) {
     setEditFormData({});
   };
 
-  const handleDeleteListing = async (listing) => {
-    if (window.confirm(`Are you sure you want to delete "${listing.title}"? This action cannot be undone.`)) {
+  const handleDeleteListing = async (listingOrId) => {
+    // Handle both ID (string) and listing object
+    const listingId = typeof listingOrId === 'string' ? listingOrId : listingOrId.id;
+    const listingTitle = typeof listingOrId === 'object' ? listingOrId.title : 'this listing';
+    
+    if (window.confirm(`Are you sure you want to delete "${listingTitle}"? This action cannot be undone.`)) {
       try {
-        const response = await fetch(`http://localhost:5000/api/listings/${listing.id}`, {
+        console.log('Deleting listing with ID:', listingId);
+        const response = await fetch(`${API_BASE_URL}/listings/${listingId}`, {
           method: 'DELETE',
           credentials: 'include'
         });
         
+        console.log('Delete response:', response.status);
+        
         if (response.ok) {
-          setListings(prev => prev.filter(l => l.id !== listing.id));
-          alert(`"${listing.title}" has been deleted successfully!`);
+          setListings(prev => prev.filter(l => l.id !== listingId));
+          alert(`"${listingTitle}" has been deleted successfully!`);
         } else {
+          const errorData = await response.json();
+          console.error('Delete error:', errorData);
           alert('Failed to delete listing. Please try again.');
         }
       } catch (error) {
@@ -5603,13 +5407,8 @@ function HostListingsView({ currentUser, onCreateListing }) {
   );
 }
 
-function HostMessagesView() {
-  return (
-    <div className="host-messages-view">
-      <h2>Messages</h2>
-      <p>Communicate with your guests</p>
-    </div>
-  );
+function HostMessagesView({ currentUser, bookings }) {
+  return <MessagesView currentUser={currentUser} userType="owner" bookings={bookings} />;
 }
 
 // Host Analytics View Component
@@ -5840,6 +5639,252 @@ function HostAnalyticsView({ currentUser, analytics, hostAnalytics, fetchPropert
           <p>Choose a property from the list above to view detailed analytics</p>
         </div>
       )}
+    </div>
+  );
+}
+
+// ==================== MESSAGES COMPONENT ====================
+function MessagesView({ currentUser, userType, bookings }) {
+  const [messages, setMessages] = useState([]);
+  const [selectedBooking, setSelectedBooking] = useState(null);
+  const [newMessage, setNewMessage] = useState('');
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetchMessages();
+    
+    // Check if we have a stored booking from Chat with Host button
+    const storedBooking = sessionStorage.getItem('selectedBookingForMessage');
+    if (storedBooking) {
+      try {
+        const booking = JSON.parse(storedBooking);
+        setSelectedBooking(booking.id);
+        // Clear the stored booking after using it
+        sessionStorage.removeItem('selectedBookingForMessage');
+      } catch (error) {
+        console.error('Error parsing stored booking:', error);
+      }
+    }
+  }, [currentUser]);
+
+  const fetchMessages = async () => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/messages`, {
+        credentials: 'include'
+      });
+      if (response.ok) {
+        const data = await response.json();
+        setMessages(data.messages || []);
+        // If we have messages, auto-select the first booking
+        if (data.messages && data.messages.length > 0 && !selectedBooking) {
+          setSelectedBooking(data.messages[0].booking_id);
+        }
+      }
+    } catch (error) {
+      console.error('Error fetching messages:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const sendMessage = async () => {
+    if (!newMessage.trim() || !selectedBooking) return;
+
+    try {
+      const bookingId = selectedBooking;
+      
+      // First, fetch the booking to get host_id and guest_id
+      const bookingResponse = await fetch(`${API_BASE_URL}/bookings/${bookingId}`, {
+        credentials: 'include'
+      });
+      
+      if (!bookingResponse.ok) {
+        alert('Could not fetch booking details');
+        return;
+      }
+      
+      const bookingData = await bookingResponse.json();
+      const booking = bookingData.booking;
+      
+      if (!booking) {
+        alert('Booking not found');
+        return;
+      }
+
+      // Determine receiver (host if sender is traveler, traveler if sender is host)
+      let receiverId;
+      if (userType === 'traveler') {
+        receiverId = booking.host_id;
+      } else {
+        receiverId = booking.guest_id;
+      }
+      
+      if (!receiverId) {
+        alert('Could not determine receiver. Please try again.');
+        return;
+      }
+      
+      console.log('Sending message:', {
+        booking_id: bookingId,
+        receiver_id: receiverId,
+        message: newMessage
+      });
+
+      const response = await fetch(`${API_BASE_URL}/messages`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          booking_id: bookingId,
+          receiver_id: receiverId,
+          message: newMessage
+        }),
+        credentials: 'include'
+      });
+
+      if (response.ok) {
+        setNewMessage('');
+        fetchMessages();
+      } else {
+        const errorData = await response.json();
+        alert(errorData.error || 'Failed to send message');
+      }
+    } catch (error) {
+      console.error('Error sending message:', error);
+      alert('Failed to send message');
+    }
+  };
+
+  // Group messages by booking
+  const messagesByBooking = messages.reduce((acc, msg) => {
+    if (!acc[msg.booking_id]) acc[msg.booking_id] = [];
+    acc[msg.booking_id].push(msg);
+    return acc;
+  }, {});
+
+  if (loading) {
+    return (
+      <div className="messages-view">
+        <div className="loading">Loading messages...</div>
+      </div>
+    );
+  }
+
+  // Get confirmed bookings to show as conversation starters
+  const confirmedBookings = bookings.filter(b => b.status === 'confirmed');
+
+  if (Object.keys(messagesByBooking).length === 0) {
+    return (
+      <div className="messages-view">
+        <h2>{userType === 'traveler' ? 'Messages with Hosts' : 'Messages with Travelers'}</h2>
+        
+        {confirmedBookings.length === 0 ? (
+          <div className="empty-state">
+            <div className="empty-icon">💬</div>
+            <h3>No messages yet</h3>
+            <p>You don't have any confirmed bookings yet to start a conversation.</p>
+          </div>
+        ) : (
+          <div className="start-conversation-view">
+            <h3>Select a booking to start messaging:</h3>
+            <div className="bookings-list">
+              {confirmedBookings.map(booking => (
+                <div 
+                  key={booking.id} 
+                  className="booking-card"
+                  onClick={() => setSelectedBooking(booking.id)}
+                >
+                  <h4>{booking.listing_title || booking.listing?.title || 'Property'}</h4>
+                  <p>{booking.listing_location || booking.listing?.location || 'Location N/A'}</p>
+                  <p>Dates: {new Date(booking.check_in).toLocaleDateString()} - {new Date(booking.check_out).toLocaleDateString()}</p>
+                  <button className="start-chat-btn">Start Conversation</button>
+                </div>
+              ))}
+            </div>
+            
+            {selectedBooking && (
+              <div className="chat-interface">
+                <div className="chat-header">
+                  <h4>Chat about your booking</h4>
+                </div>
+                <div className="chat-messages">
+                  <p className="no-messages-yet">No messages yet. Start the conversation!</p>
+                </div>
+                <div className="message-input">
+                  <textarea
+                    value={newMessage}
+                    onChange={(e) => setNewMessage(e.target.value)}
+                    placeholder="Type your message..."
+                    onKeyPress={(e) => e.key === 'Enter' && !e.shiftKey && sendMessage()}
+                  />
+                  <button onClick={sendMessage} disabled={!newMessage.trim()}>
+                    Send
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+      </div>
+    );
+  }
+
+  return (
+    <div className="messages-view">
+      <h2>{userType === 'traveler' ? 'Messages with Hosts' : 'Messages with Travelers'}</h2>
+      
+      <div className="messages-container">
+        <div className="conversations-sidebar">
+          <h3>Conversations</h3>
+          {Object.keys(messagesByBooking).map(bookingId => {
+            const conversationMsgs = messagesByBooking[bookingId];
+            const lastMsg = conversationMsgs[0];
+            return (
+              <div 
+                key={bookingId}
+                className={`conversation-item ${selectedBooking === bookingId ? 'active' : ''}`}
+                onClick={() => setSelectedBooking(bookingId)}
+              >
+                <div className="conversation-title">{lastMsg.listing_title}</div>
+                <div className="conversation-preview">{lastMsg.message}</div>
+              </div>
+            );
+          })}
+        </div>
+
+        <div className="messages-main">
+          {selectedBooking && messagesByBooking[selectedBooking] ? (
+            <>
+              <div className="messages-list">
+                {[...messagesByBooking[selectedBooking]].reverse().map(msg => (
+                  <div key={msg.id} className={`message ${msg.sender_id === currentUser?.id ? 'sent' : 'received'}`}>
+                    <div className="message-header">
+                      <strong>{msg.sender_id === currentUser?.id ? 'You' : (msg.sender_username || 'User')}</strong>
+                      <span>{new Date(msg.created_at).toLocaleString()}</span>
+                    </div>
+                    <div className="message-text">{msg.message}</div>
+                  </div>
+                ))}
+              </div>
+
+              <div className="message-input">
+                <textarea
+                  value={newMessage}
+                  onChange={(e) => setNewMessage(e.target.value)}
+                  placeholder="Type your message..."
+                  onKeyPress={(e) => e.key === 'Enter' && !e.shiftKey && sendMessage()}
+                />
+                <button onClick={sendMessage} disabled={!newMessage.trim()}>
+                  Send
+                </button>
+              </div>
+            </>
+          ) : (
+            <div className="no-conversation">
+              <p>Select a conversation to view messages</p>
+            </div>
+          )}
+        </div>
+      </div>
     </div>
   );
 }

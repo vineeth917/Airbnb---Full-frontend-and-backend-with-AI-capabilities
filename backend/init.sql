@@ -30,7 +30,7 @@ CREATE TABLE users (
     country VARCHAR(50),
     languages JSON,
     gender ENUM('male', 'female', 'other'),
-    profile_picture VARCHAR(255),
+    profile_picture MEDIUMTEXT,
     is_active BOOLEAN DEFAULT TRUE,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -136,6 +136,23 @@ CREATE TABLE availability (
     INDEX idx_listing_id (listing_id),
     INDEX idx_date (date),
     INDEX idx_is_available (is_available)
+);
+
+-- Create messages table for traveler-host communication
+CREATE TABLE messages (
+    id VARCHAR(36) PRIMARY KEY,
+    booking_id VARCHAR(36) NOT NULL,
+    sender_id VARCHAR(36) NOT NULL,
+    receiver_id VARCHAR(36) NOT NULL,
+    message TEXT NOT NULL,
+    is_read BOOLEAN DEFAULT FALSE,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (sender_id) REFERENCES users(id) ON DELETE CASCADE,
+    FOREIGN KEY (receiver_id) REFERENCES users(id) ON DELETE CASCADE,
+    INDEX idx_booking_id (booking_id),
+    INDEX idx_sender_id (sender_id),
+    INDEX idx_receiver_id (receiver_id),
+    INDEX idx_created_at (created_at)
 );
 
 -- Insert demo users (passwords: 'traveler123' and 'host123' hashed with bcrypt)
