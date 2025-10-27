@@ -2461,7 +2461,7 @@ function HomesView({ listings = [], filters = {}, setFilters = () => {}, onUpdat
           <article key={listing.id} className="listing-card" role="article">
             <div className="listing-image">
               <img 
-                src={`/images/${getPropertyImage(listing.property_type, listing.id)}`}
+                src={listing.image_url || `/images/${getPropertyImage(listing.property_type, listing.id)}`}
                 alt={`${listing.title} - ${listing.property_type} in ${listing.location}`}
                 onError={(e) => {
                   // Fallback to gradient if image doesn't exist
@@ -2946,7 +2946,7 @@ function TravelerProfileView({ currentUser, onUpdateProfile }) {
     'Japan', 'South Korea', 'Australia', 'Brazil', 'Mexico', 'India', 'China'
   ];
 
-  const genders = ['Male', 'Female', 'Other', 'Prefer not to say'];
+  const genders = ['male', 'female', 'other', 'prefer-not-to-say'];
 
   const handleInputChange = (field, value) => {
     setProfileData(prev => ({ ...prev, [field]: value }));
@@ -3095,7 +3095,7 @@ function TravelerProfileView({ currentUser, onUpdateProfile }) {
                 >
                   <option value="">Select Gender</option>
                   {genders.map(gender => (
-                    <option key={gender} value={gender}>{gender}</option>
+                    <option key={gender} value={gender}>{gender.replace(/-/g, ' ').split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')}</option>
                   ))}
                 </select>
               </div>
@@ -3837,7 +3837,7 @@ function OwnerProfileView({ currentUser, onUpdateProfile }) {
     'Japan', 'South Korea', 'Australia', 'Brazil', 'Mexico', 'India', 'China'
   ];
 
-  const genders = ['Male', 'Female', 'Other', 'Prefer not to say'];
+  const genders = ['male', 'female', 'other', 'prefer-not-to-say'];
 
   const handleInputChange = (field, value) => {
     setProfileData(prev => ({ ...prev, [field]: value }));
@@ -3986,7 +3986,7 @@ function OwnerProfileView({ currentUser, onUpdateProfile }) {
                 >
                   <option value="">Select Gender</option>
                   {genders.map(gender => (
-                    <option key={gender} value={gender}>{gender}</option>
+                    <option key={gender} value={gender}>{gender.replace(/-/g, ' ').split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')}</option>
                   ))}
                 </select>
               </div>
@@ -4097,6 +4097,9 @@ function CreateListingView({ onCreateListing, currentUser }) {
   const [formData, setFormData] = useState({
     title: '',
     description: '',
+    image_url: '',
+    imageFile: null,
+    imagePreview: '',
     price_per_night: '',
     location: '',
     latitude: '',
@@ -4111,6 +4114,31 @@ function CreateListingView({ onCreateListing, currentUser }) {
 
   const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  // Handle image file upload
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      // Validate file size (max 5MB)
+      if (file.size > 5 * 1024 * 1024) {
+        setErrors({ ...errors, image: 'Image must be less than 5MB' });
+        return;
+      }
+      
+      // Validate file type
+      if (!file.type.startsWith('image/')) {
+        setErrors({ ...errors, image: 'Please select an image file' });
+        return;
+      }
+
+      setFormData(prev => ({
+        ...prev,
+        imageFile: file,
+        imagePreview: URL.createObjectURL(file)
+      }));
+      setErrors(prev => ({ ...prev, image: null }));
+    }
+  };
 
   // Available amenities
   const availableAmenities = [
@@ -4147,11 +4175,32 @@ function CreateListingView({ onCreateListing, currentUser }) {
     
     setIsSubmitting(true);
     try {
-      await onCreateListing(formData);
+      // Convert image file to base64 if present
+      let imageBase64 = formData.image_url; // Keep existing URL if no file
+      
+      if (formData.imageFile) {
+        const reader = new FileReader();
+        imageBase64 = await new Promise((resolve, reject) => {
+          reader.onload = () => resolve(reader.result);
+          reader.onerror = reject;
+          reader.readAsDataURL(formData.imageFile);
+        });
+      }
+      
+      // Create listing data with base64 image
+      const listingData = {
+        ...formData,
+        image_url: imageBase64
+      };
+      
+      await onCreateListing(listingData);
       alert('Listing created successfully!');
       setFormData({
         title: '',
         description: '',
+        image_url: '',
+        imageFile: null,
+        imagePreview: '',
         price_per_night: '',
         location: '',
         latitude: '',
@@ -4214,6 +4263,23 @@ function CreateListingView({ onCreateListing, currentUser }) {
             rows="4"
             placeholder="Describe your property, its unique features, and what makes it special..."
           />
+        </div>
+
+        <div className="form-group">
+          <label>Property Image</label>
+          <input
+            type="file"
+            accept="image/*"
+            onChange={handleImageChange}
+            className="file-input"
+          />
+          {errors.image && <span className="error-message">{errors.image}</span>}
+          {formData.imagePreview && (
+            <div className="image-preview">
+              <img src={formData.imagePreview} alt="Preview" style={{ maxWidth: '300px', maxHeight: '200px', marginTop: '1rem', borderRadius: '8px' }} />
+            </div>
+          )}
+          <small className="hint">Upload an image from your computer (max 5MB)</small>
         </div>
 
         <div className="form-row">
@@ -5113,22 +5179,32 @@ function HostListingsView({ currentUser, onCreateListing }) {
   };
 
   const handleEditListing = (listing) => {
+    console.log('Editing listing:', listing);
+    console.log('Listing ID:', listing.id);
     setEditingListing(listing);
     setEditFormData({
-      title: listing.title,
-      location: listing.location,
-      price_per_night: listing.price_per_night,
-      property_type: listing.property_type,
-      max_guests: listing.max_guests,
-      bedrooms: listing.bedrooms,
-      bathrooms: listing.bathrooms
+      title: listing.title || '',
+      location: listing.location || '',
+      price_per_night: listing.price_per_night || 0,
+      property_type: listing.property_type || 'apartment',
+      max_guests: listing.max_guests || 1,
+      bedrooms: listing.bedrooms || 1,
+      bathrooms: listing.bathrooms || 1
     });
   };
 
   const handleSaveEdit = async () => {
-    if (editingListing) {
-      try {
-        const response = await fetch(`${API_BASE_URL}/listings/${editingListing.id}`, {
+    if (!editingListing || !editingListing.id) {
+      console.error('Cannot save: No listing ID found');
+      alert('Error: Listing ID is missing. Please try again.');
+      return;
+    }
+    
+    console.log('Saving listing with ID:', editingListing.id);
+    console.log('Form data:', editFormData);
+    
+    try {
+      const response = await fetch(`${API_BASE_URL}/listings/${editingListing.id}`, {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json',
@@ -5136,22 +5212,36 @@ function HostListingsView({ currentUser, onCreateListing }) {
           credentials: 'include',
           body: JSON.stringify(editFormData)
         });
+      
+      console.log('Update response status:', response.status);
         
         if (response.ok) {
-          const updatedListing = await response.json();
+        const responseData = await response.json();
+        console.log('Update response:', responseData);
+        
+        // Handle both wrapped {success: true, listing: {...}} and direct listing object
+        const updatedListing = responseData.listing || responseData;
+        
+        // Use the ID from the updated listing
+        const listingIdToUpdate = updatedListing.id || editingListing.id;
+        
+        console.log('Updating listing in state with ID:', listingIdToUpdate);
+        
           setListings(prev => prev.map(listing => 
-            listing.id === editingListing.id ? updatedListing : listing
+          listing.id === listingIdToUpdate ? updatedListing : listing
           ));
+        
           setEditingListing(null);
           setEditFormData({});
           alert('Listing updated successfully!');
         } else {
-          alert('Failed to update listing. Please try again.');
+        const errorData = await response.json().catch(() => ({ error: 'Unknown error' }));
+        console.error('Update failed:', errorData);
+        alert(`Failed to update listing: ${errorData.error || 'Please try again.'}`);
         }
       } catch (error) {
         console.error('Error updating listing:', error);
         alert('Error updating listing. Please try again.');
-      }
     }
   };
 
@@ -5165,6 +5255,14 @@ function HostListingsView({ currentUser, onCreateListing }) {
     const listingId = typeof listingOrId === 'string' ? listingOrId : listingOrId.id;
     const listingTitle = typeof listingOrId === 'object' ? listingOrId.title : 'this listing';
     
+    if (!listingId) {
+      console.error('Cannot delete: No listing ID found');
+      alert('Error: Listing ID is missing. Cannot delete this listing.');
+      return;
+    }
+    
+    console.log('Deleting listing:', { id: listingId, title: listingTitle });
+    
     if (window.confirm(`Are you sure you want to delete "${listingTitle}"? This action cannot be undone.`)) {
       try {
         console.log('Deleting listing with ID:', listingId);
@@ -5173,15 +5271,15 @@ function HostListingsView({ currentUser, onCreateListing }) {
           credentials: 'include'
         });
         
-        console.log('Delete response:', response.status);
+        console.log('Delete response status:', response.status);
         
         if (response.ok) {
           setListings(prev => prev.filter(l => l.id !== listingId));
           alert(`"${listingTitle}" has been deleted successfully!`);
         } else {
-          const errorData = await response.json();
+          const errorData = await response.json().catch(() => ({ error: 'Unknown error' }));
           console.error('Delete error:', errorData);
-          alert('Failed to delete listing. Please try again.');
+          alert(`Failed to delete listing: ${errorData.error || 'Please try again.'}`);
         }
       } catch (error) {
         console.error('Error deleting listing:', error);
@@ -5242,7 +5340,7 @@ function HostListingsView({ currentUser, onCreateListing }) {
             <div key={listing.id} className="listing-card">
               <div className="listing-image">
                 <img 
-                  src={`/images/${getPropertyImage(listing.property_type, listing.id)}`} 
+                  src={listing.image_url || `/images/${getPropertyImage(listing.property_type, listing.id)}`} 
                   alt={listing.title}
                   onError={(e) => {
                     e.target.style.background = `linear-gradient(135deg, hsl(${(getNumericId(listing.id) * 137.5) % 360}, 70%, 50%), hsl(${((getNumericId(listing.id) + 1) * 137.5) % 360}, 70%, 50%))`;

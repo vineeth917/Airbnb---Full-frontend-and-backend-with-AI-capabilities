@@ -140,11 +140,17 @@ app.post('/api/auth/register', async (req, res) => {
       userType,
       firstName,
       lastName,
+      first_name,
+      last_name,
       phone,
       city,
       country,
       gender
     } = req.body;
+    
+    // Use camelCase or snake_case, whichever is provided
+    const actualFirstName = firstName || first_name || '';
+    const actualLastName = lastName || last_name || '';
 
     // Validation
     if (!username || !email || !password || !userType) {
@@ -182,7 +188,7 @@ app.post('/api/auth/register', async (req, res) => {
     await pool.query(
       `INSERT INTO users (id, username, email, password_hash, user_type, first_name, last_name, phone, city, country, gender)
        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-      [userId, username, email, passwordHash, userType, firstName || null, lastName || null, phone || null, city || null, country || null, gender || null]
+      [userId, username, email, passwordHash, userType, actualFirstName || null, actualLastName || null, phone || null, city || null, country || null, gender || null]
     );
 
     // Set session
@@ -197,8 +203,8 @@ app.post('/api/auth/register', async (req, res) => {
         username,
         email,
         user_type: userType,
-        first_name: firstName,
-        last_name: lastName
+        first_name: actualFirstName,
+        last_name: actualLastName
       }
     });
 
@@ -346,6 +352,23 @@ app.put('/api/auth/profile', requireAuth, async (req, res) => {
     console.log('Profile update request for user:', req.session.userId);
     console.log('Profile picture length:', profilePicture ? profilePicture.length : 'null');
 
+    // Normalize gender to match database ENUM
+    let normalizedGender = null;
+    if (gender) {
+      const genderLower = gender.toLowerCase();
+      // Map valid enum values, including hyphenated version
+      if (genderLower === 'male' || genderLower === 'female' || genderLower === 'other' || genderLower === 'prefer-not-to-say') {
+        normalizedGender = genderLower;
+      } else {
+        // Try to map "prefer not to say" variations to "prefer-not-to-say"
+        if (genderLower.includes('prefer') || genderLower.includes('not')) {
+          normalizedGender = 'prefer-not-to-say';
+        } else {
+          normalizedGender = null; // Invalid value, set to NULL
+        }
+      }
+    }
+
     // Truncate profile picture if it's too large (limit to 50MB = ~41.9 million chars)
     let profilePictureToSave = profilePicture;
     if (profilePicture && profilePicture.length > 40000000) {
@@ -359,7 +382,7 @@ app.put('/api/auth/profile', requireAuth, async (req, res) => {
            city = ?, country = ?, languages = ?, gender = ?, profile_picture = ?
        WHERE id = ?`,
       [firstName, lastName, phone, aboutMe, city, country, 
-       languages ? JSON.stringify(languages) : null, gender, profilePictureToSave, req.session.userId]
+       languages ? JSON.stringify(languages) : null, normalizedGender, profilePictureToSave, req.session.userId]
     );
 
     res.json({
@@ -506,6 +529,7 @@ app.post('/api/listings', requireOwner, async (req, res) => {
     const {
       title,
       description,
+      image_url,
       price_per_night,
       location,
       latitude,
@@ -526,7 +550,19 @@ app.post('/api/listings', requireOwner, async (req, res) => {
       });
     }
 
-    const listingId = uuidv4();
+    // Generate sequential ID like listing-8, listing-9, etc.
+    const [existingListings] = await pool.query(
+      "SELECT id FROM listings WHERE id LIKE 'listing-%' ORDER BY CAST(SUBSTRING(id, 9) AS UNSIGNED) DESC LIMIT 1"
+    );
+    
+    let listingId;
+    if (existingListings.length > 0) {
+      const lastId = existingListings[0].id;
+      const lastNum = parseInt(lastId.replace('listing-', ''));
+      listingId = `listing-${lastNum + 1}`;
+    } else {
+      listingId = 'listing-1';
+    }
     
     // Convert numeric fields to numbers and handle nulls
     const price = parseFloat(price_per_night);
@@ -553,10 +589,10 @@ app.post('/api/listings', requireOwner, async (req, res) => {
     });
 
     await pool.query(
-      `INSERT INTO listings (id, title, description, price_per_night, location, latitude, longitude, 
+      `INSERT INTO listings (id, title, description, image_url, price_per_night, location, latitude, longitude, 
        property_type, amenities, max_guests, bedrooms, bathrooms, host_id, is_active)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-      [listingId, title, description || '', price, location, lat, lng,
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      [listingId, title, description || '', image_url || null, price, location, lat, lng,
        property_type, JSON.stringify(amenities || []), guests, bed, bath, req.session.userId, true]
     );
 
@@ -596,45 +632,101 @@ app.put('/api/listings/:id', requireOwner, async (req, res) => {
       is_active
     } = req.body;
 
-    // Verify ownership
-    const [listings] = await pool.query(
-      'SELECT host_id FROM listings WHERE id = ?',
+    // Get existing listing to preserve fields not being updated and verify ownership
+    const [existingListings] = await pool.query(
+      'SELECT * FROM listings WHERE id = ?',
       [req.params.id]
     );
-
-    if (listings.length === 0) {
+    
+    if (existingListings.length === 0) {
       return res.status(404).json({
         success: false,
         error: 'Listing not found'
       });
     }
-
-    if (listings[0].host_id !== req.session.userId) {
+    
+    const existing = existingListings[0];
+    
+    // Verify ownership
+    if (existing.host_id !== req.session.userId) {
       return res.status(403).json({
         success: false,
         error: 'Not authorized to update this listing'
       });
     }
+    
+    // Use provided values or keep existing ones
+    const updatedData = {
+      title: title !== undefined ? title : existing.title,
+      description: description !== undefined ? description : existing.description,
+      price_per_night: price_per_night !== undefined ? price_per_night : existing.price_per_night,
+      location: location !== undefined ? location : existing.location,
+      latitude: latitude !== undefined ? latitude : existing.latitude,
+      longitude: longitude !== undefined ? longitude : existing.longitude,
+      property_type: property_type !== undefined ? property_type : existing.property_type,
+      amenities: amenities !== undefined 
+        ? JSON.stringify(amenities || []) 
+        : (typeof existing.amenities === 'string' ? existing.amenities : JSON.stringify(existing.amenities || [])),
+      max_guests: max_guests !== undefined ? max_guests : existing.max_guests,
+      bedrooms: bedrooms !== undefined ? bedrooms : existing.bedrooms,
+      bathrooms: bathrooms !== undefined ? bathrooms : existing.bathrooms,
+      is_active: is_active !== undefined ? is_active : existing.is_active
+    };
+    
+    console.log('Updated data to save:', updatedData);
+    console.log('Amenities value:', updatedData.amenities);
 
     await pool.query(
       `UPDATE listings 
        SET title = ?, description = ?, price_per_night = ?, location = ?, latitude = ?, longitude = ?,
            property_type = ?, amenities = ?, max_guests = ?, bedrooms = ?, bathrooms = ?, is_active = ?
        WHERE id = ?`,
-      [title, description, price_per_night, location, latitude, longitude,
-       property_type, JSON.stringify(amenities || []), max_guests, bedrooms, bathrooms, is_active !== undefined ? is_active : true, req.params.id]
+      [updatedData.title, updatedData.description, updatedData.price_per_night, updatedData.location, 
+       updatedData.latitude, updatedData.longitude, updatedData.property_type, updatedData.amenities, 
+       updatedData.max_guests, updatedData.bedrooms, updatedData.bathrooms, updatedData.is_active, req.params.id]
     );
+
+    // Fetch and return the updated listing (with host info like GET /api/listings)
+    const [updatedListings] = await pool.query(
+      `SELECT l.*, u.username as host_username, u.first_name as host_first_name, u.last_name as host_last_name
+       FROM listings l
+       JOIN users u ON l.host_id = u.id
+       WHERE l.id = ?`,
+      [req.params.id]
+    );
+
+    if (updatedListings.length === 0) {
+      return res.status(404).json({
+        success: false,
+        error: 'Listing not found after update'
+      });
+    }
+
+    const updatedListing = {
+      ...updatedListings[0],
+      amenities: (() => {
+        const amen = updatedListings[0].amenities;
+        if (!amen) return [];
+        if (typeof amen === 'string') {
+          return amen.trim() !== '' ? JSON.parse(amen) : [];
+        }
+        return amen; // Already parsed or is an array
+      })()
+    };
 
     res.json({
       success: true,
-      message: 'Listing updated successfully'
+      listing: updatedListing
     });
 
   } catch (error) {
     console.error('Update listing error:', error);
+    console.error('Error stack:', error.stack);
+    console.error('Request body:', req.body);
+    console.error('Listing ID:', req.params.id);
     res.status(500).json({
       success: false,
-      error: 'Failed to update listing'
+      error: `Failed to update listing: ${error.message}`
     });
   }
 });
