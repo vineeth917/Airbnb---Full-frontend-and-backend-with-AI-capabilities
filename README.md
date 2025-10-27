@@ -12,13 +12,14 @@ airbnb-lab/
 └── README.md
 ```
 
-## 🚀 Quick Start
+## Quick Start
 
 ### Prerequisites
 
 - Node.js 16+ 
 - Python 3.8+
 - MySQL 8.0+
+  
 
 ### Option 1: Use Individual Startup Scripts (Recommended)
 
@@ -65,7 +66,7 @@ pip install -r requirements.txt
 PYTHONPATH=$(pwd) python -m uvicorn app.main:app --host 0.0.0.0 --port 8000
 ```
 
-## 📚 API Documentation
+## API Documentation
 
 - **Backend API**: http://localhost:5001/api-docs
 - **AI Service**: http://localhost:8000/docs
@@ -97,7 +98,7 @@ VITE_AI_SERVICE_URL=http://localhost:8000
 PYTHONPATH=/path/to/your/project/ai-service
 ```
 
-## 🎯 Features
+## Features
 
 ### ✅ Implemented
 - User Authentication (JWT + Sessions)
