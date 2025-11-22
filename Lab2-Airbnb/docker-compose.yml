@@ -1,0 +1,196 @@
+version: '3.8'
+
+services:
+  # MongoDB Database
+  mongodb:
+    image: mongo:6.0
+    container_name: airbnb-mongodb
+    restart: always
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_DATABASE: airbnb_lab
+    volumes:
+      - mongodb_data:/data/db
+    networks:
+      - airbnb-network
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongosh localhost:27017/airbnb_lab --quiet
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Zookeeper (required for Kafka)
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.5.0
+    container_name: airbnb-zookeeper
+    restart: always
+    ports:
+      - "2181:2181"
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    networks:
+      - airbnb-network
+    healthcheck:
+      test: ["CMD", "nc", "-z", "localhost", "2181"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Kafka Message Broker
+  kafka:
+    image: confluentinc/cp-kafka:7.5.0
+    container_name: airbnb-kafka
+    restart: always
+    depends_on:
+      - zookeeper
+    ports:
+      - "9092:9092"
+      - "29092:29092"
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:29092,PLAINTEXT_HOST://localhost:9092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
+    networks:
+      - airbnb-network
+    healthcheck:
+      test: ["CMD", "kafka-broker-api-versions", "--bootstrap-server", "localhost:9092"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Traveler Service
+  traveler-service:
+    build:
+      context: ./services/traveler-service
+      dockerfile: Dockerfile
+    container_name: traveler-service
+    restart: always
+    depends_on:
+      - mongodb
+    ports:
+      - "5001:5001"
+    environment:
+      PORT: 5001
+      MONGODB_URI: mongodb://mongodb:27017/airbnb_lab
+      JWT_SECRET_KEY: your-secret-key-change-in-production
+      SECRET_KEY: your-secret-key-change-in-production
+    networks:
+      - airbnb-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5001/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+  # Owner Service
+  owner-service:
+    build:
+      context: ./services/owner-service
+      dockerfile: Dockerfile
+    container_name: owner-service
+    restart: always
+    depends_on:
+      - mongodb
+      - kafka
+    ports:
+      - "5002:5002"
+    environment:
+      PORT: 5002
+      MONGODB_URI: mongodb://mongodb:27017/airbnb_lab
+      KAFKA_BOOTSTRAP_SERVERS: kafka:29092
+      JWT_SECRET_KEY: your-secret-key-change-in-production
+      SECRET_KEY: your-secret-key-change-in-production
+    networks:
+      - airbnb-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5002/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+  # Property Service
+  property-service:
+    build:
+      context: ./services/property-service
+      dockerfile: Dockerfile
+    container_name: property-service
+    restart: always
+    depends_on:
+      - mongodb
+    ports:
+      - "5003:5003"
+    environment:
+      PORT: 5003
+      MONGODB_URI: mongodb://mongodb:27017/airbnb_lab
+      JWT_SECRET_KEY: your-secret-key-change-in-production
+      SECRET_KEY: your-secret-key-change-in-production
+    networks:
+      - airbnb-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5003/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+  # Booking Service
+  booking-service:
+    build:
+      context: ./services/booking-service
+      dockerfile: Dockerfile
+    container_name: booking-service
+    restart: always
+    depends_on:
+      - mongodb
+      - kafka
+    ports:
+      - "5004:5004"
+    environment:
+      PORT: 5004
+      MONGODB_URI: mongodb://mongodb:27017/airbnb_lab
+      KAFKA_BOOTSTRAP_SERVERS: kafka:29092
+      JWT_SECRET_KEY: your-secret-key-change-in-production
+      SECRET_KEY: your-secret-key-change-in-production
+    networks:
+      - airbnb-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5004/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+  # AI Agent Service
+  ai-agent-service:
+    build:
+      context: ./services/ai-agent-service
+      dockerfile: Dockerfile
+    container_name: ai-agent-service
+    restart: always
+    ports:
+      - "5005:5005"
+    environment:
+      PORT: 5005
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+      WEATHER_API_KEY: ${WEATHER_API_KEY:-}
+      SECRET_KEY: your-secret-key-change-in-production
+    networks:
+      - airbnb-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5005/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+volumes:
+  mongodb_data:
+    driver: local
+
+networks:
+  airbnb-network:
+    driver: bridge
+
