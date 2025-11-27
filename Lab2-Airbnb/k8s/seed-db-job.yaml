@@ -1,0 +1,66 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: seed-database
+  namespace: default
+spec:
+  template:
+    spec:
+      containers:
+      - name: seed-db
+        image: mysql:8.0
+        command:
+        - /bin/bash
+        - -c
+        - |
+          set -e
+          echo "Waiting for MySQL to be ready..."
+          until mysql -h mysql -u root -ppass1234 -e "SELECT 1" airbnb_lab 2>/dev/null; do
+            echo "Waiting for MySQL connection..."
+            sleep 2
+          done
+          
+          echo "Checking if seed data already exists..."
+          LISTING_COUNT=$(mysql -h mysql -u root -ppass1234 -N -e "SELECT COUNT(*) FROM listings WHERE id LIKE 'listing-%';" airbnb_lab 2>/dev/null || echo "0")
+          
+          if [ "$LISTING_COUNT" -gt "0" ]; then
+            echo "Seed data already exists ($LISTING_COUNT listings found). Skipping seed."
+            exit 0
+          fi
+          
+          echo "Seeding database with default homes..."
+          
+          # Ensure demo users exist first
+          mysql -h mysql -u root -ppass1234 airbnb_lab <<EOF
+          INSERT IGNORE INTO users (id, username, email, password_hash, user_type, first_name, last_name, city, country) VALUES
+          ('demo-traveler-1', 'traveler', 'traveler@airbnb.com', '\$2b\$10\$YQ.xkMDKCjBWLDl6tGXXDOKqGR.JOXqvL6VVGTRdqP.XqDGf.5FMC', 'traveler', 'John', 'Doe', 'New York', 'USA'),
+          ('demo-host-1', 'host', 'host@airbnb.com', '\$2b\$10\$YQ.xkMDKCjBWLDl6tGXXDOKqGR.JOXqvL6VVGTRdqP.XqDGf.5FMC', 'owner', 'Jane', 'Smith', 'Miami', 'USA');
+          EOF
+          
+          # Insert sample listings
+          mysql -h mysql -u root -ppass1234 airbnb_lab <<EOF
+          INSERT IGNORE INTO listings (id, title, description, price_per_night, location, latitude, longitude, property_type, amenities, max_guests, bedrooms, bathrooms, host_id, is_active) VALUES
+          ('listing-1', 'Cozy Studio in Downtown LA', 'Beautiful studio apartment in the heart of Los Angeles with stunning city views', 115.00, 'Los Angeles, CA', 34.0522, -118.2437, 'apartment', '["WiFi", "Kitchen", "Parking", "Air Conditioning"]', 2, 1, 1.0, 'demo-host-1', TRUE),
+          ('listing-2', 'Modern House in Burbank', 'Spacious modern house perfect for families with private backyard', 229.00, 'Burbank, CA', 34.1808, -118.3090, 'house', '["WiFi", "Kitchen", "Parking", "Pool", "Garden"]', 6, 3, 2.0, 'demo-host-1', TRUE),
+          ('listing-3', 'Luxury Condo in Santa Monica', 'High-end condo with ocean views and modern amenities', 210.00, 'Santa Monica, CA', 34.0195, -118.4912, 'condo', '["WiFi", "Kitchen", "Parking", "Gym", "Pool"]', 4, 2, 2.0, 'demo-host-1', TRUE),
+          ('listing-4', 'Charming Villa in Malibu', 'Stunning beachfront villa with private beach access', 450.00, 'Malibu, CA', 34.0259, -118.7798, 'villa', '["WiFi", "Kitchen", "Parking", "Pool", "Beach Access", "Hot Tub"]', 8, 4, 3.0, 'demo-host-1', TRUE),
+          ('listing-5', 'Downtown Loft in San Francisco', 'Industrial-style loft in trendy SoMa district', 185.00, 'San Francisco, CA', 37.7749, -122.4194, 'loft', '["WiFi", "Kitchen", "Parking", "Air Conditioning", "Gym"]', 3, 1, 1.5, 'demo-host-1', TRUE),
+          ('listing-6', 'Beach House in San Diego', 'Relaxing beach house steps away from the ocean', 275.00, 'San Diego, CA', 32.7157, -117.1611, 'house', '["WiFi", "Kitchen", "Parking", "Beach Access", "BBQ Grill"]', 6, 3, 2.0, 'demo-host-1', TRUE),
+          ('listing-7', 'Mountain Cabin in Lake Tahoe', 'Cozy cabin with lake views and mountain access', 195.00, 'Lake Tahoe, CA', 39.0968, -120.0324, 'cabin', '["WiFi", "Kitchen", "Parking", "Fireplace", "Hot Tub"]', 4, 2, 1.5, 'demo-host-1', TRUE);
+          EOF
+          
+          echo "Database seeded successfully!"
+          mysql -h mysql -u root -ppass1234 -e "SELECT COUNT(*) as total_listings FROM listings;" airbnb_lab
+        env:
+        - name: MYSQL_HOST
+          value: "mysql"
+        - name: MYSQL_USER
+          value: "root"
+        - name: MYSQL_PASSWORD
+          value: "pass1234"
+        - name: MYSQL_DATABASE
+          value: "airbnb_lab"
+      restartPolicy: Never
+  backoffLimit: 3
+
+

@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: lab2-backend-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: lab2-backend
+  template:
+    metadata:
+      labels:
+        app: lab2-backend
+    spec:
+      containers:
+        - name: lab2-backend
+          image: airbnb-backend:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 4000
+              name: http
+          env:
+            - name: PORT
+              value: "4000"
+            - name: NODE_ENV
+              value: "production"
+            - name: DB_HOST
+              value: "mysql"
+            - name: DB_USER
+              value: "root"
+            - name: DB_NAME
+              value: "airbnb_lab"
+            - name: KAFKA_BROKERS
+              value: "kafka:9092"
+            - name: AI_SERVICE_URL
+              value: "http://ai-service:8000"
+            - name: CORS_ORIGINS
+              value: "http://localhost:3000,http://127.0.0.1:3000,http://localhost:3001,http://127.0.0.1:3001,http://k8s-default-airbnbfr-74c33d1591-796596180.us-east-1.elb.amazonaws.com"
+            - name: FRONTEND_URL
+              value: "http://k8s-default-airbnbfr-74c33d1591-796596180.us-east-1.elb.amazonaws.com"
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "250m"
+            limits:
+              memory: "512Mi"
+              cpu: "500m"

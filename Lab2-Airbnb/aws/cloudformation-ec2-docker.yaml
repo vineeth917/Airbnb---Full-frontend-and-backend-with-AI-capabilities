@@ -1,0 +1,333 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: 'EC2 instances with Docker installed - 3 m4.large instances'
+
+Parameters:
+  KeyPairName:
+    Type: AWS::EC2::KeyPair::KeyName
+    Description: Name of an existing EC2 KeyPair to enable SSH access
+  
+  InstanceType:
+    Type: String
+    Default: m4.large
+    AllowedValues:
+      - m4.large
+    Description: EC2 instance type
+  
+  VpcId:
+    Type: AWS::EC2::VPC::Id
+    Description: VPC ID where instances will be launched
+  
+  SubnetId:
+    Type: AWS::EC2::Subnet::Id
+    Description: Subnet ID where instances will be launched
+  
+  AllowedCIDR:
+    Type: String
+    Default: 0.0.0.0/0
+    Description: CIDR block allowed to access the instances (SSH)
+  
+  Environment:
+    Type: String
+    Default: production
+    Description: Environment name
+  
+  LatestAMI:
+    Type: AWS::SSM::Parameter::Value<AWS::EC2::Image::Id>
+    Default: /aws/service/ami-amazon-linux-latest/al2023-ami-kernel-6.1-x86_64
+    Description: Amazon Linux 2023 AMI ID (uses latest from SSM Parameter Store)
+
+Resources:
+  # Security Group for EC2 instances
+  EC2SecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupName: !Sub '${Environment}-ec2-docker-sg'
+      GroupDescription: Security group for EC2 instances with Docker
+      VpcId: !Ref VpcId
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 22
+          ToPort: 22
+          CidrIp: !Ref AllowedCIDR
+          Description: SSH access
+        - IpProtocol: tcp
+          FromPort: 80
+          ToPort: 80
+          CidrIp: !Ref AllowedCIDR
+          Description: HTTP access
+        - IpProtocol: tcp
+          FromPort: 443
+          ToPort: 443
+          CidrIp: !Ref AllowedCIDR
+          Description: HTTPS access
+        - IpProtocol: tcp
+          FromPort: 4000
+          ToPort: 4000
+          CidrIp: !Ref AllowedCIDR
+          Description: Backend API access
+        - IpProtocol: tcp
+          FromPort: 8000
+          ToPort: 8000
+          CidrIp: !Ref AllowedCIDR
+          Description: AI Service API access
+      SecurityGroupEgress:
+        - IpProtocol: -1
+          CidrIp: 0.0.0.0/0
+          Description: Allow all outbound traffic
+      Tags:
+        - Key: Name
+          Value: !Sub '${Environment}-ec2-docker-sg'
+
+  # IAM Role for EC2 instances (for ECR access)
+  EC2InstanceRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: ec2.amazonaws.com
+            Action: sts:AssumeRole
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly
+      Policies:
+        - PolicyName: EC2DockerPolicy
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - ec2:DescribeInstances
+                  - ec2:DescribeTags
+                Resource: '*'
+      Tags:
+        - Key: Name
+          Value: !Sub '${Environment}-ec2-instance-role'
+
+  # Instance Profile for EC2 instances
+  EC2InstanceProfile:
+    Type: AWS::IAM::InstanceProfile
+    Properties:
+      Roles:
+        - !Ref EC2InstanceRole
+      InstanceProfileName: !Sub '${Environment}-ec2-instance-profile'
+
+  # EC2 Instance 1
+  EC2Instance1:
+    Type: AWS::EC2::Instance
+    Properties:
+      ImageId: !Ref LatestAMI
+      InstanceType: !Ref InstanceType
+      KeyName: !Ref KeyPairName
+      SubnetId: !Ref SubnetId
+      SecurityGroupIds:
+        - !Ref EC2SecurityGroup
+      IamInstanceProfile: !Ref EC2InstanceProfile
+      UserData:
+        Fn::Base64: !Sub |
+          #!/bin/bash
+          yum update -y
+          
+          # Install Docker
+          yum install -y docker
+          systemctl start docker
+          systemctl enable docker
+          usermod -a -G docker ec2-user
+          
+          # Install Docker Compose
+          curl -L "https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+          chmod +x /usr/local/bin/docker-compose
+          
+          # Install AWS CLI v2 (if not already installed)
+          if ! command -v aws &> /dev/null; then
+            curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+            yum install -y unzip
+            unzip awscliv2.zip
+            ./aws/install
+            rm -rf aws awscliv2.zip
+          fi
+          
+          # Configure Docker to use overlay2 storage driver
+          echo '{"storage-driver": "overlay2"}' > /etc/docker/daemon.json
+          systemctl restart docker
+          
+          # Log completion
+          echo "Docker installation completed at $(date)" >> /var/log/docker-install.log
+      Tags:
+        - Key: Name
+          Value: !Sub '${Environment}-ec2-docker-1'
+        - Key: Environment
+          Value: !Ref Environment
+        - Key: InstanceNumber
+          Value: '1'
+
+  # EC2 Instance 2
+  EC2Instance2:
+    Type: AWS::EC2::Instance
+    Properties:
+      ImageId: !Ref LatestAMI
+      InstanceType: !Ref InstanceType
+      KeyName: !Ref KeyPairName
+      SubnetId: !Ref SubnetId
+      SecurityGroupIds:
+        - !Ref EC2SecurityGroup
+      IamInstanceProfile: !Ref EC2InstanceProfile
+      UserData:
+        Fn::Base64: !Sub |
+          #!/bin/bash
+          yum update -y
+          
+          # Install Docker
+          yum install -y docker
+          systemctl start docker
+          systemctl enable docker
+          usermod -a -G docker ec2-user
+          
+          # Install Docker Compose
+          curl -L "https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+          chmod +x /usr/local/bin/docker-compose
+          
+          # Install AWS CLI v2 (if not already installed)
+          if ! command -v aws &> /dev/null; then
+            curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+            yum install -y unzip
+            unzip awscliv2.zip
+            ./aws/install
+            rm -rf aws awscliv2.zip
+          fi
+          
+          # Configure Docker to use overlay2 storage driver
+          echo '{"storage-driver": "overlay2"}' > /etc/docker/daemon.json
+          systemctl restart docker
+          
+          # Log completion
+          echo "Docker installation completed at $(date)" >> /var/log/docker-install.log
+      Tags:
+        - Key: Name
+          Value: !Sub '${Environment}-ec2-docker-2'
+        - Key: Environment
+          Value: !Ref Environment
+        - Key: InstanceNumber
+          Value: '2'
+
+  # EC2 Instance 3
+  EC2Instance3:
+    Type: AWS::EC2::Instance
+    Properties:
+      ImageId: !Ref LatestAMI
+      InstanceType: !Ref InstanceType
+      KeyName: !Ref KeyPairName
+      SubnetId: !Ref SubnetId
+      SecurityGroupIds:
+        - !Ref EC2SecurityGroup
+      IamInstanceProfile: !Ref EC2InstanceProfile
+      UserData:
+        Fn::Base64: !Sub |
+          #!/bin/bash
+          yum update -y
+          
+          # Install Docker
+          yum install -y docker
+          systemctl start docker
+          systemctl enable docker
+          usermod -a -G docker ec2-user
+          
+          # Install Docker Compose
+          curl -L "https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+          chmod +x /usr/local/bin/docker-compose
+          
+          # Install AWS CLI v2 (if not already installed)
+          if ! command -v aws &> /dev/null; then
+            curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+            yum install -y unzip
+            unzip awscliv2.zip
+            ./aws/install
+            rm -rf aws awscliv2.zip
+          fi
+          
+          # Configure Docker to use overlay2 storage driver
+          echo '{"storage-driver": "overlay2"}' > /etc/docker/daemon.json
+          systemctl restart docker
+          
+          # Log completion
+          echo "Docker installation completed at $(date)" >> /var/log/docker-install.log
+      Tags:
+        - Key: Name
+          Value: !Sub '${Environment}-ec2-docker-3'
+        - Key: Environment
+          Value: !Ref Environment
+        - Key: InstanceNumber
+          Value: '3'
+
+Outputs:
+  SecurityGroupId:
+    Description: Security Group ID for EC2 instances
+    Value: !Ref EC2SecurityGroup
+    Export:
+      Name: !Sub '${AWS::StackName}-SecurityGroupId'
+
+  Instance1Id:
+    Description: EC2 Instance 1 ID
+    Value: !Ref EC2Instance1
+    Export:
+      Name: !Sub '${AWS::StackName}-Instance1Id'
+
+  Instance1PublicIP:
+    Description: EC2 Instance 1 Public IP
+    Value: !GetAtt EC2Instance1.PublicIp
+    Export:
+      Name: !Sub '${AWS::StackName}-Instance1PublicIP'
+
+  Instance1PrivateIP:
+    Description: EC2 Instance 1 Private IP
+    Value: !GetAtt EC2Instance1.PrivateIp
+    Export:
+      Name: !Sub '${AWS::StackName}-Instance1PrivateIP'
+
+  Instance2Id:
+    Description: EC2 Instance 2 ID
+    Value: !Ref EC2Instance2
+    Export:
+      Name: !Sub '${AWS::StackName}-Instance2Id'
+
+  Instance2PublicIP:
+    Description: EC2 Instance 2 Public IP
+    Value: !GetAtt EC2Instance2.PublicIp
+    Export:
+      Name: !Sub '${AWS::StackName}-Instance2PublicIP'
+
+  Instance2PrivateIP:
+    Description: EC2 Instance 2 Private IP
+    Value: !GetAtt EC2Instance2.PrivateIp
+    Export:
+      Name: !Sub '${AWS::StackName}-Instance2PrivateIP'
+
+  Instance3Id:
+    Description: EC2 Instance 3 ID
+    Value: !Ref EC2Instance3
+    Export:
+      Name: !Sub '${AWS::StackName}-Instance3Id'
+
+  Instance3PublicIP:
+    Description: EC2 Instance 3 Public IP
+    Value: !GetAtt EC2Instance3.PublicIp
+    Export:
+      Name: !Sub '${AWS::StackName}-Instance3PublicIP'
+
+  Instance3PrivateIP:
+    Description: EC2 Instance 3 Private IP
+    Value: !GetAtt EC2Instance3.PrivateIp
+    Export:
+      Name: !Sub '${AWS::StackName}-Instance3PrivateIP'
+
+  InstanceRoleArn:
+    Description: IAM Role ARN for EC2 instances
+    Value: !GetAtt EC2InstanceRole.Arn
+    Export:
+      Name: !Sub '${AWS::StackName}-InstanceRoleArn'
+
+  SSHCommand:
+    Description: SSH command to connect to Instance 1
+    Value: !Sub 'ssh -i ${KeyPairName}.pem ec2-user@${EC2Instance1.PublicIp}'
+

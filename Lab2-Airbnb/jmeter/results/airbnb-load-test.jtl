@@ -1,0 +1,2413 @@
+timeStamp,elapsed,label,responseCode,responseMessage,threadName,dataType,success,failureMessage,bytes,sentBytes,grpThreads,allThreads,URL,Latency,IdleTime,Connect
+1764043190695,80,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-2,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",511,246,3,3,http://localhost:3000/api/auth/login,73,0,1
+1764043190765,10,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-3,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",509,246,3,3,http://localhost:3000/api/auth/login,7,0,0
+1764043190659,117,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-1,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",509,246,3,3,http://localhost:3000/api/auth/login,110,0,11
+1764043190778,8,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-3,text,false,,328,259,3,3,http://localhost:3000/api/auth/me,6,0,0
+1764043190778,9,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-1,text,false,,328,259,3,3,http://localhost:3000/api/auth/me,8,0,0
+1764043190778,10,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-2,text,false,,328,261,3,3,http://localhost:3000/api/auth/me,9,0,0
+1764043190827,32,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-4,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",507,246,4,4,http://localhost:3000/api/auth/login,21,0,1
+1764043190860,4,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-4,text,false,,328,257,4,4,http://localhost:3000/api/auth/me,4,0,0
+1764043190893,35,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-5,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",513,246,5,5,http://localhost:3000/api/auth/login,34,0,0
+1764043190929,28,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-5,text,false,,328,263,5,5,http://localhost:3000/api/auth/me,27,0,0
+1764043190963,11,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-6,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",507,246,6,6,http://localhost:3000/api/auth/login,10,0,1
+1764043190975,3,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-6,text,false,,328,257,6,6,http://localhost:3000/api/auth/me,2,0,0
+1764043191033,5,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-7,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",511,246,7,7,http://localhost:3000/api/auth/login,4,0,1
+1764043191039,3,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-7,text,false,,328,261,7,7,http://localhost:3000/api/auth/me,2,0,0
+1764043191098,4,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-8,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",509,246,8,8,http://localhost:3000/api/auth/login,4,0,1
+1764043191103,2,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-8,text,false,,328,259,8,8,http://localhost:3000/api/auth/me,2,0,0
+1764043191164,7,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-9,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",511,246,9,9,http://localhost:3000/api/auth/login,6,0,1
+1764043191172,3,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-9,text,false,,328,261,9,9,http://localhost:3000/api/auth/me,3,0,0
+1764043191231,5,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-10,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",507,246,10,10,http://localhost:3000/api/auth/login,4,0,1
+1764043191236,3,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-10,text,false,,328,257,10,10,http://localhost:3000/api/auth/me,3,0,0
+1764043191299,4,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-11,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",507,246,11,11,http://localhost:3000/api/auth/login,4,0,1
+1764043191304,2,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-11,text,false,,328,257,11,11,http://localhost:3000/api/auth/me,1,0,0
+1764043191365,5,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-12,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",513,246,12,12,http://localhost:3000/api/auth/login,4,0,1
+1764043191370,2,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-12,text,false,,328,263,12,12,http://localhost:3000/api/auth/me,2,0,0
+1764043191435,7,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-13,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",509,246,13,13,http://localhost:3000/api/auth/login,5,0,1
+1764043191442,3,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-13,text,false,,328,259,13,13,http://localhost:3000/api/auth/me,3,0,0
+1764043191496,13,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-14,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",507,246,14,14,http://localhost:3000/api/auth/login,12,0,1
+1764043191510,17,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-14,text,false,,328,257,14,14,http://localhost:3000/api/auth/me,16,0,0
+1764043191564,18,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-15,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",507,246,15,15,http://localhost:3000/api/auth/login,16,0,1
+1764043191583,8,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-15,text,false,,328,257,15,15,http://localhost:3000/api/auth/me,7,0,0
+1764043191634,28,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-16,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",507,246,16,16,http://localhost:3000/api/auth/login,25,0,0
+1764043191662,18,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-16,text,false,,328,257,16,16,http://localhost:3000/api/auth/me,12,0,0
+1764043191698,11,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-17,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",507,246,17,17,http://localhost:3000/api/auth/login,10,0,1
+1764043191710,2,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-17,text,false,,328,257,17,17,http://localhost:3000/api/auth/me,2,0,0
+1764043191767,27,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-18,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",507,246,18,18,http://localhost:3000/api/auth/login,22,0,1
+1764043191795,9,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-18,text,false,,328,257,18,18,http://localhost:3000/api/auth/me,7,0,0
+1764043191831,48,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-19,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",511,246,19,19,http://localhost:3000/api/auth/login,36,0,1
+1764043191880,30,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-19,text,false,,328,261,20,20,http://localhost:3000/api/auth/me,27,0,0
+1764043191901,37,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-20,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",507,246,20,20,http://localhost:3000/api/auth/login,20,0,1
+1764043191938,22,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-20,text,false,,328,257,20,20,http://localhost:3000/api/auth/me,15,0,0
+1764043191968,42,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-21,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",509,246,21,21,http://localhost:3000/api/auth/login,38,0,1
+1764043192011,34,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-21,text,false,,328,259,22,22,http://localhost:3000/api/auth/me,19,0,0
+1764043192033,73,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-22,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",509,246,23,23,http://localhost:3000/api/auth/login,34,0,0
+1764043192106,145,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-22,text,false,,328,259,25,25,http://localhost:3000/api/auth/me,135,0,0
+1764043192099,175,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-23,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",507,246,25,25,http://localhost:3000/api/auth/login,171,0,1
+1764043192168,141,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-24,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",509,246,26,26,http://localhost:3000/api/auth/login,107,0,8
+1764043192233,121,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-25,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",511,246,26,26,http://localhost:3000/api/auth/login,83,0,0
+1764043192275,122,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-23,text,false,,328,257,27,27,http://localhost:3000/api/auth/me,92,0,0
+1764043192309,109,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-24,text,false,,328,259,27,27,http://localhost:3000/api/auth/me,89,0,0
+1764043192354,96,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-25,text,false,,328,261,28,28,http://localhost:3000/api/auth/me,66,0,0
+1764043192303,154,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-26,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",507,246,28,28,http://localhost:3000/api/auth/login,125,0,1
+1764043192367,105,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-27,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",511,246,28,28,http://localhost:3000/api/auth/login,84,0,1
+1764043192458,119,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-26,text,false,,328,257,30,30,http://localhost:3000/api/auth/me,58,0,0
+1764043192434,181,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-28,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",507,246,30,30,http://localhost:3000/api/auth/login,144,0,1
+1764043192473,144,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-27,text,false,,328,261,30,30,http://localhost:3000/api/auth/me,104,0,0
+1764043192500,261,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-29,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",511,246,32,32,http://localhost:3000/api/auth/login,196,0,1
+1764043192616,152,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-28,text,false,,328,257,32,32,http://localhost:3000/api/auth/me,94,0,0
+1764043192635,237,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-31,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",507,246,34,34,http://localhost:3000/api/auth/login,197,0,1
+1764043192763,121,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-29,text,false,,328,261,34,34,http://localhost:3000/api/auth/me,75,0,0
+1764043192569,315,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-30,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",507,246,34,34,http://localhost:3000/api/auth/login,128,0,1
+1764043192702,210,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-32,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",515,246,35,35,http://localhost:3000/api/auth/login,203,0,1
+1764043192770,142,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-33,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",507,246,35,35,http://localhost:3000/api/auth/login,135,0,1
+1764043192873,80,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-31,text,false,,328,257,35,35,http://localhost:3000/api/auth/me,41,0,0
+1764043192885,107,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-30,text,false,,328,257,36,36,http://localhost:3000/api/auth/me,68,0,0
+1764043192839,154,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-34,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",507,246,36,36,http://localhost:3000/api/auth/login,115,0,1
+1764043192914,139,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-32,text,false,,328,265,37,37,http://localhost:3000/api/auth/me,83,0,0
+1764043192914,139,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-33,text,false,,328,257,37,37,http://localhost:3000/api/auth/me,79,0,0
+1764043192909,144,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-35,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",509,246,37,37,http://localhost:3000/api/auth/login,85,0,1
+1764043192994,158,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-34,text,false,,328,257,38,38,http://localhost:3000/api/auth/me,115,0,0
+1764043193054,150,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-35,text,false,,328,259,39,39,http://localhost:3000/api/auth/me,99,0,0
+1764043193038,166,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-37,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",509,246,39,39,http://localhost:3000/api/auth/login,115,0,1
+1764043193105,173,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-38,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",509,246,40,40,http://localhost:3000/api/auth/login,161,0,0
+1764043192969,351,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-36,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",507,246,41,41,http://localhost:3000/api/auth/login,175,0,0
+1764043193205,151,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-37,text,false,,328,259,41,41,http://localhost:3000/api/auth/me,114,0,0
+1764043193172,184,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-39,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",507,246,41,41,http://localhost:3000/api/auth/login,174,0,3
+1764043193237,147,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-40,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",509,246,42,42,http://localhost:3000/api/auth/login,110,0,2
+1764043193279,115,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-38,text,false,,328,259,42,42,http://localhost:3000/api/auth/me,78,0,0
+1764043193321,119,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-36,text,false,,328,257,43,43,http://localhost:3000/api/auth/me,73,0,0
+1764043193305,164,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-41,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",507,246,43,43,http://localhost:3000/api/auth/login,128,0,0
+1764043193357,123,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-39,text,false,,328,257,43,43,http://localhost:3000/api/auth/me,83,0,0
+1764043193385,100,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-40,text,false,,328,259,43,43,http://localhost:3000/api/auth/me,83,0,0
+1764043193373,169,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-42,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",509,246,44,44,http://localhost:3000/api/auth/login,159,0,1
+1764043193470,166,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-41,text,false,,328,257,45,45,http://localhost:3000/api/auth/me,73,0,0
+1764043193440,341,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-43,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",509,246,48,48,http://localhost:3000/api/auth/login,212,0,0
+1764043193543,393,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-42,text,false,,328,259,50,50,http://localhost:3000/api/auth/me,223,0,0
+1764043193507,430,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-44,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",507,246,50,50,http://localhost:3000/api/auth/login,274,0,0
+1764043193573,440,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-45,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",509,246,51,51,http://localhost:3000/api/auth/login,365,0,1
+1764043193782,297,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-43,text,false,,328,259,52,52,http://localhost:3000/api/auth/me,231,0,0
+1764043193652,444,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-46,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",511,246,52,52,http://localhost:3000/api/auth/login,413,0,0
+1764043193708,388,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-47,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",509,246,52,52,http://localhost:3000/api/auth/login,357,0,1
+1764043193847,255,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-49,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",513,246,52,52,http://localhost:3000/api/auth/login,234,0,1
+1764043193909,194,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-50,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",515,246,52,52,http://localhost:3000/api/auth/login,171,0,0
+1764043193938,165,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-44,text,false,,328,257,52,52,http://localhost:3000/api/auth/me,158,0,0
+1764043193975,159,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-51,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",517,246,53,53,http://localhost:3000/api/auth/login,128,0,1
+1764043194098,58,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-47,text,false,,328,259,53,53,http://localhost:3000/api/auth/me,36,0,0
+1764043194043,114,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-52,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",509,246,53,53,http://localhost:3000/api/auth/login,91,0,1
+1764043194097,110,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-46,text,false,,328,261,54,54,http://localhost:3000/api/auth/me,48,0,0
+1764043194103,104,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-49,text,false,,328,263,54,54,http://localhost:3000/api/auth/me,54,0,0
+1764043193776,431,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-48,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",507,246,54,54,http://localhost:3000/api/auth/login,305,0,1
+1764043194103,106,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-50,text,false,,328,265,54,54,http://localhost:3000/api/auth/me,72,0,0
+1764043194014,214,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-45,text,false,,328,259,54,54,http://localhost:3000/api/auth/me,194,0,0
+1764043194135,92,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-51,text,false,,328,267,54,54,http://localhost:3000/api/auth/me,72,0,0
+1764043194109,119,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-53,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",509,246,54,54,http://localhost:3000/api/auth/login,100,0,0
+1764043194157,101,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-52,text,false,,328,259,55,55,http://localhost:3000/api/auth/me,70,0,0
+1764043194179,157,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-54,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",515,246,56,56,http://localhost:3000/api/auth/login,151,0,1
+1764043194209,128,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-48,text,false,,328,257,56,56,http://localhost:3000/api/auth/me,50,0,0
+1764043194228,228,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-53,text,false,,328,259,58,58,http://localhost:3000/api/auth/me,110,0,0
+1764043194243,439,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-55,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",515,246,61,61,http://localhost:3000/api/auth/login,214,0,0
+1764043194310,498,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-56,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",507,246,63,63,http://localhost:3000/api/auth/login,373,0,0
+1764043194337,472,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-54,text,false,,328,265,63,63,http://localhost:3000/api/auth/me,417,0,0
+1764043194377,480,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-57,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",513,246,64,64,http://localhost:3000/api/auth/login,432,0,1
+1764043194444,414,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-58,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",507,246,64,64,http://localhost:3000/api/auth/login,365,0,1
+1764043194648,255,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-61,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",509,246,64,64,http://localhost:3000/api/auth/login,211,0,1
+1764043194578,325,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-60,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",509,246,64,64,http://localhost:3000/api/auth/login,282,0,1
+1764043194683,232,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-55,text,false,,328,265,65,65,http://localhost:3000/api/auth/me,178,0,0
+1764043194512,418,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-59,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",507,246,65,65,http://localhost:3000/api/auth/login,349,0,0
+1764043194716,272,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-62,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",509,246,66,66,http://localhost:3000/api/auth/login,200,0,1
+1764043194778,211,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-63,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",507,246,66,66,http://localhost:3000/api/auth/login,138,0,1
+1764043194809,186,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-56,text,false,,328,257,66,66,http://localhost:3000/api/auth/me,148,0,0
+1764043194858,173,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-57,text,false,,328,263,66,66,http://localhost:3000/api/auth/me,130,0,0
+1764043194846,186,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-64,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",511,246,66,66,http://localhost:3000/api/auth/login,144,0,0
+1764043194858,174,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-58,text,false,,328,257,66,66,http://localhost:3000/api/auth/me,165,0,0
+1764043194904,204,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-61,text,false,,328,259,67,67,http://localhost:3000/api/auth/me,127,0,0
+1764043194904,205,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-60,text,false,,328,259,67,67,http://localhost:3000/api/auth/me,128,0,0
+1764043194931,179,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-59,text,false,,328,257,67,67,http://localhost:3000/api/auth/me,157,0,0
+1764043194914,347,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-65,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",507,246,70,70,http://localhost:3000/api/auth/login,325,0,1
+1764043194989,273,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-62,text,false,,328,259,70,70,http://localhost:3000/api/auth/me,120,0,0
+1764043194989,274,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-63,text,false,,328,257,70,70,http://localhost:3000/api/auth/me,121,0,0
+1764043194981,541,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-66,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",511,246,74,74,http://localhost:3000/api/auth/login,260,0,0
+1764043195032,518,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-64,text,false,,328,261,74,74,http://localhost:3000/api/auth/me,231,0,0
+1764043195047,681,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-67,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",509,246,77,77,http://localhost:3000/api/auth/login,543,0,1
+1764043195116,638,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-68,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",507,246,77,77,http://localhost:3000/api/auth/login,584,0,1
+1764043195262,516,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-65,text,false,,328,257,77,77,http://localhost:3000/api/auth/me,466,0,0
+1764043195253,526,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-70,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",507,246,77,77,http://localhost:3000/api/auth/login,476,0,0
+1764043195181,598,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-69,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",509,246,77,77,http://localhost:3000/api/auth/login,549,0,1
+1764043195523,258,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-66,text,false,,328,261,77,77,http://localhost:3000/api/auth/me,231,0,0
+1764043195316,512,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-71,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",507,246,78,78,http://localhost:3000/api/auth/login,465,0,1
+1764043195450,378,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-73,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",511,246,78,78,http://localhost:3000/api/auth/login,329,0,1
+1764043195383,445,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-72,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",507,246,78,78,http://localhost:3000/api/auth/login,397,0,0
+1764043195756,98,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-68,text,false,,328,257,79,79,http://localhost:3000/api/auth/me,73,0,0
+1764043195591,263,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-75,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",511,246,79,79,http://localhost:3000/api/auth/login,240,0,1
+1764043195720,135,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-77,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",507,246,79,79,http://localhost:3000/api/auth/login,110,0,1
+1764043195731,124,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-67,text,false,,328,259,79,79,http://localhost:3000/api/auth/me,100,0,0
+1764043195651,203,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-76,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",509,246,79,79,http://localhost:3000/api/auth/login,180,0,1
+1764043195780,134,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-70,text,false,,328,257,79,79,http://localhost:3000/api/auth/me,94,0,0
+1764043195831,115,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-72,text,false,,328,257,80,80,http://localhost:3000/api/auth/me,82,0,0
+1764043195830,116,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-71,text,false,,328,257,80,80,http://localhost:3000/api/auth/me,83,0,0
+1764043195830,117,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-73,text,false,,328,261,80,80,http://localhost:3000/api/auth/me,83,0,0
+1764043195787,250,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-78,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",507,246,81,81,http://localhost:3000/api/auth/login,156,0,1
+1764043195855,213,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-76,text,false,,328,259,82,82,http://localhost:3000/api/auth/me,110,0,0
+1764043195855,214,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-77,text,false,,328,257,82,82,http://localhost:3000/api/auth/me,114,0,0
+1764043195855,451,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-75,text,false,,328,261,85,85,http://localhost:3000/api/auth/me,182,0,0
+1764043195516,789,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-74,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",511,246,85,85,http://localhost:3000/api/auth/login,549,0,1
+1764043195854,484,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-79,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",511,246,86,86,http://localhost:3000/api/auth/login,430,0,1
+1764043195780,565,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-69,text,false,,328,259,86,86,http://localhost:3000/api/auth/me,287,0,0
+1764043195921,764,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-80,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",511,246,91,91,http://localhost:3000/api/auth/login,428,0,0
+1764043196038,760,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-78,text,false,,328,257,93,93,http://localhost:3000/api/auth/me,646,0,0
+1764043195986,812,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-81,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",509,246,93,93,http://localhost:3000/api/auth/login,701,0,1
+1764043196054,766,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-82,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",507,246,93,93,http://localhost:3000/api/auth/login,697,0,0
+1764043196307,557,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-74,text,false,,328,261,94,94,http://localhost:3000/api/auth/me,490,0,0
+1764043196187,678,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-84,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",509,246,94,94,http://localhost:3000/api/auth/login,611,0,1
+1764043196121,744,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-83,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",509,246,94,94,http://localhost:3000/api/auth/login,678,0,1
+1764043196339,537,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-79,text,false,,328,261,94,94,http://localhost:3000/api/auth/me,481,0,0
+1764043196323,554,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-86,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",507,246,94,94,http://localhost:3000/api/auth/login,497,0,0
+1764043196258,654,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-85,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",509,246,94,94,http://localhost:3000/api/auth/login,521,0,0
+1764043196658,272,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-91,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",509,246,95,95,http://localhost:3000/api/auth/login,259,0,1
+1764043196686,244,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-80,text,false,,328,261,95,95,http://localhost:3000/api/auth/me,179,0,0
+1764043196454,477,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-88,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",509,246,95,95,http://localhost:3000/api/auth/login,411,0,1
+1764043196388,544,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-87,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",511,246,95,95,http://localhost:3000/api/auth/login,490,0,0
+1764043196590,344,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-90,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",511,246,95,95,http://localhost:3000/api/auth/login,260,0,1
+1764043196523,411,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-89,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",509,246,95,95,http://localhost:3000/api/auth/login,327,0,1
+1764043196821,127,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-82,text,false,,328,257,95,95,http://localhost:3000/api/auth/me,110,0,0
+1764043196798,150,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-81,text,false,,328,259,95,95,http://localhost:3000/api/auth/me,134,0,0
+1764043196791,157,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-93,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",509,246,95,95,http://localhost:3000/api/auth/login,141,0,1
+1764043196725,231,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-92,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",511,246,95,95,http://localhost:3000/api/auth/login,208,0,1
+1764043196878,126,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-86,text,false,,328,257,96,96,http://localhost:3000/api/auth/me,69,0,0
+1764043196866,141,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-84,text,false,,328,259,96,96,http://localhost:3000/api/auth/me,82,0,0
+1764043196866,157,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-83,text,false,,328,259,96,96,http://localhost:3000/api/auth/me,90,0,0
+1764043196934,170,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-89,text,false,,328,259,97,97,http://localhost:3000/api/auth/me,72,0,0
+1764043196934,170,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-90,text,false,,328,261,97,97,http://localhost:3000/api/auth/me,73,0,0
+1764043196931,173,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-88,text,false,,328,259,97,97,http://localhost:3000/api/auth/me,78,0,0
+1764043196932,173,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-87,text,false,,328,261,97,97,http://localhost:3000/api/auth/me,77,0,0
+1764043196930,181,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-91,text,false,,328,259,97,97,http://localhost:3000/api/auth/me,93,0,0
+1764043196857,432,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-94,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",507,246,100,100,http://localhost:3000/api/auth/login,233,0,0
+1764043196956,344,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-92,text,false,,328,261,100,100,http://localhost:3000/api/auth/me,148,0,0
+1764043196949,352,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-93,text,false,,328,259,100,100,http://localhost:3000/api/auth/me,156,0,0
+1764043196990,888,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-96,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",507,246,109,109,http://localhost:3000/api/auth/login,727,0,1
+1764043196913,990,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-85,text,false,,328,259,109,109,http://localhost:3000/api/auth/me,404,0,0
+1764043191373,6726,GET /api/properties,200,OK,Authenticated Users 1-12,text,true,,9390,266,112,112,http://localhost:3000/api/properties,6387,0,0
+1764043197057,1042,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-97,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",509,246,112,112,http://localhost:3000/api/auth/login,662,0,0
+1764043197193,1167,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-99,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",507,246,116,116,http://localhost:3000/api/auth/login,1036,0,1
+1764043197127,1232,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-98,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",509,246,116,116,http://localhost:3000/api/auth/login,1102,0,0
+1764043197290,1071,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-94,text,false,,328,257,116,116,http://localhost:3000/api/auth/me,885,0,0
+1764043196924,1438,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-95,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",509,246,116,116,http://localhost:3000/api/auth/login,165,0,1
+1764043197330,1090,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-101,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",513,246,117,117,http://localhost:3000/api/auth/login,955,0,1
+1764043197259,1161,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-100,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",507,246,117,117,http://localhost:3000/api/auth/login,1026,0,1
+1764043197663,780,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-106,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",513,246,117,117,http://localhost:3000/api/auth/login,701,0,1
+1764043197728,716,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-107,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",511,246,117,117,http://localhost:3000/api/auth/login,634,0,1
+1764043197797,646,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-108,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",511,246,117,117,http://localhost:3000/api/auth/login,564,0,1
+1764043197864,579,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-109,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",509,246,117,117,http://localhost:3000/api/auth/login,497,0,1
+1764043198100,352,GET /api/owner/dashboard,401,Unauthorized,Authenticated Users 1-12,text,false,,328,271,117,117,http://localhost:3000/api/owner/dashboard,319,0,0
+1764043197879,573,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-96,text,false,,328,257,117,117,http://localhost:3000/api/auth/me,537,0,0
+1764043197396,1056,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-102,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",511,246,117,117,http://localhost:3000/api/auth/login,968,0,1
+1764043198100,353,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-97,text,false,,328,259,117,117,http://localhost:3000/api/auth/me,320,0,0
+1764043197594,872,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-105,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",513,246,117,117,http://localhost:3000/api/auth/login,770,0,1
+1764043198134,386,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-113,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",507,246,117,117,http://localhost:3000/api/auth/login,312,0,1
+1764043198063,457,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-112,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",509,246,117,117,http://localhost:3000/api/auth/login,383,0,0
+1764043197997,523,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-111,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",509,246,117,117,http://localhost:3000/api/auth/login,448,0,0
+1764043197930,665,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-110,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",509,246,118,118,http://localhost:3000/api/auth/login,514,0,0
+1764043198421,303,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-100,text,false,,328,257,120,120,http://localhost:3000/api/auth/me,99,0,0
+1764043198199,525,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-114,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",513,246,120,120,http://localhost:3000/api/auth/login,324,0,0
+1764043198264,460,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-115,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",511,246,120,120,http://localhost:3000/api/auth/login,259,0,1
+1764043198331,393,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-116,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",511,246,120,120,http://localhost:3000/api/auth/login,192,0,1
+1764043198421,307,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-101,text,false,,328,263,120,120,http://localhost:3000/api/auth/me,103,0,0
+1764043198360,369,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-99,text,false,,328,257,120,120,http://localhost:3000/api/auth/me,171,0,0
+1764043198360,369,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-98,text,false,,328,259,120,120,http://localhost:3000/api/auth/me,169,0,0
+1764043198362,368,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-95,text,false,,328,259,120,120,http://localhost:3000/api/auth/me,171,0,0
+1764043198444,691,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-107,text,false,,328,261,126,126,http://localhost:3000/api/auth/me,285,0,0
+1764043198399,736,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-117,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",511,246,126,126,http://localhost:3000/api/auth/login,325,0,0
+1764043198444,692,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-106,text,false,,328,263,126,126,http://localhost:3000/api/auth/me,287,0,0
+1764043197529,1613,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-104,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",511,246,127,127,http://localhost:3000/api/auth/login,835,0,0
+1764043197462,1680,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-103,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",513,246,127,127,http://localhost:3000/api/auth/login,902,0,1
+1764043198444,769,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-108,text,false,,328,261,128,128,http://localhost:3000/api/auth/me,472,0,0
+1764043198445,918,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-109,text,false,,328,259,130,130,http://localhost:3000/api/auth/me,682,0,0
+1764043198453,912,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-102,text,false,,328,261,130,130,http://localhost:3000/api/auth/me,676,0,0
+1764043198465,900,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-118,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",507,246,130,130,http://localhost:3000/api/auth/login,669,0,0
+1764043198467,899,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-105,text,false,,328,263,130,130,http://localhost:3000/api/auth/me,667,0,0
+1764043198521,846,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-113,text,false,,328,257,130,130,http://localhost:3000/api/auth/me,614,0,0
+1764043198521,846,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-111,text,false,,328,259,130,130,http://localhost:3000/api/auth/me,615,0,0
+1764043198532,908,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-119,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",509,246,131,131,http://localhost:3000/api/auth/login,834,0,1
+1764043198670,770,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-121,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",509,246,131,131,http://localhost:3000/api/auth/login,737,0,2
+1764043198602,838,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-120,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",507,246,131,131,http://localhost:3000/api/auth/login,805,0,1
+1764043198724,752,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-115,text,false,,328,261,132,132,http://localhost:3000/api/auth/me,652,0,0
+1764043198724,753,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-114,text,false,,328,263,132,132,http://localhost:3000/api/auth/me,653,0,0
+1764043198724,754,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-116,text,false,,328,261,132,132,http://localhost:3000/api/auth/me,655,0,0
+1764043199143,466,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-103,text,false,,328,263,134,134,http://localhost:3000/api/auth/me,319,0,0
+1764043199143,467,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-104,text,false,,328,261,134,134,http://localhost:3000/api/auth/me,320,0,0
+1764043198733,877,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-122,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",509,246,134,134,http://localhost:3000/api/auth/login,751,0,0
+1764043199136,494,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-117,text,false,,328,261,134,134,http://localhost:3000/api/auth/me,339,0,0
+1764043198801,829,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-123,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",507,246,134,134,http://localhost:3000/api/auth/login,681,0,1
+1764043198867,763,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-124,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",509,246,134,134,http://localhost:3000/api/auth/login,613,0,1
+1764043198934,697,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-125,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",507,246,134,134,http://localhost:3000/api/auth/login,546,0,1
+1764043199366,417,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-118,text,false,,328,257,136,136,http://localhost:3000/api/auth/me,243,0,0
+1764043199203,589,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-129,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",507,246,136,136,http://localhost:3000/api/auth/login,451,0,1
+1764043199270,522,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-130,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",511,246,136,136,http://localhost:3000/api/auth/login,384,0,1
+1764043199337,455,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-131,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",511,246,136,136,http://localhost:3000/api/auth/login,316,0,1
+1764043199137,655,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-128,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",507,246,136,136,http://localhost:3000/api/auth/login,517,0,1
+1764043198521,1278,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-112,text,false,,328,259,136,136,http://localhost:3000/api/auth/me,1131,0,0
+1764043198596,1203,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-110,text,false,,328,259,136,136,http://localhost:3000/api/auth/me,1057,0,0
+1764043199441,575,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-121,text,false,,328,259,140,140,http://localhost:3000/api/auth/me,345,0,0
+1764043199441,574,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-120,text,false,,328,257,140,140,http://localhost:3000/api/auth/me,344,0,0
+1764043199441,575,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-119,text,false,,328,259,140,140,http://localhost:3000/api/auth/me,344,0,0
+1764043199403,617,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-132,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",507,246,140,140,http://localhost:3000/api/auth/login,396,0,1
+1764043199631,945,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-124,text,false,,328,259,148,148,http://localhost:3000/api/auth/me,385,0,0
+1764043199631,945,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-125,text,false,,328,257,148,148,http://localhost:3000/api/auth/me,381,0,0
+1764043199630,950,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-123,text,false,,328,257,148,148,http://localhost:3000/api/auth/me,386,0,0
+1764043199611,973,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-122,text,false,,328,259,148,148,http://localhost:3000/api/auth/me,405,0,0
+1764043199538,1047,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-134,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",507,246,148,148,http://localhost:3000/api/auth/login,486,0,1
+1764043199469,1116,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-133,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",507,246,148,148,http://localhost:3000/api/auth/login,555,0,1
+1764043199068,1591,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-127,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",507,246,149,149,http://localhost:3000/api/auth/login,507,0,0
+1764043199002,1657,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-126,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",509,246,149,149,http://localhost:3000/api/auth/login,573,0,0
+1764043199793,1012,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-128,text,false,,328,257,151,151,http://localhost:3000/api/auth/me,785,0,0
+1764043199793,1013,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-131,text,false,,328,261,151,151,http://localhost:3000/api/auth/me,786,0,0
+1764043199793,1013,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-130,text,false,,328,261,151,151,http://localhost:3000/api/auth/me,786,0,0
+1764043199793,1018,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-129,text,false,,328,257,151,151,http://localhost:3000/api/auth/me,790,0,0
+1764043199608,1203,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-135,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",511,246,151,151,http://localhost:3000/api/auth/login,1080,0,1
+1764043199744,1067,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-137,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",513,246,151,151,http://localhost:3000/api/auth/login,841,0,0
+1764043199671,1140,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-136,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",507,246,151,151,http://localhost:3000/api/auth/login,1017,0,0
+1764043200021,855,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-132,text,false,,328,257,152,152,http://localhost:3000/api/auth/me,791,0,0
+1764043199939,937,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-140,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",511,246,152,152,http://localhost:3000/api/auth/login,872,0,1
+1764043199806,1071,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-138,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",513,246,152,152,http://localhost:3000/api/auth/login,1005,0,0
+1764043199873,1004,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-139,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",509,246,152,152,http://localhost:3000/api/auth/login,938,0,0
+1764043200660,296,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-127,text,false,,328,257,154,154,http://localhost:3000/api/auth/me,214,0,0
+1764043200585,371,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-134,text,false,,328,257,154,154,http://localhost:3000/api/auth/me,291,0,0
+1764043200585,371,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-133,text,false,,328,257,154,154,http://localhost:3000/api/auth/me,291,0,0
+1764043200074,883,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-142,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",509,246,154,154,http://localhost:3000/api/auth/login,804,0,1
+1764043200006,951,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-141,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",507,246,154,154,http://localhost:3000/api/auth/login,872,0,1
+1764043200274,683,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-145,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",507,246,154,154,http://localhost:3000/api/auth/login,603,0,0
+1764043200141,817,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-143,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",507,246,154,154,http://localhost:3000/api/auth/login,736,0,0
+1764043200207,751,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-144,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",511,246,154,154,http://localhost:3000/api/auth/login,671,0,1
+1764043200660,325,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-126,text,false,,328,259,154,154,http://localhost:3000/api/auth/me,269,0,0
+1764043200342,691,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-146,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",507,246,155,155,http://localhost:3000/api/auth/login,588,0,0
+1764043200542,527,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-149,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",511,246,155,155,http://localhost:3000/api/auth/login,416,0,0
+1764043200743,334,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-152,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",511,246,155,155,http://localhost:3000/api/auth/login,241,0,1
+1764043200610,467,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-150,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",509,246,155,155,http://localhost:3000/api/auth/login,376,0,0
+1764043200676,401,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-151,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",507,246,155,155,http://localhost:3000/api/auth/login,309,0,1
+1764043200812,273,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-136,text,false,,328,257,156,156,http://localhost:3000/api/auth/me,205,0,0
+1764043200812,273,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-135,text,false,,328,261,156,156,http://localhost:3000/api/auth/me,207,0,0
+1764043200812,274,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-137,text,false,,328,263,156,156,http://localhost:3000/api/auth/me,207,0,0
+1764043200878,302,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-139,text,false,,328,259,157,157,http://localhost:3000/api/auth/me,189,0,0
+1764043200878,304,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-138,text,false,,328,263,157,157,http://localhost:3000/api/auth/me,190,0,0
+1764043200877,305,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-140,text,false,,328,261,157,157,http://localhost:3000/api/auth/me,191,0,0
+1764043200814,369,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-153,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",507,246,157,157,http://localhost:3000/api/auth/login,264,0,0
+1764043200958,413,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-144,text,false,,328,261,160,160,http://localhost:3000/api/auth/me,224,0,0
+1764043200958,414,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-142,text,false,,328,259,160,160,http://localhost:3000/api/auth/me,226,0,0
+1764043200958,413,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-145,text,false,,328,257,160,160,http://localhost:3000/api/auth/me,224,0,0
+1764043200944,428,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-155,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",511,246,160,160,http://localhost:3000/api/auth/login,240,0,1
+1764043200958,414,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-141,text,false,,328,257,160,160,http://localhost:3000/api/auth/me,226,0,0
+1764043200880,504,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-154,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",509,246,160,160,http://localhost:3000/api/auth/login,306,0,1
+1764043200958,429,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-143,text,false,,328,257,160,160,http://localhost:3000/api/auth/me,346,0,0
+1764043201034,353,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-146,text,false,,328,257,160,160,http://localhost:3000/api/auth/me,289,0,0
+1764043200410,977,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-147,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",509,246,160,160,http://localhost:3000/api/auth/login,520,0,2
+1764043201077,676,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-152,text,false,,328,261,166,166,http://localhost:3000/api/auth/me,292,0,0
+1764043201077,676,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-150,text,false,,328,259,166,166,http://localhost:3000/api/auth/me,294,0,0
+1764043201070,684,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-149,text,false,,328,261,166,166,http://localhost:3000/api/auth/me,314,0,0
+1764043201077,678,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-151,text,false,,328,257,166,166,http://localhost:3000/api/auth/me,307,0,0
+1764043200476,1285,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-148,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",507,246,166,166,http://localhost:3000/api/auth/login,480,0,1
+1764043201013,840,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-156,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",507,246,167,167,http://localhost:3000/api/auth/login,699,0,1
+1764043201149,893,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-158,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",515,246,170,170,http://localhost:3000/api/auth/login,606,0,0
+1764043201183,873,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-153,text,false,,328,257,170,170,http://localhost:3000/api/auth/me,572,0,0
+1764043201078,994,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-157,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",509,246,170,170,http://localhost:3000/api/auth/login,776,0,1
+1764043201384,840,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-154,text,false,,328,259,173,173,http://localhost:3000/api/auth/me,673,0,0
+1764043201372,861,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-155,text,false,,328,261,173,173,http://localhost:3000/api/auth/me,696,0,0
+1764043201278,956,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-160,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",511,246,173,173,http://localhost:3000/api/auth/login,794,0,1
+1764043201212,1022,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-159,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",507,246,173,173,http://localhost:3000/api/auth/login,863,0,1
+1764043201388,859,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-147,text,false,,328,259,173,173,http://localhost:3000/api/auth/me,748,0,0
+1764043201347,900,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-161,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",511,246,173,173,http://localhost:3000/api/auth/login,792,0,1
+1764043201762,570,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-148,text,false,,328,257,174,174,http://localhost:3000/api/auth/me,453,0,0
+1764043201853,479,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-156,text,false,,328,257,174,174,http://localhost:3000/api/auth/me,361,0,0
+1764043201549,831,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-164,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",513,246,175,175,http://localhost:3000/api/auth/login,754,0,0
+1764043201617,763,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-165,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",517,246,175,175,http://localhost:3000/api/auth/login,686,0,0
+1764043201481,903,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-163,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",509,246,175,175,http://localhost:3000/api/auth/login,753,0,0
+1764043201414,1003,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-162,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",509,246,175,175,http://localhost:3000/api/auth/login,833,0,0
+1764043201815,690,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-168,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",507,246,177,177,http://localhost:3000/api/auth/login,605,0,1
+1764043201747,758,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-167,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",509,246,177,177,http://localhost:3000/api/auth/login,673,0,1
+1764043202073,433,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-157,text,false,,328,259,177,177,http://localhost:3000/api/auth/me,309,0,0
+1764043201890,616,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-169,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",507,246,177,177,http://localhost:3000/api/auth/login,529,0,1
+1764043202042,472,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-158,text,false,,328,265,177,177,http://localhost:3000/api/auth/me,374,0,0
+1764043202016,498,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-171,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",511,246,177,177,http://localhost:3000/api/auth/login,401,0,1
+1764043201951,563,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-170,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",507,246,177,177,http://localhost:3000/api/auth/login,467,0,0
+1764043201680,842,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-166,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",509,246,177,177,http://localhost:3000/api/auth/login,652,0,1
+1764043202084,520,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-172,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",507,246,178,178,http://localhost:3000/api/auth/login,431,0,1
+1764043202153,451,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-173,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",511,246,178,178,http://localhost:3000/api/auth/login,362,0,1
+1764043202234,387,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-160,text,false,,328,261,179,179,http://localhost:3000/api/auth/me,333,0,0
+1764043202235,387,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-159,text,false,,328,257,179,179,http://localhost:3000/api/auth/me,333,0,0
+1764043202248,376,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-161,text,false,,328,261,179,179,http://localhost:3000/api/auth/me,320,0,0
+1764043202417,470,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-162,text,false,,328,259,183,183,http://localhost:3000/api/auth/me,185,0,0
+1764043202384,503,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-163,text,false,,328,259,183,183,http://localhost:3000/api/auth/me,219,0,0
+1764043202380,507,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-164,text,false,,328,263,183,183,http://localhost:3000/api/auth/me,223,0,0
+1764043202380,507,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-165,text,false,,328,267,183,183,http://localhost:3000/api/auth/me,224,0,0
+1764043202218,680,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-174,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",509,246,183,183,http://localhost:3000/api/auth/login,387,0,1
+1764043202288,637,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-175,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",511,246,183,183,http://localhost:3000/api/auth/login,316,0,0
+1764043202515,739,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-170,text,false,,328,257,188,188,http://localhost:3000/api/auth/me,382,0,0
+1764043202488,766,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-178,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",515,246,188,188,http://localhost:3000/api/auth/login,410,0,0
+1764043202354,900,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-176,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",511,246,188,188,http://localhost:3000/api/auth/login,553,0,1
+1764043202506,751,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-167,text,false,,328,259,188,188,http://localhost:3000/api/auth/me,397,0,0
+1764043202506,753,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-168,text,false,,328,257,188,188,http://localhost:3000/api/auth/me,398,0,0
+1764043202418,841,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-177,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",509,246,188,188,http://localhost:3000/api/auth/login,488,0,0
+1764043202506,753,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-169,text,false,,328,257,188,188,http://localhost:3000/api/auth/me,399,0,0
+1764043202515,785,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-171,text,false,,328,261,189,189,http://localhost:3000/api/auth/me,474,0,0
+1764043202523,777,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-166,text,false,,328,259,189,189,http://localhost:3000/api/auth/me,491,0,0
+1764043202605,817,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-172,text,false,,328,257,190,190,http://localhost:3000/api/auth/me,587,0,0
+1764043202605,822,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-173,text,false,,328,261,191,191,http://localhost:3000/api/auth/me,689,0,0
+1764043202552,875,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-179,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",507,246,191,191,http://localhost:3000/api/auth/login,708,0,1
+1764043202755,897,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-182,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",513,246,194,194,http://localhost:3000/api/auth/login,668,0,1
+1764043202926,738,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-175,text,false,,328,261,194,194,http://localhost:3000/api/auth/me,499,0,0
+1764043202899,772,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-174,text,false,,328,259,194,194,http://localhost:3000/api/auth/me,527,0,0
+1764043202622,1052,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-180,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",511,246,194,194,http://localhost:3000/api/auth/login,805,0,0
+1764043202689,1205,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-181,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",509,246,198,198,http://localhost:3000/api/auth/login,736,0,0
+1764043202819,1086,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-183,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",511,246,198,198,http://localhost:3000/api/auth/login,782,0,1
+1764043202887,1063,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-184,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",509,246,198,198,http://localhost:3000/api/auth/login,974,0,1
+1764043202954,999,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-185,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",513,246,198,198,http://localhost:3000/api/auth/login,907,0,0
+1764043203021,932,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-186,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",509,246,198,198,http://localhost:3000/api/auth/login,839,0,1
+1764043203255,709,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-176,text,false,,328,261,199,199,http://localhost:3000/api/auth/me,428,0,0
+1764043203255,710,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-178,text,false,,328,265,199,199,http://localhost:3000/api/auth/me,429,0,0
+1764043203087,878,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-187,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",511,246,199,199,http://localhost:3000/api/auth/login,773,0,1
+1764043203259,895,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-177,text,false,,328,259,201,201,http://localhost:3000/api/auth/me,643,0,0
+1764043203155,999,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-188,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",511,246,201,201,http://localhost:3000/api/auth/login,750,0,1
+1764043203429,765,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-179,text,false,,328,257,202,202,http://localhost:3000/api/auth/me,508,0,0
+1764043203289,917,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-190,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",517,246,202,202,http://localhost:3000/api/auth/login,678,0,0
+1764043203357,849,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-191,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",511,246,202,202,http://localhost:3000/api/auth/login,610,0,1
+1764043203222,1006,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-189,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",509,246,203,203,http://localhost:3000/api/auth/login,932,0,1
+1764043203906,496,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-183,text,false,,328,261,205,205,http://localhost:3000/api/auth/me,295,0,0
+1764043203894,508,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-181,text,false,,328,259,205,205,http://localhost:3000/api/auth/me,308,0,0
+1764043203674,729,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-180,text,false,,328,261,205,205,http://localhost:3000/api/auth/me,531,0,0
+1764043203560,843,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-194,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",511,246,205,205,http://localhost:3000/api/auth/login,649,0,0
+1764043203624,779,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-195,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",509,246,205,205,http://localhost:3000/api/auth/login,585,0,2
+1764043203490,920,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-193,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",509,246,205,205,http://localhost:3000/api/auth/login,736,0,0
+1764043203653,757,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-182,text,false,,328,263,205,205,http://localhost:3000/api/auth/me,574,0,0
+1764043203426,985,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-192,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",513,246,205,205,http://localhost:3000/api/auth/login,802,0,0
+1764043203954,828,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-185,text,false,,328,263,211,211,http://localhost:3000/api/auth/me,441,0,0
+1764043203950,835,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-184,text,false,,328,259,211,211,http://localhost:3000/api/auth/me,453,0,0
+1764043203825,960,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-198,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",509,246,211,211,http://localhost:3000/api/auth/login,580,0,0
+1764043203892,894,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-199,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",511,246,211,211,http://localhost:3000/api/auth/login,513,0,1
+1764043203758,1046,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-197,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",511,246,211,211,http://localhost:3000/api/auth/login,652,0,0
+1764043191042,13771,GET /api/properties,200,OK,Authenticated Users 1-7,text,true,,9357,264,211,211,http://localhost:3000/api/properties,13383,0,0
+1764043203692,1122,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-196,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",511,246,211,211,http://localhost:3000/api/auth/login,719,0,0
+1764043203954,959,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-186,text,false,,328,259,213,213,http://localhost:3000/api/auth/me,723,0,0
+1764043203966,947,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-187,text,false,,328,261,213,213,http://localhost:3000/api/auth/me,717,0,0
+1764043204155,758,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-188,text,false,,328,261,213,213,http://localhost:3000/api/auth/me,533,0,0
+1764043204095,868,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-202,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",511,246,213,213,http://localhost:3000/api/auth/login,688,0,0
+1764043204207,765,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-191,text,false,,328,261,214,214,http://localhost:3000/api/auth/me,577,0,0
+1764043204207,765,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-190,text,false,,328,267,214,214,http://localhost:3000/api/auth/me,578,0,0
+1764043204025,948,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-201,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",507,246,214,214,http://localhost:3000/api/auth/login,761,0,0
+1764043203960,1013,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-200,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",509,246,214,214,http://localhost:3000/api/auth/login,827,0,1
+1764043204228,860,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-189,text,false,,328,259,215,215,http://localhost:3000/api/auth/me,715,0,0
+1764043204159,943,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-203,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",509,246,216,216,http://localhost:3000/api/auth/login,784,0,1
+1764043204410,737,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-193,text,false,,328,259,216,216,http://localhost:3000/api/auth/me,563,0,0
+1764043204411,736,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-192,text,false,,328,263,216,216,http://localhost:3000/api/auth/me,562,0,0
+1764043204296,852,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-205,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",509,246,216,216,http://localhost:3000/api/auth/login,680,0,0
+1764043204364,784,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-206,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",507,246,216,216,http://localhost:3000/api/auth/login,611,0,3
+1764043204404,776,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-195,text,false,,328,259,217,217,http://localhost:3000/api/auth/me,571,0,0
+1764043204404,776,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-194,text,false,,328,261,217,217,http://localhost:3000/api/auth/me,571,0,0
+1764043204227,971,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-204,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",509,246,217,217,http://localhost:3000/api/auth/login,863,0,1
+1764043204815,558,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-196,text,false,,328,261,220,220,http://localhost:3000/api/auth/me,324,0,0
+1764043204815,574,GET /api/owner/dashboard,401,Unauthorized,Authenticated Users 1-7,text,false,,328,269,220,220,http://localhost:3000/api/owner/dashboard,331,0,0
+1764043204804,585,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-197,text,false,,328,261,220,220,http://localhost:3000/api/auth/me,343,0,0
+1764043204697,692,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-211,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",507,246,220,220,http://localhost:3000/api/auth/login,651,0,0
+1764043204632,758,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-210,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",513,246,220,220,http://localhost:3000/api/auth/login,716,0,0
+1764043204786,604,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-199,text,false,,328,261,219,219,http://localhost:3000/api/auth/me,362,0,0
+1764043204786,628,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-198,text,false,,328,259,219,219,http://localhost:3000/api/auth/me,411,0,0
+1764043204427,988,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-207,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",509,246,219,219,http://localhost:3000/api/auth/login,772,0,1
+1764043204564,1059,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-209,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",507,246,222,222,http://localhost:3000/api/auth/login,783,0,0
+1764043204498,1126,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-208,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",507,246,222,222,http://localhost:3000/api/auth/login,849,0,0
+1764043204766,881,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-212,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",509,246,223,223,http://localhost:3000/api/auth/login,582,0,1
+1764043204974,716,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-201,text,false,,328,257,223,223,http://localhost:3000/api/auth/me,417,0,0
+1764043204974,722,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-200,text,false,,328,259,223,223,http://localhost:3000/api/auth/me,429,0,0
+1764043204964,747,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-202,text,false,,328,261,224,224,http://localhost:3000/api/auth/me,451,0,0
+1764043205102,611,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-203,text,false,,328,259,224,224,http://localhost:3000/api/auth/me,523,0,0
+1764043204830,883,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-213,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",511,246,224,224,http://localhost:3000/api/auth/login,796,0,1
+1764043204897,816,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-214,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",513,246,224,224,http://localhost:3000/api/auth/login,728,0,0
+1764043205199,668,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-204,text,false,,328,259,226,226,http://localhost:3000/api/auth/me,490,0,0
+1764043205148,731,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-205,text,false,,328,259,226,226,http://localhost:3000/api/auth/me,549,0,0
+1764043205148,740,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-206,text,false,,328,257,226,226,http://localhost:3000/api/auth/me,561,0,0
+1764043205100,789,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-217,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",507,246,226,226,http://localhost:3000/api/auth/login,612,0,1
+1764043205032,859,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-216,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",513,246,226,226,http://localhost:3000/api/auth/login,681,0,1
+1764043204964,926,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-215,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",509,246,226,226,http://localhost:3000/api/auth/login,751,0,1
+1764043205416,581,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-207,text,false,,328,259,228,228,http://localhost:3000/api/auth/me,452,0,0
+1764043205365,631,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-221,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",509,246,228,228,http://localhost:3000/api/auth/login,594,0,1
+1764043205390,609,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-211,text,false,,328,257,228,228,http://localhost:3000/api/auth/me,488,0,0
+1764043205390,624,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-210,text,false,,328,263,228,228,http://localhost:3000/api/auth/me,499,0,0
+1764043205300,714,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-220,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",511,246,228,228,http://localhost:3000/api/auth/login,590,0,0
+1764043205165,860,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-218,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",513,246,228,228,http://localhost:3000/api/auth/login,726,0,1
+1764043205233,792,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-219,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",507,246,228,228,http://localhost:3000/api/auth/login,658,0,0
+1764043205648,411,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-212,text,false,,328,259,229,229,http://localhost:3000/api/auth/me,310,0,0
+1764043205624,435,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-208,text,false,,328,257,229,229,http://localhost:3000/api/auth/me,334,0,0
+1764043205624,435,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-209,text,false,,328,257,229,229,http://localhost:3000/api/auth/me,334,0,0
+1764043205713,415,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-213,text,false,,328,261,230,230,http://localhost:3000/api/auth/me,285,0,0
+1764043205713,415,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-214,text,false,,328,263,230,230,http://localhost:3000/api/auth/me,286,0,0
+1764043205569,579,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-224,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",513,246,230,230,http://localhost:3000/api/auth/login,457,0,1
+1764043205636,512,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-225,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",513,246,230,230,http://localhost:3000/api/auth/login,389,0,7
+1764043205501,647,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-223,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",509,246,230,230,http://localhost:3000/api/auth/login,558,0,1
+1764043205435,714,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-222,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",511,246,230,230,http://localhost:3000/api/auth/login,624,0,0
+1764043205891,438,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-215,text,false,,328,259,233,233,http://localhost:3000/api/auth/me,243,0,0
+1764043205891,439,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-216,text,false,,328,263,233,233,http://localhost:3000/api/auth/me,244,0,0
+1764043205890,441,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-217,text,false,,328,257,233,233,http://localhost:3000/api/auth/me,245,0,0
+1764043205836,507,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-228,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",507,246,233,233,http://localhost:3000/api/auth/login,313,0,1
+1764043205700,651,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-226,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",509,246,233,233,http://localhost:3000/api/auth/login,536,0,1
+1764043205767,584,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-227,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",509,246,233,233,http://localhost:3000/api/auth/login,382,0,1
+1764043206025,529,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-219,text,false,,328,257,236,236,http://localhost:3000/api/auth/me,293,0,0
+1764043206014,540,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-220,text,false,,328,261,236,236,http://localhost:3000/api/auth/me,304,0,0
+1764043205997,573,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-221,text,false,,328,259,236,236,http://localhost:3000/api/auth/me,346,0,0
+1764043205901,679,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-229,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",509,246,237,237,http://localhost:3000/api/auth/login,587,0,1
+1764043205968,613,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-230,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",511,246,237,237,http://localhost:3000/api/auth/login,384,0,1
+1764043206025,670,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-218,text,false,,328,263,238,238,http://localhost:3000/api/auth/me,503,0,0
+1764043206149,595,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-222,text,false,,328,261,239,239,http://localhost:3000/api/auth/me,413,0,0
+1764043206149,596,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-225,text,false,,328,263,239,239,http://localhost:3000/api/auth/me,413,0,0
+1764043206037,707,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-231,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",511,246,239,239,http://localhost:3000/api/auth/login,690,0,0
+1764043206103,641,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-232,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",513,246,239,239,http://localhost:3000/api/auth/login,624,0,0
+1764043206149,596,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-223,text,false,,328,259,239,239,http://localhost:3000/api/auth/me,414,0,0
+1764043206149,608,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-224,text,false,,328,263,239,239,http://localhost:3000/api/auth/me,421,0,0
+1764043206352,504,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-226,text,false,,328,259,241,241,http://localhost:3000/api/auth/me,405,0,0
+1764043206352,504,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-227,text,false,,328,259,241,241,http://localhost:3000/api/auth/me,405,0,0
+1764043206344,517,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-228,text,false,,328,257,241,241,http://localhost:3000/api/auth/me,421,0,0
+1764043206239,623,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-234,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",509,246,241,241,http://localhost:3000/api/auth/login,563,0,1
+1764043206176,686,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-233,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",509,246,241,241,http://localhost:3000/api/auth/login,626,0,1
+1764043206582,403,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-230,text,false,,328,261,243,243,http://localhost:3000/api/auth/me,263,0,0
+1764043206581,404,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-229,text,false,,328,259,243,243,http://localhost:3000/api/auth/me,265,0,0
+1764043206437,548,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-237,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",507,246,243,243,http://localhost:3000/api/auth/login,523,0,1
+1764043206374,639,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-236,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",509,246,243,243,http://localhost:3000/api/auth/login,488,0,0
+1764043206308,705,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-235,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",513,246,243,243,http://localhost:3000/api/auth/login,555,0,1
+1764043206505,662,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-238,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",509,246,245,245,http://localhost:3000/api/auth/login,456,0,0
+1764043206745,468,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-232,text,false,,328,263,246,246,http://localhost:3000/api/auth/me,267,0,0
+1764043206574,639,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-239,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",507,246,246,246,http://localhost:3000/api/auth/login,530,0,1
+1764043206640,573,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-240,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",509,246,246,246,http://localhost:3000/api/auth/login,464,0,1
+1764043206745,469,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-231,text,false,,328,261,246,246,http://localhost:3000/api/auth/me,268,0,0
+1764043206709,505,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-241,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",507,246,246,246,http://localhost:3000/api/auth/login,394,0,0
+1764043206862,492,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-234,text,false,,328,259,248,248,http://localhost:3000/api/auth/me,343,0,0
+1764043206862,492,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-233,text,false,,328,259,248,248,http://localhost:3000/api/auth/me,343,0,0
+1764043206775,588,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-242,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",509,246,248,248,http://localhost:3000/api/auth/login,529,0,0
+1764043207167,303,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-238,text,false,,328,259,250,250,http://localhost:3000/api/auth/me,195,0,0
+1764043207014,456,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-235,text,false,,328,263,250,250,http://localhost:3000/api/auth/me,348,0,0
+1764043207014,456,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-236,text,false,,328,259,250,250,http://localhost:3000/api/auth/me,348,0,0
+1764043206986,485,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-237,text,false,,328,257,250,250,http://localhost:3000/api/auth/me,377,0,0
+1764043206909,562,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-244,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",511,246,250,250,http://localhost:3000/api/auth/login,473,0,1
+1764043206840,631,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-243,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",509,246,250,250,http://localhost:3000/api/auth/login,542,0,0
+1764043206976,495,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-245,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",507,246,250,250,http://localhost:3000/api/auth/login,406,0,0
+1764043207214,401,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-239,text,false,,328,257,252,252,http://localhost:3000/api/auth/me,247,0,0
+1764043207040,580,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-246,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",509,246,252,252,http://localhost:3000/api/auth/login,501,0,1
+1764043207176,445,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-248,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",507,246,252,252,http://localhost:3000/api/auth/login,295,0,1
+1764043207108,513,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-247,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",513,246,252,252,http://localhost:3000/api/auth/login,432,0,1
+1764043207214,528,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-240,text,false,,328,259,254,254,http://localhost:3000/api/auth/me,378,0,0
+1764043207214,529,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-241,text,false,,328,257,254,254,http://localhost:3000/api/auth/me,379,0,0
+1764043207364,443,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-242,text,false,,328,259,255,255,http://localhost:3000/api/auth/me,252,0,0
+1764043207311,497,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-250,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",509,246,255,255,http://localhost:3000/api/auth/login,310,0,0
+1764043207242,566,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-249,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",507,246,255,255,http://localhost:3000/api/auth/login,384,0,1
+1764043207471,474,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-243,text,false,,328,259,257,257,http://localhost:3000/api/auth/me,336,0,0
+1764043207471,475,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-244,text,false,,328,261,257,257,http://localhost:3000/api/auth/me,337,0,0
+1764043207443,504,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-252,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",509,246,257,257,http://localhost:3000/api/auth/login,366,0,1
+1764043207378,583,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-251,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",511,246,257,257,http://localhost:3000/api/auth/login,503,0,2
+1764043207471,507,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-245,text,false,,328,257,257,257,http://localhost:3000/api/auth/me,461,0,0
+1764043207621,447,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-247,text,false,,328,263,259,259,http://localhost:3000/api/auth/me,325,0,0
+1764043207621,449,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-248,text,false,,328,257,259,259,http://localhost:3000/api/auth/me,326,0,0
+1764043207621,449,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-246,text,false,,328,259,259,259,http://localhost:3000/api/auth/me,326,0,0
+1764043207511,571,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-253,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",509,246,259,259,http://localhost:3000/api/auth/login,466,0,0
+1764043207577,505,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-254,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",507,246,259,259,http://localhost:3000/api/auth/login,399,0,0
+1764043207808,368,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-250,text,false,,328,259,260,260,http://localhost:3000/api/auth/me,262,0,0
+1764043207808,369,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-249,text,false,,328,257,260,260,http://localhost:3000/api/auth/me,263,0,0
+1764043207777,400,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-257,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",511,246,260,260,http://localhost:3000/api/auth/login,306,0,1
+1764043207647,530,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-255,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",511,246,260,260,http://localhost:3000/api/auth/login,475,0,0
+1764043207711,473,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-256,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",507,246,261,261,http://localhost:3000/api/auth/login,410,0,2
+1764043207948,329,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-252,text,false,,328,259,262,262,http://localhost:3000/api/auth/me,227,0,0
+1764043207844,437,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-258,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",507,246,262,262,http://localhost:3000/api/auth/login,402,0,0
+1764043207911,371,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-259,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",509,246,262,262,http://localhost:3000/api/auth/login,274,0,1
+1764043207961,353,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-251,text,false,,328,261,263,263,http://localhost:3000/api/auth/me,302,0,0
+1764043208084,281,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-254,text,false,,328,257,263,263,http://localhost:3000/api/auth/me,195,0,0
+1764043208084,281,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-253,text,false,,328,259,263,263,http://localhost:3000/api/auth/me,195,0,0
+1764043207981,385,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-260,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",509,246,263,263,http://localhost:3000/api/auth/login,302,0,1
+1764043208046,320,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-261,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",509,246,263,263,http://localhost:3000/api/auth/login,236,0,1
+1764043208185,351,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-256,text,false,,328,257,266,266,http://localhost:3000/api/auth/me,179,0,0
+1764043208178,360,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-257,text,false,,328,261,266,266,http://localhost:3000/api/auth/me,188,0,0
+1764043208179,359,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-255,text,false,,328,261,266,266,http://localhost:3000/api/auth/me,186,0,0
+1764043208114,433,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-262,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",509,246,266,266,http://localhost:3000/api/auth/login,312,0,1
+1764043208282,375,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-258,text,false,,328,257,268,268,http://localhost:3000/api/auth/me,257,0,0
+1764043208282,375,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-259,text,false,,328,259,268,268,http://localhost:3000/api/auth/me,256,0,0
+1764043208182,475,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-263,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",511,246,268,268,http://localhost:3000/api/auth/login,424,0,1
+1764043208246,411,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-264,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",509,246,268,268,http://localhost:3000/api/auth/login,358,0,0
+1764043208367,349,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-261,text,false,,328,259,269,269,http://localhost:3000/api/auth/me,289,0,0
+1764043208367,350,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-260,text,false,,328,259,269,269,http://localhost:3000/api/auth/me,289,0,0
+1764043208313,406,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-265,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",511,246,269,269,http://localhost:3000/api/auth/login,375,0,0
+1764043208448,369,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-267,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",519,246,270,270,http://localhost:3000/api/auth/login,272,0,1
+1764043208548,270,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-262,text,false,,328,259,270,270,http://localhost:3000/api/auth/me,169,0,0
+1764043208518,300,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-268,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",509,246,270,270,http://localhost:3000/api/auth/login,201,0,1
+1764043208381,435,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-266,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",507,246,270,270,http://localhost:3000/api/auth/login,339,0,1
+1764043208657,239,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-263,text,false,,328,261,271,271,http://localhost:3000/api/auth/me,158,0,0
+1764043208649,253,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-270,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",511,246,271,271,http://localhost:3000/api/auth/login,193,0,0
+1764043208583,320,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-269,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",507,246,271,271,http://localhost:3000/api/auth/login,260,0,0
+1764043208657,281,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-264,text,false,,328,259,272,272,http://localhost:3000/api/auth/me,232,0,0
+1764043208719,279,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-265,text,false,,328,261,273,273,http://localhost:3000/api/auth/me,183,0,0
+1764043208821,309,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-266,text,false,,328,257,275,275,http://localhost:3000/api/auth/me,178,0,0
+1764043208715,415,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-271,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",509,246,275,275,http://localhost:3000/api/auth/login,333,0,0
+1764043208819,312,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-268,text,false,,328,259,275,275,http://localhost:3000/api/auth/me,180,0,0
+1764043208784,346,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-272,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",507,246,275,275,http://localhost:3000/api/auth/login,239,0,1
+1764043208818,313,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-267,text,false,,328,269,275,275,http://localhost:3000/api/auth/me,182,0,0
+1764043208849,437,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-273,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",507,246,277,277,http://localhost:3000/api/auth/login,270,0,1
+1764043208903,506,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-269,text,false,,328,257,279,279,http://localhost:3000/api/auth/me,379,0,0
+1764043208903,507,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-270,text,false,,328,261,279,279,http://localhost:3000/api/auth/me,380,0,0
+1764043208916,683,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-274,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",509,246,282,282,http://localhost:3000/api/auth/login,528,0,1
+1764043208985,614,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-275,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",509,246,282,282,http://localhost:3000/api/auth/login,461,0,1
+1764043209055,545,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-276,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",507,246,282,282,http://localhost:3000/api/auth/login,393,0,0
+1764043209117,497,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-277,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",511,246,282,282,http://localhost:3000/api/auth/login,445,0,0
+1764043209186,428,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-278,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",511,246,282,282,http://localhost:3000/api/auth/login,375,0,1
+1764043209131,483,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-271,text,false,,328,259,282,282,http://localhost:3000/api/auth/me,339,0,0
+1764043209131,559,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-272,text,false,,328,257,283,283,http://localhost:3000/api/auth/me,463,0,0
+1764043209287,403,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-273,text,false,,328,257,283,283,http://localhost:3000/api/auth/me,311,0,0
+1764043209253,496,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-279,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",509,246,284,284,http://localhost:3000/api/auth/login,362,0,0
+1764043209387,426,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-281,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",507,246,285,285,http://localhost:3000/api/auth/login,363,0,1
+1764043209600,214,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-276,text,false,,328,257,285,285,http://localhost:3000/api/auth/me,152,0,0
+1764043209599,215,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-274,text,false,,328,259,285,285,http://localhost:3000/api/auth/me,179,0,0
+1764043209599,215,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-275,text,false,,328,259,285,285,http://localhost:3000/api/auth/me,180,0,0
+1764043209318,520,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-280,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",509,246,285,285,http://localhost:3000/api/auth/login,432,0,0
+1764043209452,387,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-282,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",511,246,285,285,http://localhost:3000/api/auth/login,354,0,1
+1764043209614,232,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-278,text,false,,328,261,285,285,http://localhost:3000/api/auth/me,199,0,0
+1764043209587,259,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-284,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",509,246,285,285,http://localhost:3000/api/auth/login,227,0,0
+1764043209521,340,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-283,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",509,246,286,286,http://localhost:3000/api/auth/login,313,0,0
+1764043209614,265,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-277,text,false,,328,261,286,286,http://localhost:3000/api/auth/me,225,0,0
+1764043209750,215,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-279,text,false,,328,259,287,287,http://localhost:3000/api/auth/me,109,0,0
+1764043209654,444,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-285,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",509,246,289,289,http://localhost:3000/api/auth/login,295,0,1
+1764043209723,375,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-286,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",509,246,289,289,http://localhost:3000/api/auth/login,226,0,1
+1764043209814,304,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-281,text,false,,328,257,289,289,http://localhost:3000/api/auth/me,152,0,0
+1764043209788,330,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-287,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",507,246,289,289,http://localhost:3000/api/auth/login,241,0,1
+1764043209840,379,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-282,text,false,,328,261,291,291,http://localhost:3000/api/auth/me,257,0,0
+1764043209839,380,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-280,text,false,,328,259,291,291,http://localhost:3000/api/auth/me,259,0,0
+1764043209861,403,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-283,text,false,,328,259,292,292,http://localhost:3000/api/auth/me,252,0,0
+1764043209847,417,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-284,text,false,,328,259,292,292,http://localhost:3000/api/auth/me,271,0,0
+1764043210098,260,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-286,text,false,,328,259,293,293,http://localhost:3000/api/auth/me,172,0,0
+1764043209856,502,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-288,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",511,246,293,293,http://localhost:3000/api/auth/login,455,0,1
+1764043209922,436,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-289,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",515,246,293,293,http://localhost:3000/api/auth/login,387,0,1
+1764043210098,261,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-285,text,false,,328,259,293,293,http://localhost:3000/api/auth/me,223,0,0
+1764043209988,415,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-290,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",511,246,294,294,http://localhost:3000/api/auth/login,347,0,1
+1764043210119,292,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-287,text,false,,328,257,294,294,http://localhost:3000/api/auth/me,239,0,0
+1764043210058,354,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-291,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",507,246,294,294,http://localhost:3000/api/auth/login,310,0,1
+1764043210193,219,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-293,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",511,246,294,294,http://localhost:3000/api/auth/login,166,0,0
+1764043210123,289,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-292,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",507,246,294,294,http://localhost:3000/api/auth/login,244,0,0
+1764043210359,406,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-289,text,false,,328,265,298,298,http://localhost:3000/api/auth/me,123,0,0
+1764043210359,407,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-288,text,false,,328,261,298,298,http://localhost:3000/api/auth/me,124,0,0
+1764043210403,363,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-290,text,false,,328,261,298,298,http://localhost:3000/api/auth/me,95,0,0
+1764043210257,508,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-294,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",509,246,298,298,http://localhost:3000/api/auth/login,227,0,1
+1764043210325,584,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-295,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",509,246,298,298,http://localhost:3000/api/auth/login,538,0,0
+1764043210394,515,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-296,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",509,246,298,298,http://localhost:3000/api/auth/login,374,0,1
+1764043210413,520,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-293,text,false,,328,261,298,298,http://localhost:3000/api/auth/me,474,0,0
+1764043210413,521,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-292,text,false,,328,257,298,298,http://localhost:3000/api/auth/me,475,0,0
+1764043210413,521,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-291,text,false,,328,257,298,298,http://localhost:3000/api/auth/me,477,0,0
+1764043210458,501,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-297,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",511,246,298,298,http://localhost:3000/api/auth/login,475,0,1
+1764043210766,206,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-294,text,false,,328,259,298,298,http://localhost:3000/api/auth/me,193,0,0
+1764043210593,379,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-299,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",509,246,298,298,http://localhost:3000/api/auth/login,366,0,0
+1764043210527,491,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-298,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",509,246,298,298,http://localhost:3000/api/auth/login,435,0,1
+1764043210660,426,POST /api/auth/login,401,Unauthorized,Authenticated Users 1-300,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[401]]]
+
+****** comparison: [[[200]]]
+
+/",511,246,298,298,http://localhost:3000/api/auth/login,306,0,1
+1764043210910,196,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-295,text,false,,328,259,298,298,http://localhost:3000/api/auth/me,95,0,0
+1764043210910,197,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-296,text,false,,328,259,298,298,http://localhost:3000/api/auth/me,98,0,0
+1764043210959,268,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-297,text,false,,328,261,298,298,http://localhost:3000/api/auth/me,148,0,0
+1764043210973,266,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-299,text,false,,328,259,298,298,http://localhost:3000/api/auth/me,254,0,0
+1764043211019,221,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-298,text,false,,328,259,298,298,http://localhost:3000/api/auth/me,214,0,0
+1764043211086,155,GET /api/auth/me,401,Unauthorized,Authenticated Users 1-300,text,false,,328,261,298,298,http://localhost:3000/api/auth/me,148,0,0
+1764043191240,71533,GET /api/properties,200,OK,Authenticated Users 1-10,text,true,,9396,260,298,298,http://localhost:3000/api/properties,71530,0,0
+1764043191106,77687,GET /api/properties,200,OK,Authenticated Users 1-8,text,true,,9371,262,297,297,http://localhost:3000/api/properties,77642,0,0
+1764043191306,78347,GET /api/properties,200,OK,Authenticated Users 1-11,text,true,,9392,260,296,296,http://localhost:3000/api/properties,78131,0,0
+1764043191176,81115,GET /api/properties,200,OK,Authenticated Users 1-9,text,true,,9388,264,295,295,http://localhost:3000/api/properties,80973,0,0
+1764043190958,81713,GET /api/properties,200,OK,Authenticated Users 1-5,text,true,,9345,266,294,294,http://localhost:3000/api/properties,81518,0,0
+1764043192769,80678,GET /api/properties,200,OK,Authenticated Users 1-28,text,true,,9461,260,293,293,http://localhost:3000/api/properties,80173,0,0
+1764043190865,82778,GET /api/properties,200,OK,Authenticated Users 1-4,text,true,,9377,260,292,292,http://localhost:3000/api/properties,82357,0,0
+1764043190787,83543,GET /api/properties,200,OK,Authenticated Users 1-3,text,true,,9337,262,291,291,http://localhost:3000/api/properties,83071,0,0

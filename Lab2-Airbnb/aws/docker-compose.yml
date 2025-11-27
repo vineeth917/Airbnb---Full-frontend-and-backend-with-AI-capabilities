@@ -1,0 +1,177 @@
+version: '3.9'
+
+services:
+  frontend:
+    image: ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/${ECR_PREFIX}-frontend:${VERSION_TAG:-latest}
+    container_name: airbnb-frontend
+    ports:
+      - "80:80"
+    restart: unless-stopped
+    depends_on:
+      - backend
+    networks:
+      - airbnb-network
+
+  seed-db:
+    image: ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/${ECR_PREFIX}-backend:${VERSION_TAG:-latest}
+    container_name: airbnb-seed-db
+    command: ["npm", "run", "seed"]
+    environment:
+      - DB_HOST=${DB_HOST:-mysql}
+      - DB_PORT=${DB_PORT:-3306}
+      - DB_USER=${DB_USER:-root}
+      - DB_PASSWORD=${DB_PASS:-pass1234}
+      - DB_NAME=${DB_NAME:-airbnb_lab}
+    restart: "no"
+    depends_on:
+      mysql:
+        condition: service_healthy
+    networks:
+      - airbnb-network
+
+  backend:
+    image: ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/${ECR_PREFIX}-backend:${VERSION_TAG:-latest}
+    container_name: airbnb-backend
+    ports:
+      - "4000:4000"
+    environment:
+      - PORT=4000
+      - NODE_ENV=${NODE_ENV:-production}
+      - DB_HOST=${DB_HOST:-mysql}
+      - DB_PORT=${DB_PORT:-3306}
+      - DB_NAME=${DB_NAME:-airbnb_lab}
+      - DB_USER=${DB_USER:-root}
+      - DB_PASSWORD=${DB_PASS:-pass1234}
+      - MONGO_URI=${MONGO_URI:-mongodb://mongo:27017/airbnb_auth}
+      - MONGO_DB_NAME=${MONGO_DB_NAME:-airbnb_auth}
+      - KAFKA_BROKER_URL=${KAFKA_BROKERS:-kafka:9092}
+      - KAFKA_TOPIC_BOOKINGS=${KAFKA_TOPIC_BOOKINGS:-booking.events}
+      - KAFKA_CLIENT_ID=${KAFKA_CLIENT_ID:-airbnb-backend}
+      - AI_SERVICE_URL=${AI_SERVICE_URL:-http://ai-service:8000}
+      - FRONTEND_URL=${FRONTEND_URL:-http://localhost:80}
+      - FRONTEND_ORIGINS=${FRONTEND_ORIGINS:-}
+      - COOKIE_SECURE=${COOKIE_SECURE:-false}
+      - COOKIE_SAMESITE=${COOKIE_SAMESITE:-lax}
+      - SESSION_SECRET=${SESSION_SECRET:-secret-key}
+    restart: unless-stopped
+    depends_on:
+      mysql:
+        condition: service_healthy
+      mongo:
+        condition: service_healthy
+      kafka:
+        condition: service_started
+      seed-db:
+        condition: service_completed_successfully
+      ai-service:
+        condition: service_started
+    volumes:
+      - ./backend/uploads:/app/uploads
+    networks:
+      - airbnb-network
+
+  ai-service:
+    image: ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/${ECR_PREFIX}-ai-service:${VERSION_TAG:-latest}
+    container_name: airbnb-ai-service
+    ports:
+      - "8000:8000"
+    environment:
+      - DB_HOST=${DB_HOST:-mysql}
+      - DB_PORT=${DB_PORT:-3306}
+      - DB_NAME=${DB_NAME:-airbnb_lab}
+      - DB_USER=${DB_USER:-root}
+      - DB_PASSWORD=${DB_PASS:-pass1234}
+      - PYTHONPATH=/app
+      - OPENAI_API_KEY=${OPENAI_API_KEY:-}
+      - TAVILY_API_KEY=${TAVILY_API_KEY:-}
+    restart: unless-stopped
+    depends_on:
+      mysql:
+        condition: service_healthy
+    networks:
+      - airbnb-network
+
+  # MySQL database for backend + AI service
+  mysql:
+    image: mysql:8.0
+    container_name: airbnb-mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_PASS:-pass1234}
+      MYSQL_DATABASE: ${DB_NAME:-airbnb_lab}
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./backend/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-ppass1234"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - airbnb-network
+    command: --default-authentication-plugin=mysql_native_password
+
+  mongo:
+    image: mongo:6.0
+    container_name: airbnb-mongo
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+    healthcheck:
+      test: ["CMD", "mongosh", "--quiet", "--eval", "db.runCommand({ ping: 1 })"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - airbnb-network
+
+  kafka:
+    image: confluentinc/cp-kafka:7.6.1
+    container_name: airbnb-kafka
+    environment:
+      KAFKA_PROCESS_ROLES: broker,controller
+      KAFKA_NODE_ID: 1
+      KAFKA_CONTROLLER_QUORUM_VOTERS: 1@kafka:9093
+      KAFKA_LISTENERS: PLAINTEXT://:9092,PLAINTEXT_HOST://:29092,CONTROLLER://:9093
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092,PLAINTEXT_HOST://localhost:29092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "false"
+      CLUSTER_ID: MkU3OEVBNTcwNTJENDM2Qk
+    ports:
+      - "9092:9092"
+      - "29092:29092"
+      - "9093:9093"
+    networks:
+      - airbnb-network
+
+  kafka-ui:
+    image: provectuslabs/kafka-ui:v0.7.2
+    container_name: airbnb-kafka-ui
+    depends_on:
+      - kafka
+    environment:
+      KAFKA_CLUSTERS_0_NAME: airbnb
+      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafka:9092
+    ports:
+      - "8080:8080"
+    networks:
+      - airbnb-network
+
+networks:
+  airbnb-network:
+    driver: bridge
+
+volumes:
+  mysql_data:
+  mongo_data:
+
