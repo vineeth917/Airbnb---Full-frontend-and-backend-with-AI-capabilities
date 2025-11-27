@@ -1,196 +1,153 @@
-version: '3.8'
+version: "3.9"
 
 services:
-  # MongoDB Database
-  mongodb:
+  # MySQL database for backend + AI service
+  mysql:
+    image: mysql:8.0
+    container_name: airbnb-mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: pass1234
+      MYSQL_DATABASE: airbnb_lab
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./backend/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-ppass1234"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - airbnb
+
+  mongo:
     image: mongo:6.0
-    container_name: airbnb-mongodb
-    restart: always
+    container_name: airbnb-mongo
+    restart: unless-stopped
     ports:
       - "27017:27017"
-    environment:
-      MONGO_INITDB_DATABASE: airbnb_lab
     volumes:
-      - mongodb_data:/data/db
-    networks:
-      - airbnb-network
+      - mongo_data:/data/db
     healthcheck:
-      test: echo 'db.runCommand("ping").ok' | mongosh localhost:27017/airbnb_lab --quiet
+      test: ["CMD", "mongosh", "--quiet", "--eval", "db.runCommand({ ping: 1 })"]
       interval: 10s
       timeout: 5s
       retries: 5
-
-  # Zookeeper (required for Kafka)
-  zookeeper:
-    image: confluentinc/cp-zookeeper:7.5.0
-    container_name: airbnb-zookeeper
-    restart: always
-    ports:
-      - "2181:2181"
-    environment:
-      ZOOKEEPER_CLIENT_PORT: 2181
-      ZOOKEEPER_TICK_TIME: 2000
     networks:
-      - airbnb-network
-    healthcheck:
-      test: ["CMD", "nc", "-z", "localhost", "2181"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
+      - airbnb
 
-  # Kafka Message Broker
   kafka:
-    image: confluentinc/cp-kafka:7.5.0
+    image: confluentinc/cp-kafka:7.6.1
     container_name: airbnb-kafka
-    restart: always
-    depends_on:
-      - zookeeper
+    environment:
+      KAFKA_PROCESS_ROLES: broker,controller
+      KAFKA_NODE_ID: 1
+      KAFKA_CONTROLLER_QUORUM_VOTERS: 1@kafka:9093
+      KAFKA_LISTENERS: PLAINTEXT://:9092,PLAINTEXT_HOST://:29092,CONTROLLER://:9093
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092,PLAINTEXT_HOST://localhost:29092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "false"
+      CLUSTER_ID: MkU3OEVBNTcwNTJENDM2Qk
     ports:
       - "9092:9092"
       - "29092:29092"
-    environment:
-      KAFKA_BROKER_ID: 1
-      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:29092,PLAINTEXT_HOST://localhost:9092
-      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
-      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
-      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
-      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
+      - "9093:9093"
     networks:
-      - airbnb-network
-    healthcheck:
-      test: ["CMD", "kafka-broker-api-versions", "--bootstrap-server", "localhost:9092"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
+      - airbnb
 
-  # Traveler Service
-  traveler-service:
-    build:
-      context: ./services/traveler-service
-      dockerfile: Dockerfile
-    container_name: traveler-service
-    restart: always
+  kafka-ui:
+    image: provectuslabs/kafka-ui:v0.7.2
+    container_name: airbnb-kafka-ui
     depends_on:
-      - mongodb
+      - kafka
+    environment:
+      KAFKA_CLUSTERS_0_NAME: airbnb
+      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafka:9092
     ports:
-      - "5001:5001"
+      - "8080:8080"
+    networks:
+      - airbnb
+
+  ai-service:
+    build:
+      context: ./ai-service
+    env_file:
+      - ./ai-service/.env
+    environment:
+      DB_HOST: mysql
+      DB_PORT: 3306
+      DB_NAME: airbnb_lab
+      DB_USER: root
+      DB_PASSWORD: pass1234
+      PYTHONPATH: /app
+    depends_on:
+      mysql:
+        condition: service_healthy
+    ports:
+      - "8000:8000"
+    networks:
+      - airbnb
+
+  backend:
+    build:
+      context: ./backend
+    env_file:
+      - ./backend/.env
     environment:
       PORT: 5001
-      MONGODB_URI: mongodb://mongodb:27017/airbnb_lab
-      JWT_SECRET_KEY: your-secret-key-change-in-production
-      SECRET_KEY: your-secret-key-change-in-production
-    networks:
-      - airbnb-network
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:5001/health"]
-      interval: 30s
-      timeout: 5s
-      retries: 3
-
-  # Owner Service
-  owner-service:
-    build:
-      context: ./services/owner-service
-      dockerfile: Dockerfile
-    container_name: owner-service
-    restart: always
+      NODE_ENV: production
+      DB_HOST: mysql
+      DB_PORT: 3306
+      DB_NAME: airbnb_lab
+      DB_USER: root
+      DB_PASSWORD: pass1234
+      AI_SERVICE_URL: http://ai-service:8000
+      FRONTEND_URL: http://localhost:3000
+      MONGO_URI: mongodb://mongo:27017/airbnb_auth
+      MONGO_DB_NAME: airbnb_auth
+      KAFKA_BROKER_URL: kafka:9092
+      KAFKA_TOPIC_BOOKINGS: booking.events
+      KAFKA_CLIENT_ID: airbnb-backend
     depends_on:
-      - mongodb
-      - kafka
+      mysql:
+        condition: service_healthy
+      mongo:
+        condition: service_healthy
+      ai-service:
+        condition: service_started
     ports:
-      - "5002:5002"
-    environment:
-      PORT: 5002
-      MONGODB_URI: mongodb://mongodb:27017/airbnb_lab
-      KAFKA_BOOTSTRAP_SERVERS: kafka:29092
-      JWT_SECRET_KEY: your-secret-key-change-in-production
-      SECRET_KEY: your-secret-key-change-in-production
+      - "5001:5001"
+    volumes:
+      - ./backend/uploads:/app/uploads
     networks:
-      - airbnb-network
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:5002/health"]
-      interval: 30s
-      timeout: 5s
-      retries: 3
+      - airbnb
 
-  # Property Service
-  property-service:
+  frontend:
     build:
-      context: ./services/property-service
-      dockerfile: Dockerfile
-    container_name: property-service
-    restart: always
+      context: ./frontend
+      args:
+        VITE_API_URL: http://localhost:5001/api
+        VITE_AI_SERVICE_URL: http://localhost:8000
     depends_on:
-      - mongodb
+      backend:
+        condition: service_started
     ports:
-      - "5003:5003"
-    environment:
-      PORT: 5003
-      MONGODB_URI: mongodb://mongodb:27017/airbnb_lab
-      JWT_SECRET_KEY: your-secret-key-change-in-production
-      SECRET_KEY: your-secret-key-change-in-production
+      - "3000:3000"
     networks:
-      - airbnb-network
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:5003/health"]
-      interval: 30s
-      timeout: 5s
-      retries: 3
-
-  # Booking Service
-  booking-service:
-    build:
-      context: ./services/booking-service
-      dockerfile: Dockerfile
-    container_name: booking-service
-    restart: always
-    depends_on:
-      - mongodb
-      - kafka
-    ports:
-      - "5004:5004"
-    environment:
-      PORT: 5004
-      MONGODB_URI: mongodb://mongodb:27017/airbnb_lab
-      KAFKA_BOOTSTRAP_SERVERS: kafka:29092
-      JWT_SECRET_KEY: your-secret-key-change-in-production
-      SECRET_KEY: your-secret-key-change-in-production
-    networks:
-      - airbnb-network
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:5004/health"]
-      interval: 30s
-      timeout: 5s
-      retries: 3
-
-  # AI Agent Service
-  ai-agent-service:
-    build:
-      context: ./services/ai-agent-service
-      dockerfile: Dockerfile
-    container_name: ai-agent-service
-    restart: always
-    ports:
-      - "5005:5005"
-    environment:
-      PORT: 5005
-      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
-      WEATHER_API_KEY: ${WEATHER_API_KEY:-}
-      SECRET_KEY: your-secret-key-change-in-production
-    networks:
-      - airbnb-network
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:5005/health"]
-      interval: 30s
-      timeout: 5s
-      retries: 3
+      - airbnb
 
 volumes:
-  mongodb_data:
-    driver: local
+  mysql_data:
+  mongo_data:
 
 networks:
-  airbnb-network:
+  airbnb:
     driver: bridge
-

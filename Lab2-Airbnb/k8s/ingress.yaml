@@ -1,54 +1,26 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: airbnb-ingress
-  namespace: airbnb-lab2
+  name: airbnb-frontend-ingress
   annotations:
-    nginx.ingress.kubernetes.io/rewrite-target: /
-    nginx.ingress.kubernetes.io/ssl-redirect: "false"
-    nginx.ingress.kubernetes.io/cors-allow-origin: "*"
-    nginx.ingress.kubernetes.io/cors-allow-methods: "GET, POST, PUT, DELETE, OPTIONS"
-    nginx.ingress.kubernetes.io/cors-allow-headers: "DNT,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Range,Authorization"
-    nginx.ingress.kubernetes.io/enable-cors: "true"
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    alb.ingress.kubernetes.io/target-type: ip
+    alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}]'
+    alb.ingress.kubernetes.io/healthcheck-path: /
+    alb.ingress.kubernetes.io/healthcheck-interval-seconds: '30'
+    alb.ingress.kubernetes.io/healthcheck-timeout-seconds: '5'
+    alb.ingress.kubernetes.io/healthy-threshold-count: '2'
+    alb.ingress.kubernetes.io/unhealthy-threshold-count: '3'
 spec:
-  ingressClassName: nginx
+  ingressClassName: alb
   rules:
-  - host: airbnb-lab2.local
-    http:
-      paths:
-      - path: /api/traveler
-        pathType: Prefix
-        backend:
-          service:
-            name: traveler-service
-            port:
-              number: 5001
-      - path: /api/owner
-        pathType: Prefix
-        backend:
-          service:
-            name: owner-service
-            port:
-              number: 5002
-      - path: /api/property
-        pathType: Prefix
-        backend:
-          service:
-            name: property-service
-            port:
-              number: 5003
-      - path: /api/booking
-        pathType: Prefix
-        backend:
-          service:
-            name: booking-service
-            port:
-              number: 5004
-      - path: /api/ai-agent
-        pathType: Prefix
-        backend:
-          service:
-            name: ai-agent-service
-            port:
-              number: 8000
+    - http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: lab2-frontend-service
+                port:
+                  number: 80
 

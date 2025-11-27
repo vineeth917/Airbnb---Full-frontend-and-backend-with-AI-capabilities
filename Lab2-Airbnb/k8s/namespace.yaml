@@ -1,8 +1,0 @@
-apiVersion: v1
-kind: Namespace
-metadata:
-  name: airbnb-lab2
-  labels:
-    name: airbnb-lab2
-    environment: development
-
